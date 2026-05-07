@@ -1,58 +1,83 @@
+<div align="center">
+  <img src="./docs/images/Logo.png" alt="Logo do Rotina Plus" width="320">
 
-# 📊 Projeto Habit Tracker
+  <h1>Rotina Plus</h1>
 
-Bem-vindo ao **Habit Tracker**.  
-Este repositório contém a documentação e implementação de um sistema de acompanhamento de hábitos e rotina, desenvolvido como Trabalho de Conclusão de Curso (TCC).
+  <p>
+    Sistema gamificado de acompanhamento de hábitos e rotina
+  </p>
 
-## 🎯 Objetivo
+  <p>
+    <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+    <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+    <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+    <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+    <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white">
+  </p>
+</div>
 
-Projeto acadêmico com o objetivo de auxiliar usuários no controle de hábitos diários e semanais, promovendo organização e constância.  
+<hr>
 
-Além disso, o sistema busca aplicar na prática conceitos aprendidos ao longo do curso técnico, como:
+<div align="center">
+  <h2>Objetivo</h2>
 
-* Estruturação de sistemas
-* Lógica de programação
-* Modelagem de dados
-* Desenvolvimento de interfaces
-* Boas práticas de organização e usabilidade (UX/UI)
+  <p>
+    O projeto tem como objetivo auxiliar usuários no controle de hábitos diários e semanais, promovendo organização, constância e acompanhamento de progresso fornecendo em forma de gameficação.
+  </p>
+</div>
 
-## 🛠️ Tecnologias Utilizadas
+<hr>
 
-* React
-* HTML5
-* CSS3
-* JavaScript
-* Node.js
-* MySQL (ou SQL Server)
+<div align="center">
+  <h2>Tecnologias Utilizadas</h2>
 
-## 💡 Funcionalidades
+  <p>
+    React • HTML5 • CSS3 • JavaScript • Node.js
+  </p>
+</div>
 
-O sistema contará com as seguintes funcionalidades principais:
+<hr>
 
-* Cadastro e login de usuários  
-* Cadastro de hábitos (diários e semanais)  
-* Edição e exclusão de hábitos  
-* Check-in diário das atividades  
-* Controle de sequência de hábitos (streaks)  
-* Visualização do progresso  
+<div align="center">
+  <h2>Funcionalidades</h2>
+</div>
 
-## 📂 Documentação
+<hr>
 
-A documentação do projeto está organizada da seguinte forma:
+<div align="center">
+  <h2>Documentação</h2>
 
-### 👨‍💻 Para Desenvolvedores
+  <h3>Para Desenvolvedores</h3>
 
-* 📄 [Guia Técnico](./programadores.md)  
-* 🧩 [Modelagem do Sistema](./classes.md)  
-* 🗄️ [Banco de Dados (DER)](./database.md)  
+  <p>
+    <a href="./docs/">🖼️ Frontend</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="./docs/database.md">💻 Backend</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="./docs/database.md">💾 Banco de Dados</a>
+  </p>
 
-### 👤 Para Usuários
+  <h3>Para Usuários</h3>
 
-* 📄 [Guia de Uso](./clientes.md)  
-* 🎨 [Interface do Sistema](./design-system.md)  
+  <p>
+    Guia de Uso
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="./docs/designSystem.md">Interface do Sistema</a>
+  </p>
+</div>
 
-## 📌 Observações
+<hr>
 
-Este projeto possui fins educacionais e tem como objetivo simular o desenvolvimento de um sistema real, incluindo organização, documentação e aplicação prática dos conhecimentos adquiridos durante o curso.
+<div align="center">
+  <h2>Observações</h2>
 
-O foco principal está na simplicidade, funcionalidade e experiência do usuário.
+  <p>
+    Este projeto possui fins educacionais e tem como objetivo simular o
+    desenvolvimento de um sistema real, incluindo organização, documentação e
+    aplicação prática dos conhecimentos adquiridos durante o curso.
+  </p>
+
+  <p>
+    O foco principal está na simplicidade, funcionalidade e experiência do usuário.
+  </p>
+</div>

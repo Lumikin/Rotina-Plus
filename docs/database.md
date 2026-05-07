@@ -2,19 +2,19 @@
 
 Este documento apresenta o modelo de dados do sistema, com foco nas entidades e seus relacionamentos.
 
-## 📦 Entidade: Produto
+## 👤 Entidade: Usuario
 
-![Entidade Produto](./produto.png)
+![Entidade Usuarios](./UserDB.png)
 
 ### 📌 Descrição
-Representa os produtos disponíveis para venda.
+Representa as informações do cliente dentro do sistema.
 
 ### 🧾 Atributos
 | Tipo | Nome | Atributos |
 | :--- | :---: | ---: |
-| INT | clienteId | NN AI PK |
+| INT | UserId | NN AI PK |
 | VARCHAR(64)| Nome | NN |
-| VARCHAR(255)| Email | NN |
+| VARCHAR(255)| Email | NN UN |
 
 ## 👤 Entidade: Cliente
 

@@ -4,7 +4,7 @@ Este documento define os padrões visuais e de interface do sistema Rotina+.
 
 # 🎨 Paleta de Cores
 
-![Paleta de cores](./colors.png)
+![Paleta de cores](./images/colors.png)
 
 ## 📌 Cores principais
 

@@ -16,7 +16,6 @@
   </p>
 </div>
 
-<hr>
 
 <div align="center">
   <h2>Objetivo</h2>
@@ -36,13 +35,11 @@
   </p>
 </div>
 
-<hr>
 
 <div align="center">
   <h2>Funcionalidades</h2>
 </div>
 
-<hr>
 
 <div align="center">
   <h2>Documentação</h2>
@@ -66,7 +63,6 @@
   </p>
 </div>
 
-<hr>
 
 <div align="center">
   <h2>Observações</h2>

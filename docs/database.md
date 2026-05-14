@@ -144,3 +144,7 @@ Um cliente pode possuir varios registros de login, e cada registro de login pert
 | Chave estrangeira | `Clientes_Log.ClienteID`                         |
 | Referencia        | `Clientes_Log.ClienteID` -> `Clientes.clienteID` |
 | Cardinalidade     | `Clientes` 1:N `Clientes_Log`                    |
+
+---
+
+Para mais informações de implementar no sistema confira [Diagrama de Classes](./classes.md)

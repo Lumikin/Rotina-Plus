@@ -81,3 +81,5 @@ Utilizar múltiplos de 8 para manter consistência visual.
 - Mobile: 320px
 - Tablet: 768px
 - Desktop: 1024px+
+
+Para uma visualização visual confira o [Figma]()

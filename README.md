@@ -52,13 +52,14 @@
     <a href="./docs/database.md">💻 Backend</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="./docs/database.md">💾 Banco de Dados</a>
+     &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://www.figma.com/design/dAcigDKFVP35SkOsuNzK73/Rotina-Plus-Design?node-id=0-1&t=tZqrihdgn5Gnvkcd-1"> Figma </a>
   </p>
 
   <h3>Para Usuários</h3>
 
   <p>
-    Guia de Uso
-    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="">Guia de Uso</a>
     <a href="./docs/designSystem.md">Interface do Sistema</a>
   </p>
 </div>

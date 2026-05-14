@@ -15,8 +15,6 @@
   </p>
 </div>
 
-
-
 <div align="center">
   <h2>Objetivo</h2>
 
@@ -24,7 +22,6 @@
     O projeto tem como objetivo auxiliar usuários no controle de hábitos diários e semanais, promovendo organização, constância e acompanhamento de progresso fornecendo em forma de gameficação.
   </p>
 </div>
-
 
 <!-- <div align="center">
   <h2>Tecnologias Utilizadas</h2>
@@ -34,12 +31,9 @@
   </p>
 </div> -->
 
-
 <div align="center">
   <h2>Funcionalidades</h2>
 </div>
-
-
 
 <div align="center">
   <h2>Documentação</h2>
@@ -49,7 +43,7 @@
   <p>
     <a href="./docs/">🖼️ Frontend</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="./docs/database.md">💻 Backend</a>
+    <a href="./docs/classes.md">💻 Classes</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
     <a href="./docs/database.md">💾 Banco de Dados</a>
      &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -63,8 +57,6 @@
     <a href="./docs/designSystem.md">Interface do Sistema</a>
   </p>
 </div>
-
-
 
 <div align="center">
   <h2>Observações</h2>

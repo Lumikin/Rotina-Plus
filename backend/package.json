@@ -1,11 +1,13 @@
 {
   "dependencies": {
     "axios": "^1.16.1",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "fs": "^0.0.1-security",
     "multer": "^2.1.1",
     "mysql2": "^3.22.3",
+    "nodemailer": "^8.0.7",
     "path": "^0.12.7"
   },
   "name": "RotinaPlus-Backend",
@@ -15,7 +17,6 @@
   "directories": {
     "doc": "docs"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"

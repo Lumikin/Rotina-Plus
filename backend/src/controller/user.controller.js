@@ -63,7 +63,7 @@ const usersController = {
         nome,
         email,
         senha: hashedPassword,
-        dataNascimento,
+        dataNascimento, // Ano-mes-data
       });
 
       const result = await usersRepository.criarUsuarios(user);

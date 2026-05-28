@@ -19,10 +19,10 @@ const emailService = {
         html: htmlModificado,
       });
 
-      console.log("✅ E-mail enviado com sucesso!");
+      console.log("E-mail enviado com sucesso!");
       console.log("ID da mensagem:", info.messageId);
     } catch (error) {
-      console.error("❌ Erro ao enviar e-mail:", error);
+      console.error("Erro ao enviar e-mail:", error);
     }
   },
 };

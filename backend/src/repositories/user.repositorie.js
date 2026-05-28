@@ -8,7 +8,7 @@ const usersRepository = {
     return rows;
   },
   listarIDUsuarios: async id => {
-    const sql = `SELECT * FROM clientes WHERE idCliente = ?`;
+    const sql = `SELECT Nome, email, Data_Nascimento FROM clientes WHERE ClienteID = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;

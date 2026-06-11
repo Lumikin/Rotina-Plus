@@ -83,13 +83,10 @@ const usersController = {
 
       let { nome, email, senha, dataNascimento } = req.body;
 
-      if (!idUsuario || idUsuario.length <= 0 || isNaN(idUsuario)) {
-        return res.status(404).json({
-          message: "Id invalido",
-        });
+      if (!idUsuario || isNaN(Number(idUsuario))) {
+        return res.status(400).json({ message: "Id invalido" });
       }
-      const userAtual = await usersRepository.listarIDUsuarios(idUsuario); // Lista o Id do usuario
-
+      const userAtual = await usersRepository.buscarUsuarioPorId(idUsuario);
       if (!userAtual || userAtual.length === 0) {
         // Se o usuario nao for encontrado retorna um erro
         return res.status(404).json({ message: "Usuario nao encontrado" });
@@ -109,17 +106,17 @@ const usersController = {
       email = email || dadosAtuais.email;
       dataNascimento = dataNascimento || dadosAtuais.Data_Nascimento;
 
-      const senhaDuplicada = await bcrypt.compare(
-        senha,
-        dadosAtuais.password_hash,
-      );
-      if (senhaDuplicada) {
-        return res
-          .status(400)
-          .json({ message: "A senha não pode ser a mesma que a atual" });
-      }
       let hashedPassword; // Hash da senha
       if (senha) {
+        const senhaDuplicada = await bcrypt.compare(
+          senha,
+          dadosAtuais.password_hash,
+        );
+        if (senhaDuplicada) {
+          return res
+            .status(400)
+            .json({ message: "A senha não pode ser a mesma que a atual" });
+        }
         // Se tiver uma senha nova, calcula o hash
         hashedPassword = await bcrypt.hash(senha, saltRounds);
       } else {
@@ -127,11 +124,11 @@ const usersController = {
         hashedPassword = dadosAtuais.password_hash;
       }
 
-      const user = Users.atualizar(
+      const user = await Users.atualizar(
         { nome, email, senha: hashedPassword, dataNascimento },
         idUsuario,
       );
-
+      console.log(user);
       const updated = await usersRepository.alterarUsuario(idUsuario, user);
       return res.status(200).json({ result: updated });
     } catch (error) {

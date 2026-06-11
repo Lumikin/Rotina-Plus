@@ -1,4 +1,3 @@
-import { Users } from "../model/Users.js";
 import { connection } from "../config/Databse.js";
 
 const usersRepository = {
@@ -9,6 +8,12 @@ const usersRepository = {
   },
   listarIDUsuarios: async id => {
     const sql = `SELECT Nome, email, Data_Nascimento FROM clientes WHERE ClienteID = ?`;
+    const values = [id];
+    const [rows] = await connection.execute(sql, values);
+    return rows;
+  },
+  buscarUsuarioPorId: async id => {
+    const sql = `SELECT Nome, email, Data_Nascimento, password_hash FROM clientes WHERE ClienteID = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;
@@ -26,13 +31,13 @@ const usersRepository = {
     return rows;
   },
   alterarUsuario: async (id, user) => {
-    const sql = `UPDATE clientes SET nome = ?, email = ?, password_hash = ?, data_nascimento = ? WHERE idCliente = ?`;
+    const sql = `UPDATE clientes SET Nome = ?, email = ?, password_hash = ?, Data_Nascimento = ? WHERE ClienteID = ?`;
     const values = [user.nome, user.email, user.senha, user.dataNascimento, id];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
   deletarUsuario: async id => {
-    const sql = `DELETE FROM clientes WHERE idCliente = ?`;
+    const sql = `DELETE FROM clientes WHERE ClienteID = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;

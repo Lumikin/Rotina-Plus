@@ -2,120 +2,99 @@ import "./styles.css";
 
 const app = document.querySelector("#app");
 
+// Renderiza a pagina inicial publica do site.
+// Ela aparece antes do usuario entrar ou se cadastrar.
 app.innerHTML = `
-  <section class="cadastro-page">
-    <div class="brand-panel" aria-label="Rotina Plus">
-      <img class="brand-logo" src="/logo.png" alt="Logo Rotina Plus" />
-      <div>
+  <section class="home-page">
+    <header class="home-header">
+      <a class="home-brand" href="/" aria-label="Rotina Plus">
+        <img src="/logo.png" alt="Logo Rotina Plus" />
+      </a>
+
+      <nav class="home-nav" aria-label="Navegação principal">
+        <a href="/login.html">Entrar</a>
+        <a class="nav-button" href="/cadastro.html">Cadastrar</a>
+      </nav>
+    </header>
+
+    <section class="home-hero">
+      <div class="home-copy">
         <p class="eyebrow">Rotina Plus</p>
-        <h1>Crie sua conta</h1>
+        <h1>Organize sua rotina e acompanhe seu progresso todos os dias.</h1>
         <p class="intro">
-          Organize sua rotina, acompanhe seus hábitos e transforme constância em progresso.
+          Cadastre tarefas, acompanhe pontos e veja sua evolução em uma página simples para manter hábitos e estudos no caminho.
         </p>
-      </div>
-      <ul class="benefits" aria-label="Benefícios">
-        <li>Controle de tarefas diárias</li>
-        <li>Acompanhamento de pontos</li>
-        <li>Histórico para visualizar evolução</li>
-      </ul>
-    </div>
 
-    <form class="signup-card" id="signupForm" novalidate>
-      <div class="form-header">
-        <p class="eyebrow">Cadastro</p>
-        <h2>Dados do usuário</h2>
+        <div class="home-actions">
+          <a class="primary-link" href="/cadastro.html">Começar agora</a>
+          <a class="secondary-link" href="/login.html">Já tenho conta</a>
+        </div>
       </div>
 
-      <label class="field">
-        <span>Nome completo</span>
-        <input id="nome" name="nome" type="text" maxlength="64" autocomplete="name" required />
-      </label>
+      <div class="home-preview" aria-label="Prévia do painel">
+        <div class="preview-top">
+          <span>Hoje</span>
+          <strong>72%</strong>
+        </div>
 
-      <label class="field">
-        <span>E-mail</span>
-        <input id="email" name="email" type="email" autocomplete="email" required />
-      </label>
+        <div class="preview-progress">
+          <span style="width: 72%"></span>
+        </div>
 
-      <label class="field">
-        <span>Data de nascimento</span>
-        <input id="dataNascimento" name="dataNascimento" type="date" required />
-      </label>
+        <div class="preview-list">
+          <div>
+            <span></span>
+            <p>Estudar programação</p>
+          </div>
+          <div>
+            <span></span>
+            <p>Organizar tarefas</p>
+          </div>
+          <div>
+            <span></span>
+            <p>Revisar metas</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <label class="field">
-        <span>Senha</span>
-        <input id="senha" name="senha" type="password" minlength="6" autocomplete="new-password" required />
-      </label>
-
-      <label class="field">
-        <span>Confirmar senha</span>
-        <input id="confirmarSenha" name="confirmarSenha" type="password" minlength="6" autocomplete="new-password" required />
-      </label>
-
-      <p class="message" id="message" role="status" aria-live="polite"></p>
-
-      <button class="primary-button" type="submit">Cadastrar</button>
-      <p class="login-hint">
-        Já tem uma conta?
-        <a href="/login.html">Entre para continuar sua rotina.</a>
+    <section class="about-section" aria-labelledby="about-title">
+      <div>
+        <p class="eyebrow">Sobre o projeto</p>
+        <h2 id="about-title">O que é a Rotina Plus?</h2>
+      </div>
+      <p>
+        A Rotina Plus é uma aplicação para ajudar usuários a organizar hábitos, tarefas e metas diárias de forma simples.
+        O sistema combina cadastro de atividades, acompanhamento de progresso e pontuação para incentivar constância e
+        tornar a rotina mais visual, prática e motivadora.
       </p>
-    </form>
+    </section>
+
+    <section class="home-features" aria-label="Funcionalidades">
+      <article>
+        <strong>Tarefas</strong>
+        <p>Monte sua lista diária com horário e prioridade.</p>
+      </article>
+      <article>
+        <strong>Pontos</strong>
+        <p>Ganhe pontos ao concluir suas atividades.</p>
+      </article>
+      <article>
+        <strong>Progresso</strong>
+        <p>Acompanhe sua evolução de forma clara.</p>
+      </article>
+    </section>
+
+    <footer class="home-footer">
+      <div>
+        <strong>Rotina Plus</strong>
+        <p>Sistema gamificado de acompanhamento de hábitos e rotina.</p>
+      </div>
+
+      <address>
+        <a href="mailto:contato@rotinaplus.com">contato@rotinaplus.com</a>
+        <a href="tel:+5511999999999">(11) 99999-9999</a>
+      </address>
+    </footer>
   </section>
 `;
-
-const form = document.querySelector("#signupForm");
-const message = document.querySelector("#message");
-const button = form.querySelector("button");
-
-const showMessage = (text, type) => {
-  message.textContent = text;
-  message.className = `message ${type}`;
-};
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const formData = new FormData(form);
-  const nome = formData.get("nome").trim();
-  const email = formData.get("email").trim();
-  const dataNascimento = formData.get("dataNascimento");
-  const senha = formData.get("senha");
-  const confirmarSenha = formData.get("confirmarSenha");
-
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
-
-  if (senha !== confirmarSenha) {
-    showMessage("As senhas precisam ser iguais.", "error");
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "Cadastrando...";
-  showMessage("", "");
-
-  try {
-    const response = await fetch("http://localhost:3000/api/clientes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nome, email, dataNascimento, senha }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Não foi possível concluir o cadastro.");
-    }
-
-    form.reset();
-    showMessage("Cadastro realizado com sucesso.", "success");
-  } catch (error) {
-    showMessage(error.message, "error");
-  } finally {
-    button.disabled = false;
-    button.textContent = "Cadastrar";
-  }
-});

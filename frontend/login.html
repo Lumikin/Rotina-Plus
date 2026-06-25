@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Rotina Plus</title>
+    <script type="module" src="/src/login.js"></script>
+  </head>
+  <body>
+    <main class="login-page">
+      <form class="signup-card login-card" id="loginForm">
+        <div class="form-header">
+          <p class="eyebrow">Login</p>
+          <h1>Entrar na conta</h1>
+        </div>
+
+        <label class="field">
+          <span>E-mail</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+
+        <label class="field">
+          <span>Senha</span>
+          <input name="senha" type="password" autocomplete="current-password" required />
+        </label>
+
+        <p class="message" id="loginMessage" role="status" aria-live="polite"></p>
+
+        <button class="primary-button" type="submit">Entrar</button>
+
+        <p class="login-hint">
+          Ainda não tem conta?
+          <a href="/cadastro.html">Cadastre-se.</a>
+        </p>
+      </form>
+    </main>
+  </body>
+</html>

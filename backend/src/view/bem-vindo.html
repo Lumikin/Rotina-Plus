@@ -1,0 +1,78 @@
+<!DOCTYPE html> <!-- Define o tipo do documento como HTML5 para o navegador -->
+<html lang="pt-BR"> <!-- Inicia o documento HTML e define o idioma principal como Português do Brasil -->
+<head> <!-- Início do cabeçalho, onde ficam as metainformações e estilos -->
+  <meta charset="UTF-8"> <!-- Define a codificação de caracteres para evitar erros em acentos e símbolos -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Garante a responsividade em dispositivos móveis -->
+  <title>Confirmação de Cadastro - RotinaPlus</title> <!-- Título que aparece na aba do navegador ou leitor de e-mail -->
+  <style> /* Início dos estilos CSS internos para fallback de alguns leitores */
+    body { margin: 0; padding: 0; background-color: #F4F7F6; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; } /* Reseta margens e define o fundo e fonte padrão */
+    table { border-spacing: 0; } /* Remove espaços indesejados entre as células das tabelas */
+    td { padding: 0; } /* Reseta o preenchimento padrão das células */
+    img { border: 0; } /* Remove bordas automáticas em imagens que possuem links */
+  </style> <!-- Fim dos estilos CSS -->
+</head> <!-- Fim do cabeçalho -->
+<body style="margin: 0; padding: 0; background-color: #F4F7F6;"> <!-- Inicia o corpo do e-mail com estilo inline para compatibilidade -->
+
+  <!-- Tabela mestra que ocupa 100% da largura para centralizar o conteúdo -->
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F4F7F6; padding: 40px 20px;">
+    <tr>
+      <td align="center"> <!-- Centraliza a tabela de conteúdo no meio da tela -->
+        
+        <!-- Tabela de conteúdo com largura máxima de 600px (padrão para e-mails) -->
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E0E0E0;">
+          
+          <!-- Cabeçalho com o logotipo da marca -->
+          <tr>
+            <td style="background-color: #113D56; padding: 35px 20px; text-align: center; color: #FFFFFF;">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: 1px; font-family: Helvetica, Arial, sans-serif;">
+                Rotina<span style="color: #5BC6A9;">Plus</span> <!-- Uso de span para aplicar a cor secundária na marca -->
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Seção principal de texto (Corpo do e-mail) -->
+          <tr>
+            <td style="padding: 45px 40px; color: #333333; font-family: Helvetica, Arial, sans-serif; line-height: 1.8; font-size: 16px;">
+              <!-- Saudação formal utilizando a variável do backend {{nome}} -->
+              <h2 style="color: #113D56; font-size: 22px; margin-top: 0; font-weight: bold;">Prezado(a) {{nome}},</h2>
+              
+              <p style="margin: 0 0 20px 0;">Informamos que o seu cadastro na plataforma <strong>RotinaPlus</strong> foi processado e concluído com êxito.</p>
+              
+              <p style="margin: 0 0 20px 0;">Nossa solução foi projetada para viabilizar uma gestão de tempo eficiente, promovendo a organização e a produtividade de suas atividades diárias. Convidamos você a iniciar a configuração de seu perfil e hábitos através do link abaixo:</p>
+              
+              <!-- Tabela auxiliar para criar e centralizar o botão de Call to Action (CTA) -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 40px 0;">
+                <tr>
+                  <td align="center">
+                    <!-- Botão estilizado como link -->
+                    <a href="{{baseUrl}}/login" style="display: inline-block; background-color: #113D56; color: #FFFFFF; text-decoration: none; padding: 18px 35px; border-radius: 4px; font-weight: bold; font-size: 16px;">Acessar Configurações de Rotina</a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 0 0 10px 0;">Caso necessite de suporte técnico ou esclarecimentos adicionais, solicitamos que entre em contato respondendo a este comunicado. Nossa equipe de atendimento permanece à sua disposição.</p>
+              
+              <br> <!-- Espaçamento vertical -->
+              <!-- Rodapé do conteúdo com linha divisória sutil -->
+              <p style="margin: 0; border-top: 1px solid #F0F0F0; padding-top: 20px;">
+                Atenciosamente,<br>
+                <strong style="color: #113D56;">Administração RotinaPlus</strong> <!-- Assinatura formal da equipe -->
+              </p>
+            </td>
+          </tr>
+
+          <!-- Seção de rodapé final com informações legais e descadastro -->
+          <tr>
+            <td style="background-color: #F9F9F9; padding: 25px 20px; text-align: center; font-size: 12px; color: #888888; border-top: 1px solid #EEEEEE; font-family: Helvetica, Arial, sans-serif;">
+              <p style="margin: 0 0 5px 0;">&copy; 2026 RotinaPlus. Todos os direitos reservados.</p> <!-- Direitos autorais -->
+              <p style="margin: 0;">Este é um comunicado oficial enviado para usuários registrados. <a href="{{unsubscribeUrl}}" style="color: #113D56; text-decoration: underline;">Descadastrar</a></p>
+            </td>
+          </tr>
+
+        </table> <!-- Fim da tabela de conteúdo -->
+      </td>
+    </tr>
+  </table> <!-- Fim da tabela mestra -->
+
+</body> <!-- Fim do corpo do documento -->
+</html> <!-- Fim do documento HTML -->

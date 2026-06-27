@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vite padrão
+    origin: "http://localhost:5173", // Vite
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );

@@ -22,4 +22,18 @@ async function authMidlleware(req, res, next) {
   }
 }
 
+export function authAdmin(req, res, next) {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Acesso negado" });
+  }
+  next();
+}
+
+export function authUser(req, res, next) {
+  if (req.user.role !== "user" || req.user.role !== "admin" || !req.user.id) {
+    return res.status(403).json({ message: "Acesso negado" });
+  }
+  next();
+}
+
 export default authMidlleware;

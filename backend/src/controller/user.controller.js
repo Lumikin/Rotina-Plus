@@ -44,39 +44,6 @@ const usersController = {
       });
     }
   },
-  criarUsuarios: async (req, res) => {
-    try {
-      const { nome, email, senha, dataNascimento } = req.body;
-      if (!nome || !email || !senha || !dataNascimento) {
-        return res.status(400).json({
-          message: "Todos os campos sao obrigatorios",
-        });
-      }
-      const consultaEmail = await usersRepository.listarUserEmail(email);
-      if (consultaEmail.length > 0) {
-        return res.status(400).json({
-          message: "Email ja cadastrado",
-        });
-      }
-      const hashedPassword = await bcrypt.hash(senha, saltRounds); //Criptografa a senha
-      const user = Users.criar({
-        nome,
-        email,
-        senha: hashedPassword,
-        dataNascimento, // Ano-mes-data
-      });
-
-      const result = await usersRepository.criarUsuarios(user);
-      await emailService.novoUser(user.email, user.nome);
-
-      return res.status(201).json({ result });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Ocorreu um erro no servidor",
-      });
-    }
-  },
   alterarUsuario: async (req, res) => {
     try {
       const idUsuario = req.params.id;
@@ -91,7 +58,11 @@ const usersController = {
         // Se o usuario nao for encontrado retorna um erro
         return res.status(404).json({ message: "Usuario nao encontrado" });
       }
-
+      if (senha.length < 4) {
+        return res
+          .status(400)
+          .json({ message: "A senha deve ter no minimo 4 caracteres" });
+      }
       if (!nome && !email && !senha) {
         // Se nenhum campo for preenchido retorna um erro
         return res.status(400).json({
@@ -104,7 +75,6 @@ const usersController = {
       // Se nenhum campo for preenchido, mantem os dados atuais
       nome = nome || dadosAtuais.Nome;
       email = email || dadosAtuais.email;
-      
 
       let hashedPassword; // Hash da senha
       if (senha) {
@@ -140,7 +110,7 @@ const usersController = {
     try {
       const { id } = req.params;
       const user = await usersRepository.listarIDUsuarios(id);
-      if (!user) {
+      if (!user || user.length === 0) {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);

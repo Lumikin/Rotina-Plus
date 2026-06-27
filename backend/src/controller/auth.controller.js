@@ -40,9 +40,29 @@ const authController = {
   criarUsuarios: async (req, res) => {
     try {
       const { nome, email, senha, dataNascimento } = req.body;
+      const validateEmail = (email) => {
+        return email.match(
+          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        );
+      };
       if (!nome || !email || !senha || !dataNascimento) {
         return res.status(400).json({
           message: "Todos os campos sao obrigatorios",
+        });
+      }
+      if (!validateEmail(email)) {
+        return res.status(400).json({
+          message: "Email inválido",
+        });
+      }
+      if (senha.length < 4) {
+        return res.status(400).json({
+          message: "A senha deve ter no minimo 4 caracteres",
+        });
+      }
+      if (nome.length < 4) {
+        return res.status(400).json({
+          message: "O nome deve ter no minimo 4 caracteres",
         });
       }
       const consultaEmail = await usersRepository.listarUserEmail(email);
@@ -68,7 +88,7 @@ const authController = {
       );
 
       console.log(`TOKEN \n`, verificationToken);
-      
+
       const result = await usersRepository.criarUsuarios(user);
       await emailService.novoUser(user.email, user.nome);
 
@@ -80,8 +100,6 @@ const authController = {
       });
     }
   },
-  mudarSenha: async (req, res) => {
-
-  },
+  mudarSenha: async (req, res) => {},
 };
 export default authController;

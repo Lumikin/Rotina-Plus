@@ -10,7 +10,10 @@ const emailService = {
       throw new Error("Template não encontrado");
     }
     let htmlModificado = fs.readFileSync(caminhoTemplate, "utf-8");
-    htmlModificado = htmlModificado.replace("{{nome}}", nome);
+    htmlModificado = htmlModificado
+      .replace(/{{nome}}/g, nome)
+      .replace(/{{baseUrl}}/g, process.env.BASE_URL)
+      .replace(/{{unsubscribeUrl}}/g, process.env.BASE_URL + "/unsubscribe");
     try {
       const info = await transporter.sendMail({
         from: process.env.EMAIL_USER, // Quem está enviando

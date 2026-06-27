@@ -15,18 +15,20 @@ const authController = {
         message: "Informe o email e a senha",
       });
     }
-    const [User] = await usersRepository.listarUserEmail(email);
+    const users = await usersRepository.listarUserEmail(email);
 
-    if (User.length === 0 || !User) {
-      return res.status(200).json({ message: "Esse User não existe" });
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        message: "Usuário não encontrado",
+      });
     }
-
-    const verificarSenha = await bcrypt.compare(senha, User.password_hash);
+    const user = users[0];
+    const verificarSenha = await bcrypt.compare(senha, user.password_hash);
     if (!verificarSenha) {
-      return res.status(400).json({ error: "Senha inválida." });
+      return res.status(400).json({ message: "Senha inválida." });
     }
     const accessToken = jwt.sign(
-      { userId: User.ClienteID, email: User.email }, // Payload (dados públicos)
+      { userId: user.ClienteID, email: user.email, role: user.role }, // Payload (dados públicos)
       JWT_SECRET, // Chave Secreta
       { expiresIn: "2h" }, // Tempo de expiração
     );
@@ -34,23 +36,27 @@ const authController = {
     console.log(`Token: \n`, accessToken);
 
     return res.status(200).json({
-      message: `Bem vindo(a) ${User.Nome}!`,
+      message: `Bem vindo(a) ${user.Nome}!`,
+      token: accessToken,
     });
   },
   criarUsuarios: async (req, res) => {
     try {
       const { nome, email, senha, dataNascimento } = req.body;
-      const validateEmail = (email) => {
-        return email.match(
-          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        );
-      };
+
       if (!nome || !email || !senha || !dataNascimento) {
         return res.status(400).json({
           message: "Todos os campos sao obrigatorios",
         });
       }
+      // Validar email
+      const validateEmail = (email) => {
+        return email.match(
+          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, // Regex para verificar Email (https://www.catabits.com.br/view/regex_para_validar_emails)
+        );
+      };
       if (!validateEmail(email)) {
+        // Caso retornar false vai mostrar o erro
         return res.status(400).json({
           message: "Email inválido",
         });
@@ -62,11 +68,12 @@ const authController = {
       }
       if (nome.length < 4) {
         return res.status(400).json({
-          message: "O nome deve ter no minimo 4 caracteres",
+          message: "Senha inválida.",
         });
       }
-      const consultaEmail = await usersRepository.listarUserEmail(email);
+      const consultaEmail = await usersRepository.listarUserEmail(email); // Procura o email no banco de dados
       if (consultaEmail.length > 0) {
+        // Verifica se o email inserido já esta cadastrado
         return res.status(400).json({
           message: "Email ja cadastrado",
         });
@@ -80,7 +87,9 @@ const authController = {
         dataNascimento, // Ano-mes-data
       });
 
-      const consultaUser = await usersRepository.listarUsuarios(email);
+      const result = await usersRepository.criarUsuarios(user);
+
+      const consultaUser = await usersRepository.listarUserEmail(email); //Após o cadastro procura o usuario e retorna o id
       const verificationToken = jwt.sign(
         { userId: consultaUser.ClienteID },
         JWT_SECRET,
@@ -89,10 +98,12 @@ const authController = {
 
       console.log(`TOKEN \n`, verificationToken);
 
-      const result = await usersRepository.criarUsuarios(user);
-      await emailService.novoUser(user.email, user.nome);
+      await emailService.novoUser(user.email, user.nome, verificationToken);
 
-      return res.status(201).json({ result });
+      return res.status(201).json({
+        Message: "Usuario criado com sucesso",
+        result: result,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({

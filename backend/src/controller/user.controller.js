@@ -114,7 +114,32 @@ const usersController = {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);
-      return res.status(201).json({ result });
+      return res
+        .status(201)
+        .json({ message: "usuario deletado!", result: result });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Ocorreu um erro no servidor" });
+    }
+  },
+  promoverAdmin: async (req, res) => {
+    try {
+      let { id } = req.body;
+      const users = await usersRepository.listarIDUsuarios(id);
+      if (!users || users.length === 0) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      const user = users[0];
+      console.log(user)
+      if (user.role === "admin") {
+        return res
+          .status(400)
+          .json({ message: "Usuário já é um administrador" });
+      }
+      const result = await usersRepository.promoverAdmin(id);
+      return res
+        .status(200)
+        .json({ Message: "Usuario promovido a administrador", result: result });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Ocorreu um erro no servidor" });

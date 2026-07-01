@@ -4,7 +4,7 @@ import authMidlleware, { authUser } from "../middlewares/auth.middleware.js";
 const tasksRoutes = Router();
 
 tasksRoutes.get("/", tasksController.listarTasks);
-tasksRoutes.get(
+tasksRoutes.get( //Precisa do TOKEN do usuário na sessão de auth (Bearer Token) para acessar a rota;
   "/:userId",
   authMidlleware,
   authUser,

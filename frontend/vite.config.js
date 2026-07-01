@@ -1,16 +1,7 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      // Inclui todas as paginas HTML no build do Vite.
-      input: {
-        index: resolve(__dirname, "index.html"),
-        cadastro: resolve(__dirname, "cadastro.html"),
-        login: resolve(__dirname, "login.html"),
-        app: resolve(__dirname, "app.html"),
-      },
-    },
-  },
-});
+  plugins: [react()],
+})

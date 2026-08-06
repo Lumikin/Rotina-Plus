@@ -3,45 +3,54 @@ import jwt from "jsonwebtoken";
 import usersRepository from "../repositories/user.repositorie.js";
 import bcrypt from "bcrypt"; // Criptografia
 import emailService from "../services/nodemailer.controller.js";
+import { Users } from "../model/Users.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const authController = {
   login: async (req, res) => {
-    const {email, senha} = req.body;
-    if (!email || !senha) {
-      return res.status(400).json({
-        message: "Informe o email e a senha",
+    try {
+      const { email, senha } = req.body;
+      if (!email || !senha) {
+        return res.status(400).json({
+          message: "Informe o email e a senha",
+        });
+      }
+      const users = await usersRepository.listarUserEmail(email);
+
+      if (!users || users.length === 0) {
+        return res.status(404).json({
+          message: "Usuário não encontrado",
+        });
+      }
+      const user = users[0];
+      const verificarSenha = await bcrypt.compare(senha, user.password_hash);
+      if (!verificarSenha) {
+        return res.status(400).json({ message: "Senha inválida." });
+      }
+      const accessToken = jwt.sign(
+        { userId: user.userId, email: user.email },
+        JWT_SECRET, // Chave Secreta
+        { expiresIn: "2h" }, // Tempo de expiração
+      );
+
+      console.log(`Token: \n`, accessToken);
+
+      return res.status(200).json({
+        message: `Bem vindo(a) ${user.nome}!`,
+        token: accessToken,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "Ocorreu um erro no servidor",
+        error: error.message,
       });
     }
-    const users = await usersRepository.listarUserEmail(email);
-
-    if (!users || users.length === 0) {
-      return res.status(404).json({
-        message: "Usuário não encontrado",
-      });
-    }
-    const user = users[0];
-    const verificarSenha = await bcrypt.compare(senha, user.password_hash);
-    if (!verificarSenha) {
-      return res.status(400).json({message: "Senha inválida."});
-    }
-    const accessToken = jwt.sign(
-      {userId: user.userId, email: user.email},
-      JWT_SECRET, // Chave Secreta
-      {expiresIn: "2h"}, // Tempo de expiração
-    );
-
-    console.log(`Token: \n`, accessToken);
-
-    return res.status(200).json({
-      message: `Bem vindo(a) ${user.nome}!`,
-      token: accessToken,
-    });
   },
   criarUsuarios: async (req, res) => {
     try {
-      const {nome, email, senha, dataNascimento} = req.body;
+      const { nome, email, senha, dataNascimento } = req.body;
 
       if (!nome || !email || !senha || !dataNascimento) {
         return res.status(400).json({
@@ -55,12 +64,11 @@ const authController = {
       }
       if (nome.length < 4) {
         return res.status(400).json({
-          message: "Senha inválida.",
+          message: "O nome deve ter no minimo 4 caracteres",
         });
       }
       const consultaEmail = await usersRepository.listarUserEmail(email); // Procura o email no banco de dados
       if (consultaEmail.length > 0) {
-        // Verifica se o email inserido já esta cadastrado
         return res.status(400).json({
           message: "Email ja cadastrado",
         });
@@ -78,9 +86,9 @@ const authController = {
 
       const consultaUser = await usersRepository.listarUserEmail(email); //Após o cadastro procura o usuario e retorna o id
       const verificationToken = jwt.sign(
-        {userId: consultaUser.ClienteID},
+        { userId: consultaUser[0].userId },
         JWT_SECRET,
-        {expiresIn: "20m"},
+        { expiresIn: "20m" },
       );
 
       console.log(`TOKEN \n`, verificationToken);
@@ -88,18 +96,19 @@ const authController = {
       await emailService.novoUser(user.email, user.nome, verificationToken);
 
       return res.status(201).json({
-        Message: "Usuario criado com sucesso",
+        message: "Usuario criado com sucesso",
         result: result,
       });
     } catch (error) {
       console.error(error);
       res.status(500).json({
         message: "Ocorreu um erro no servidor",
+        error: error.message,
       });
     }
   },
   mudarSenha: async (req, res) => {
-
+    // TODO: implementar
   },
 };
 export default authController;

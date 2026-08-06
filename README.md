@@ -1,12 +1,6 @@
 <div align="center">
   <img src="./docs/images/Logo.png" alt="Logo do Rotina Plus" width="320">
 
-  <h1>Rotina Plus</h1>
-
-  <p>
-    Sistema gamificado de acompanhamento de hábitos e rotina
-  </p>
-
   <p>
     <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
     <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
@@ -15,59 +9,4 @@
   </p>
 </div>
 
-<div align="center">
-  <h2>Objetivo</h2>
-
-  <p>
-    O projeto tem como objetivo auxiliar usuários no controle de hábitos diários e semanais, promovendo organização, constância e acompanhamento de progresso fornecendo em forma de gameficação.
-  </p>
-</div>
-
-<!-- <div align="center">
-  <h2>Tecnologias Utilizadas</h2>
-
-  <p>
-    React • HTML5 • CSS3 • JavaScript • Node.js
-  </p>
-</div> -->
-
-<div align="center">
-  <h2>Funcionalidades</h2>
-</div>
-
-<div align="center">
-  <h2>Documentação</h2>
-
-  <h3>Para Desenvolvedores</h3>
-
-  <p>
-    <a href="./docs/">🖼️ Frontend</a>
-    &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="./docs/classes.md">💻 Classes</a>
-    &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="./docs/database.md">💾 Banco de Dados</a>
-     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="https://www.figma.com/design/dAcigDKFVP35SkOsuNzK73/Rotina-Plus-Design?node-id=0-1&t=tZqrihdgn5Gnvkcd-1"> Figma </a>
-  </p>
-
-  <h3>Para Usuários</h3>
-
-  <p>
-    <a href="">Guia de Uso</a>
-    <a href="./docs/designSystem.md">Interface do Sistema</a>
-  </p>
-</div>
-
-<div align="center">
-  <h2>Observações</h2>
-
-  <p>
-    Este projeto possui fins educacionais e tem como objetivo simular o
-    desenvolvimento de um sistema real, incluindo organização, documentação e
-    aplicação prática dos conhecimentos adquiridos durante o curso.
-  </p>
-
-  <p>
-    O foco principal está na simplicidade, funcionalidade e experiência do usuário.
-  </p>
-</div>
+para mais detalhes consulte a [documentação](./docs/documentacao.md)

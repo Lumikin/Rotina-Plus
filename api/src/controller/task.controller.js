@@ -1,4 +1,4 @@
-import {prioridadeEnum, statusEnum} from "../enum/database.enum.js";
+import { prioridadeEnum, statusEnum } from "../enum/database.enum.js";
 import Task from "../model/Tasks.js";
 import tasksRepositories from "../repositories/tasks.repositorie.js";
 import usersRepository from "../repositories/user.repositorie.js";
@@ -27,8 +27,8 @@ const tasksController = {
   listarUserTarefa: async (req, res) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decoded.clienteId);
-      const userId = decoded.clienteId;
+      console.log(decoded.userId);
+      const userId = decoded.userId;
       if (!userId) {
         return res.status(400).json({
           message: "preencha todos os campos",
@@ -60,10 +60,10 @@ const tasksController = {
   },
   criarTask: async (req, res) => {
     try {
-      const {clienteId, nome, descricao, dataTarefa, prioridade, status} =
+      const { userId, nome, descricao, dataTarefa, prioridade, status } =
         req.body;
       if (
-        !clienteId ||
+        !userId ||
         !nome ||
         !descricao ||
         !dataTarefa ||
@@ -93,7 +93,7 @@ const tasksController = {
         });
       }
       const task = Task.criar({
-        clienteId,
+        userId,
         nome,
         descricao,
         dataTarefa, // ano-mes-data
@@ -102,7 +102,7 @@ const tasksController = {
       });
       console.log(
         "Task a ser criada:",
-        task.clienteId,
+        task.userId,
         task.nome,
         task.descricao,
         task.dataTarefa,
@@ -124,15 +124,14 @@ const tasksController = {
   },
   atualizarTask: async (req, res) => {
     try {
-      const {id} = req.params;
+      const { id } = req.params;
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
           message: "Tarefa não encontrada",
         });
       }
-      const {clienteId, nome, descricao, dataTarefa, prioridade, status} =
-        req.body;
+      const { nome, descricao, dataTarefa, prioridade, status } = req.body;
       if (!id) {
         return res.status(400).json({
           message: "ID da tarefa é obrigatório",
@@ -140,7 +139,6 @@ const tasksController = {
       }
       const tarefaAtual = await tasksRepositories.listarTask(id);
 
-      clienteId ? (tarefaAtual.clienteId = clienteId) : clienteId;
       nome ? (tarefaAtual.nome = nome) : nome;
       descricao ? (tarefaAtual.descricao = descricao) : descricao;
       dataTarefa ? (tarefaAtual.dataTarefa = dataTarefa) : dataTarefa;
@@ -149,7 +147,6 @@ const tasksController = {
 
       const task = Task.atualizar(
         {
-          clienteId,
           nome,
           descricao,
           dataTarefa, // ano-mes-data
@@ -173,7 +170,7 @@ const tasksController = {
   },
   deletarTask: async (req, res) => {
     try {
-      const {id} = req.params;
+      const { id } = req.params;
       if (!id) {
         return res.status(400).json({
           message: "ID da tarefa é obrigatório",

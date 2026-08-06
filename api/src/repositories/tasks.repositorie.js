@@ -7,22 +7,22 @@ const tasksRepositories = {
     const [rows] = await connection.execute(sql);
     return rows;
   },
-  listarUserTask: async (Userid) => {
-    const sql = `SELECT * FROM tarefas WHERE clienteId = ?;`;
+  listarUserTask: async Userid => {
+    const sql = `SELECT * FROM tarefas WHERE userId = ?;`;
     const values = [Userid];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  listarTask: async (tarefaID) => {
-    const sql = `SELECT * FROM tarefas WHERE clienteId = ?;`;
+  listarTask: async tarefaID => {
+    const sql = `SELECT * FROM tarefas WHERE userId = ?;`;
     const values = [tarefaID];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  criarTask: async (task) => {
-    const sql = `INSERT INTO tarefas (clienteId, Nome, descricao, DataTarefa ,Prioridade, Status) VALUES (?, ?, ?, ?, ?, ?)`;
+  criarTask: async task => {
+    const sql = `INSERT INTO tarefas (userId, Nome, descricao, DataTarefa ,Prioridade, Status) VALUES (?, ?, ?, ?, ?, ?)`;
     const values = [
-      task.clienteId,
+      task.userId,
       task.nome,
       task.descricao,
       task.dataTarefa,
@@ -33,9 +33,8 @@ const tasksRepositories = {
     return rows;
   },
   atualizarTask: async (id, task) => {
-    const sql = `UPDATE tarefas SET clienteId = ?, Nome = ?, descricao = ?, DataTarefa = ?, Prioridade = ?, Status = ? WHERE tarefaID = ?`;
+    const sql = `UPDATE tarefas SET Nome = ?, descricao = ?, DataTarefa = ?, Prioridade = ?, Status = ? WHERE tarefaID = ?`;
     const values = [
-      task.clienteId,
       task.nome,
       task.descricao,
       task.dataTarefa,
@@ -46,7 +45,7 @@ const tasksRepositories = {
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  deletarTask: async (id) => {
+  deletarTask: async id => {
     const sql = `UPDATE tarefas SET Status = 'Deletada' WHERE tarefaID = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);

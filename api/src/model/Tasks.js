@@ -1,6 +1,6 @@
 export class Task {
-  #tarefaID;
-  #clienteId;
+  #tarefaId;
+  #userId;
   #nome;
   #descricao;
   #dataTarefa;
@@ -8,30 +8,30 @@ export class Task {
   #status;
 
   constructor(
-    clienteId,
+    userId,
     nome,
     descricao,
     dataTarefa,
     prioridade,
     status,
-    tarefaID,
+    tarefaId,
   ) {
-    this.#clienteId = clienteId;
+    this.#userId = userId;
     this.#nome = nome;
     this.#descricao = descricao;
     this.#dataTarefa = dataTarefa;
     this.#prioridade = prioridade;
     this.#status = status;
-    this.#tarefaID = tarefaID;
+    this.#tarefaId = tarefaId;
   }
 
   // GETTERS
-  get tarefaID() {
-    return this.#tarefaID;
+  get tarefaId() {
+    return this.#tarefaId;
   }
 
-  get clienteId() {
-    return this.#clienteId;
+  get userId() {
+    return this.#userId;
   }
 
   get nome() {
@@ -75,12 +75,12 @@ export class Task {
     this.#status = value;
   }
 
-  set clienteId(value) {
-    this.#clienteId = value;
+  set userId(value) {
+    this.#userId = value;
   }
 
-  set tarefaID(value) {
-    this.#tarefaID = value;
+  set tarefaId(value) {
+    this.#tarefaId = value;
   }
 
   // VALIDADORES
@@ -119,7 +119,7 @@ export class Task {
   // FACTORY METHODS
   static criar(data) {
     return new Task(
-      data.clienteId,
+      data.userId,
       data.nome,
       data.descricao,
       data.dataTarefa,
@@ -131,7 +131,7 @@ export class Task {
 
   static atualizar(data, id) {
     return new Task(
-      data.clienteId,
+      data.userId,
       data.nome,
       data.descricao,
       data.dataTarefa,

@@ -11,6 +11,4 @@ userRouter.put("/:id", usersController.alterarUsuario);
 userRouter.get("/:id", usersController.listarIDUsuarios);
 userRouter.delete("/:id", usersController.deletarUsuario);
 
-userRouter.post("/", authMidlleware, authAdmin ,usersController.promoverAdmin);
-
 export default userRouter;

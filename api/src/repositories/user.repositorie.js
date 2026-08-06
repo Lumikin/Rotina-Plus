@@ -1,19 +1,19 @@
-import { connection } from "../config/Databse.js";
+import {connection} from "../config/Databse.js";
 
 const usersRepository = {
   listarUsuarios: async () => {
-    const sql = `SELECT clienteId, Nome, email, Data_Nascimento FROM users`;
+    const sql = `SELECT clienteId, nome, email, dataNascimento FROM users`;
     const [rows] = await connection.execute(sql);
     return rows;
   },
   listarIDUsuarios: async (id) => {
-    const sql = `SELECT Nome, email, Data_Nascimento,role FROM users WHERE clienteId = ?`;
+    const sql = `SELECT nome, email, dataNascimento,role FROM users WHERE clienteId = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
   buscarUsuarioPorId: async (id) => {
-    const sql = `SELECT Nome, email, Data_Nascimento, password_hash FROM users WHERE clienteId = ?`;
+    const sql = `SELECT nome, email, dataNascimento, password_hash FROM users WHERE clienteId = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;
@@ -24,20 +24,14 @@ const usersRepository = {
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  promoverAdmin: async (id) => {
-    const sql = `UPDATE users SET role = 'admin' WHERE clienteId = ?`;
-    const values = [id];
-    const [rows] = await connection.execute(sql, values);
-    return rows;
-  },
   criarUsuarios: async (user) => {
-    const sql = `INSERT INTO users (nome, email, password_hash, data_nascimento) VALUES (?, ?, ?, ?)`;
+    const sql = `INSERT INTO users (nome, email, password_hash, dataNascimento) VALUES (?, ?, ?, ?)`;
     const values = [user.nome, user.email, user.senha, user.dataNascimento];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
   alterarUsuario: async (id, user) => {
-    const sql = `UPDATE users SET Nome = ?, email = ?, password_hash = ? WHERE clienteId = ?`;
+    const sql = `UPDATE users SET nome = ?, email = ?, password_hash = ? WHERE clienteId = ?`;
     const values = [user.nome, user.email, user.senha, id];
     const [rows] = await connection.execute(sql, values);
     return rows;

@@ -1,5 +1,6 @@
+import {prioridadeEnum, statusEnum} from "../enum/database.enum.js";
 import Task from "../model/Tasks.js";
-import tasksRepositories from "../repositories/tasks.repositories.js";
+import tasksRepositories from "../repositories/tasks.repositorie.js";
 import usersRepository from "../repositories/user.repositorie.js";
 import jwt from "jsonwebtoken";
 const tasksController = {
@@ -59,7 +60,7 @@ const tasksController = {
   },
   criarTask: async (req, res) => {
     try {
-      const { clienteId, nome, descricao, dataTarefa, prioridade, status } =
+      const {clienteId, nome, descricao, dataTarefa, prioridade, status} =
         req.body;
       if (
         !clienteId ||
@@ -74,18 +75,18 @@ const tasksController = {
         });
       }
       if (
-        status != "Pendente" &&
-        status != "Em andamento" &&
-        status != "Concluída"
+        status != statusEnum.pendente &&
+        status != statusEnum.emAndamento &&
+        status != statusEnum.concluida
       ) {
         return res.status(400).json({
           message: "status inválido",
         });
       }
       if (
-        prioridade != "Baixa" &&
-        prioridade != "Media" &&
-        prioridade != "Alta"
+        prioridade != prioridadeEnum.baixa &&
+        prioridade != prioridadeEnum.media &&
+        prioridade != prioridadeEnum.alta
       ) {
         return res.status(400).json({
           message: "prioridade inválido",
@@ -123,14 +124,14 @@ const tasksController = {
   },
   atualizarTask: async (req, res) => {
     try {
-      const { id } = req.params;
+      const {id} = req.params;
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
           message: "Tarefa não encontrada",
         });
       }
-      const { clienteId, nome, descricao, dataTarefa, prioridade, status } =
+      const {clienteId, nome, descricao, dataTarefa, prioridade, status} =
         req.body;
       if (!id) {
         return res.status(400).json({
@@ -172,8 +173,8 @@ const tasksController = {
   },
   deletarTask: async (req, res) => {
     try {
-      const { id } = req.params;
-      if(!id){
+      const {id} = req.params;
+      if (!id) {
         return res.status(400).json({
           message: "ID da tarefa é obrigatório",
         });

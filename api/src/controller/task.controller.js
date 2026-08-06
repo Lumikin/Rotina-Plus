@@ -26,6 +26,14 @@ const tasksController = {
   },
   listarUserTarefa: async (req, res) => {
     try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+          message: "Token não fornecido",
+        });
+      }
+      const token = authHeader.split(" ")[1];
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log(decoded.userId);
       const userId = decoded.userId;
@@ -52,6 +60,14 @@ const tasksController = {
       });
     } catch (error) {
       console.error(error);
+      if (
+        error.name === "JsonWebTokenError" ||
+        error.name === "TokenExpiredError"
+      ) {
+        return res.status(401).json({
+          message: "Token inválido ou expirado",
+        });
+      }
       return res.status(500).json({
         message: "Erro no servidor",
         error: error.message,
@@ -125,33 +141,34 @@ const tasksController = {
   atualizarTask: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: "ID da tarefa é obrigatório",
+        });
+      }
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
           message: "Tarefa não encontrada",
         });
       }
-      const { nome, descricao, dataTarefa, prioridade, status } = req.body;
-      if (!id) {
-        return res.status(400).json({
-          message: "ID da tarefa é obrigatório",
-        });
-      }
-      const tarefaAtual = await tasksRepositories.listarTask(id);
+      const dadosAtuais = validarTask[0];
 
-      nome ? (tarefaAtual.nome = nome) : nome;
-      descricao ? (tarefaAtual.descricao = descricao) : descricao;
-      dataTarefa ? (tarefaAtual.dataTarefa = dataTarefa) : dataTarefa;
-      prioridade ? (tarefaAtual.prioridade = prioridade) : prioridade;
-      status ? (tarefaAtual.status = status) : status;
+      const { nome, descricao, dataTarefa, prioridade, status } = req.body;
+
+      const nomeFinal = nome || dadosAtuais.nome;
+      const descricaoFinal = descricao || dadosAtuais.descricao;
+      const dataTarefaFinal = dataTarefa || dadosAtuais.dataTarefa;
+      const prioridadeFinal = prioridade || dadosAtuais.prioridade;
+      const statusFinal = status || dadosAtuais.status;
 
       const task = Task.atualizar(
         {
-          nome,
-          descricao,
-          dataTarefa, // ano-mes-data
-          prioridade,
-          status,
+          nome: nomeFinal,
+          descricao: descricaoFinal,
+          dataTarefa: dataTarefaFinal, // ano-mes-data
+          prioridade: prioridadeFinal,
+          status: statusFinal,
         },
         id,
       );

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"; // Criptografia
 import usersRepository from "../repositories/user.repositorie.js";
-import {Users} from "../model/Users.js";
+import { Users } from "../model/Users.js";
 import emailService from "../services/nodemailer.controller.js";
 
 const saltRounds = 10; //O quao complexo será o hash
@@ -14,7 +14,7 @@ const usersController = {
           message: "Nao existe usuarios cadastrados",
         });
       }
-      return res.status(200).json({result});
+      return res.status(200).json({ result });
     } catch (error) {
       console.error(error);
       res.status(500).json({
@@ -37,7 +37,7 @@ const usersController = {
           message: "Usuario nao encontrado",
         });
       }
-      return res.status(200).json({result});
+      return res.status(200).json({ result });
     } catch (error) {
       console.error(error);
       res.status(500).json({
@@ -50,20 +50,20 @@ const usersController = {
     try {
       const idUsuario = req.params.id;
 
-      let {nome, email, senha} = req.body;
+      let { nome, email, senha } = req.body;
 
       if (!idUsuario || isNaN(Number(idUsuario))) {
-        return res.status(400).json({message: "Id invalido"});
+        return res.status(400).json({ message: "Id invalido" });
       }
       const userAtual = await usersRepository.buscarUsuarioPorId(idUsuario);
       if (!userAtual || userAtual.length === 0) {
         // Se o usuario nao for encontrado retorna um erro
-        return res.status(404).json({message: "Usuario nao encontrado"});
+        return res.status(404).json({ message: "Usuario nao encontrado" });
       }
-      if (senha.length < 4) {
+      if (senha && senha.length < 4) {
         return res
           .status(400)
-          .json({message: "A senha deve ter no minimo 4 caracteres"});
+          .json({ message: "A senha deve ter no minimo 4 caracteres" });
       }
       if (!nome && !email && !senha) {
         // Se nenhum campo for preenchido retorna um erro
@@ -74,8 +74,7 @@ const usersController = {
 
       const dadosAtuais = userAtual[0]; // Dados atuais do usuario
 
-      // Se nenhum campo for preenchido, mantem os dados atuais
-      nome = nome || dadosAtuais.Nome;
+      nome = nome || dadosAtuais.nome;
       email = email || dadosAtuais.email;
 
       let hashedPassword; // Hash da senha
@@ -87,7 +86,7 @@ const usersController = {
         if (senhaDuplicada) {
           return res
             .status(400)
-            .json({message: "A senha não pode ser a mesma que a atual"});
+            .json({ message: "A senha não pode ser a mesma que a atual" });
         }
         // Se tiver uma senha nova, calcula o hash
         hashedPassword = await bcrypt.hash(senha, saltRounds);
@@ -97,35 +96,35 @@ const usersController = {
       }
 
       const user = await Users.atualizar(
-        {nome, email, senha: hashedPassword},
+        { nome, email, senha: hashedPassword },
         idUsuario,
       );
       console.log(user);
       const updated = await usersRepository.alterarUsuario(idUsuario, user);
-      return res.status(200).json({result: updated});
+      return res.status(200).json({ result: updated });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .json({message: "Ocorreu um erro no servidor", error: error.message});
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
   deletarUsuario: async (req, res) => {
     try {
-      const {id} = req.params;
+      const { id } = req.params;
       const user = await usersRepository.listarIDUsuarios(id);
       if (!user || user.length === 0) {
-        return res.status(404).json({message: "Usuário não encontrado"});
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);
       return res
-        .status(201)
-        .json({message: "usuario deletado!", result: result});
+        .status(200)
+        .json({ message: "usuario deletado!", result: result });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .json({message: "Ocorreu um erro no servidor", error: error.message});
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
 };

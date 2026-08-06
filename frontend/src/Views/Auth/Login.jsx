@@ -20,6 +20,7 @@ function Login() {
       setError("");
       setSucesso(login.message);
       console.log(login.message);
+      localStorage.setItem('token', login.token)
     } catch (error) {
       setSucesso("");
       if (error.response) {

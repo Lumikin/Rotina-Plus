@@ -1,29 +1,34 @@
-import { useState } from "react";
-import { loginUser } from "../services/authService";
+import { useState, useCallback } from "react";
+import { loginUser, registerUser } from "../services/authService";
 
-export function useLogin() {
-  const [loading, setLoading] = useState(false); // True = Carregando, False = Carregado
-  const [error, setError] = useState(null);
+export function useAuth() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  async function login(email, senha) {
+  const login = useCallback(async (email, senha) => {
+    setError("");
+    setSuccess("");
     setLoading(true);
-    setError(null);
+
     try {
-      const result = await loginUser(email, senha);
-      if (!result.success) {
-        setError(result.message);
-        return result;
-      }
-      localStorage.setItem("token", result.token);
-      return result;
-    } catch (error) {
-      console.log("Erro ao fazer login: ", error);
-      setError("Erro ao conectar com o servidor");
-      return { success: false, message: "Erro ao conectar com o servidor" };
+      const response = await loginUser(email, senha);
+
+      setSuccess("Login realizado com sucesso!");
+
+      return response;
+
+    } catch (err) {
+      console.error("Erro no login:", err);
+
+      setError("Erro no login");
+
+      throw err;
+
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  return { login, loading, error };
-}
+  return {login, loading, error, success};
+};

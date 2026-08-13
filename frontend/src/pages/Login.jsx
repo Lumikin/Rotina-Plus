@@ -1,13 +1,23 @@
-import { loginUser } from "../services/authService";
 import { useState } from "react";
+import { useAuth } from "../hooks/useLogin";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const { login, loading, error, sucess } = useAuth();
 
-  async function Enviar(email, senha) {
-    const response = await loginUser(email, senha);
-    return response;
-  }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const response = await login(email, senha);
+      localStorage.setItem("token", response.token);
+      console.log(response.status);
+
+    } catch (err) {
+      console.log(err);
+    };
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
       <div
@@ -20,14 +30,15 @@ export default function Login() {
             <p className="text-muted mb-0">Faça login para continuar</p>
           </div>
 
-          <form onSubmit={"#"} noValidate>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
+              <label htmlFor="email" className="form-label">Email</label>
+
               <input
                 id="email"
                 required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 type="email"
                 className="form-control"
                 placeholder="seuemail@exemplo.com"
@@ -35,28 +46,41 @@ export default function Login() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="senha" className="form-label">
-                Senha
-              </label>
+              <label htmlFor="senha" className="form-label">Senha</label>
+
               <input
                 id="senha"
                 required
+                value={senha}
+                onChange={e => setSenha(e.target.value)}
                 type="password"
                 className="form-control"
-                placeholder="Digite uma senha segura"
+                placeholder="Digite uma senha"
               />
             </div>
+
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
+            {sucess && (
+              <div className="alert alert-success" role="alert">
+                {sucess}
+              </div>
+            )}
 
             <button
               type="submit"
               className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3"
-              onClick={() => Enviar}
+              disabled={loading}
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};

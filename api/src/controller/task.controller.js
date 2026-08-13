@@ -26,51 +26,20 @@ const tasksController = {
   },
   listarUserTarefa: async (req, res) => {
     try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({
-          message: "Token não fornecido",
-        });
-      }
-      const token = authHeader.split(" ")[1];
-
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decoded.userId);
-      const userId = decoded.userId;
-      if (!userId) {
-        return res.status(400).json({
-          message: "preencha todos os campos",
-        });
-      }
-      const consultaUser = await usersRepository.listarIDUsuarios(userId);
-      if (consultaUser.length === 0) {
-        return res.status(404).json({
-          message: "Usuario não encontrado",
-        });
-      }
+      const { userId } = req.params;
       const response = await tasksRepositories.listarUserTask(userId);
       if (response.length === 0) {
         return res.status(200).json({
-          message: "Nenhuma tarefa encontrada",
+          message: "Não foi encontrada tarefas desse usuario",
         });
       }
       return res.status(200).json({
-        message: "Tarefas do usuário listadas com sucesso",
-        result: response,
+        response,
       });
     } catch (error) {
       console.error(error);
-      if (
-        error.name === "JsonWebTokenError" ||
-        error.name === "TokenExpiredError"
-      ) {
-        return res.status(401).json({
-          message: "Token inválido ou expirado",
-        });
-      }
       return res.status(500).json({
-        message: "Erro no servidor",
-        error: error.message,
+        message: "Erro ao buscar tarefas",
       });
     }
   },
@@ -153,14 +122,15 @@ const tasksController = {
         });
       }
       const dadosAtuais = validarTask[0];
+      console.log("dadosAtuais:", dadosAtuais);
 
       const { nome, descricao, dataTarefa, prioridade, status } = req.body;
 
       const nomeFinal = nome || dadosAtuais.nome;
       const descricaoFinal = descricao || dadosAtuais.descricao;
       const dataTarefaFinal = dataTarefa || dadosAtuais.dataTarefa;
-      const prioridadeFinal = prioridade || dadosAtuais.prioridade;
-      const statusFinal = status || dadosAtuais.status;
+      const prioridadeFinal = prioridade || dadosAtuais.Prioridade;
+      const statusFinal = status || dadosAtuais.Status;
 
       const task = Task.atualizar(
         {
@@ -172,6 +142,7 @@ const tasksController = {
         },
         id,
       );
+      console.log("task a atualizar:", task);
       const response = await tasksRepositories.atualizarTask(id, task);
       return res.status(200).json({
         message: "Tarefa atualizada com sucesso",

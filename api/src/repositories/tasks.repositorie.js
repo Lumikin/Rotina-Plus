@@ -46,7 +46,7 @@ const tasksRepositories = {
     return rows;
   },
   deletarTask: async id => {
-    const sql = `UPDATE tarefas SET Status = 'Deletada' WHERE tarefaID = ?`;
+    const sql = `DELETE FROM tarefas WHERE tarefaId = ?`;
     const values = [id];
     const [rows] = await connection.execute(sql, values);
     return rows;

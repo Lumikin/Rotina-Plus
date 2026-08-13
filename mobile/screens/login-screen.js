@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import LoginForm from '../components/login-form';
+import LoginForm from '../components/login-forms';
 import { BrandColors } from '../constants/brand-colors';
 
 export default function LoginScreen() {
@@ -26,7 +26,7 @@ export default function LoginScreen() {
         >
           <View style={styles.header}>
             <Image
-              source={require('../assets/logo.png')}
+              source={require('../assets/icon.png')}
               style={styles.logo}
               resizeMode="contain"
             />

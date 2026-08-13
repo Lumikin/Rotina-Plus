@@ -30,5 +30,29 @@ export function useAuth() {
     }
   }, []);
 
-  return {login, loading, error, success};
+  const register = useCallback(async (nome, email, senha, dataNascimento) => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      const response = await registerUser(nome, email, senha, dataNascimento);
+
+      setSuccess("Conta criada com sucesso!");
+
+      return response;
+
+    } catch (err) {
+      console.error("Erro no cadastro:", err);
+
+      setError("Erro no cadastro");
+
+      throw err;
+
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return {login, register, loading, error, success};
 };

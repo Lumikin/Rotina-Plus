@@ -8,9 +8,11 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     try {
       const response = await login(email, senha);
       localStorage.setItem("token", response.token);
+      set
       console.log(response.status);
 
     } catch (err) {

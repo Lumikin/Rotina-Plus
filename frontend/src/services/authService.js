@@ -15,19 +15,19 @@ export async function loginUser(email, senha) {
   }
 };
 
-export async function registerUser(email, senha, nome, dataN) {
+export async function registerUser(nome, email, senha, dataNascimento) {
   try {
     const response = await api_rotinaplus.post("/auth/register", {
       nome: nome,
       email: email,
       senha: senha,
-      dataNascimento: dataN,
+      dataNascimento: dataNascimento,
     });
 
     return response.data;
 
   } catch (error) {
     console.error("Erro ao cadastrar o usuário: ", error);
-    return [];
+    throw error; // Força o erro em vez de retornar uma array vazia
   }
 };

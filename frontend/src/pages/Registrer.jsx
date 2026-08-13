@@ -1,14 +1,23 @@
 import { useState } from "react";
-import { api_rotinaplus } from "../services/api";
-import { registerUser } from "../services/authService";
+import { useAuth } from "../hooks/useLogin";
 
 export function Registrar() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
+  const { register, loading, error, success } = useAuth();
 
-  const Enviar = registerUser(email, senha, nome, dataN);
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      await register(nome, email, senha, dataN);
+      console.log("Usuário cadastrado com sucesso!");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
@@ -19,7 +28,7 @@ export function Registrar() {
             <p className="text-muted mb-0">Crie sua conta para começar!</p>
           </div>
 
-          <form onSubmit={Enviar}>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="nome" className="form-label">Nome de usuário</label>
 
@@ -75,11 +84,24 @@ export function Registrar() {
               />
             </div>
 
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="alert alert-success" role="alert">
+                {success}
+              </div>
+            )}
+
             <button
               type="submit"
               className="btn btn-info text-white w-100 fw-semibold py-2"
+              disabled={loading}
             >
-              Registrar
+              {loading ? "Registrando..." : "Registrar"}
             </button>
           </form>
 

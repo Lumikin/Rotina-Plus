@@ -1,0 +1,86 @@
+import { useState } from "react";
+import { useAuth } from "../hooks/useLogin";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const { login, loading, error, sucess } = useAuth();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const response = await login(email, senha);
+      localStorage.setItem("token", response.token);
+      console.log(response.status);
+
+    } catch (err) {
+      console.log(err);
+    };
+  };
+
+  return (
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+      <div
+        className="card shadow-sm border-0"
+        style={{ maxWidth: "420px", width: "100%" }}
+      >
+        <div className="card-body p-4 p-md-5">
+          <div className="text-center mb-4">
+            <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
+            <p className="text-muted mb-0">Faça login para continuar</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">Email</label>
+
+              <input
+                id="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                type="email"
+                className="form-control"
+                placeholder="seuemail@exemplo.com"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="senha" className="form-label">Senha</label>
+
+              <input
+                id="senha"
+                required
+                value={senha}
+                onChange={e => setSenha(e.target.value)}
+                type="password"
+                className="form-control"
+                placeholder="Digite uma senha"
+              />
+            </div>
+
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
+            {sucess && (
+              <div className="alert alert-success" role="alert">
+                {sucess}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3"
+              disabled={loading}
+            >
+              {loading ? "Entrando..." : "Entrar"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};

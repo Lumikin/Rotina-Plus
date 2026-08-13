@@ -12,21 +12,17 @@ export function Registrar() {
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
-      <div
-        className="card shadow-sm border-0"
-        style={{ maxWidth: "420px", width: "100%" }}
-      >
+      <div className="card shadow-sm border-0" style={{ maxWidth: "420px", width: "100%" }}>
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
             <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
-            <p className="text-muted mb-0">Crie sua conta para começar</p>
+            <p className="text-muted mb-0">Crie sua conta para começar!</p>
           </div>
 
           <form onSubmit={Enviar}>
             <div className="mb-3">
-              <label htmlFor="nome" className="form-label">
-                Nome de usuário
-              </label>
+              <label htmlFor="nome" className="form-label">Nome de usuário</label>
+
               <input
                 id="nome"
                 required
@@ -39,9 +35,8 @@ export function Registrar() {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="dataN" className="form-label">
-                Data de nascimento
-              </label>
+              <label htmlFor="dataN" className="form-label">Data de nascimento</label>
+
               <input
                 required
                 id="dataN"
@@ -53,9 +48,8 @@ export function Registrar() {
             </div>
 
             <div className="mb-3">
-              <label inputMode="email" className="form-label">
-                Email
-              </label>
+              <label inputMode="email" className="form-label">Email</label>
+
               <input
                 id="email"
                 required
@@ -68,9 +62,8 @@ export function Registrar() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="senha" className="form-label">
-                Senha
-              </label>
+              <label htmlFor="senha" className="form-label">Senha</label>
+
               <input
                 id="senha"
                 required
@@ -103,4 +96,4 @@ export function Registrar() {
       </div>
     </div>
   );
-}
+};

@@ -4,14 +4,9 @@ import authMidlleware, { authUser } from "../middlewares/auth.middleware.js";
 const tasksRoutes = Router();
 
 tasksRoutes.get("/", tasksController.listarTasks);
-tasksRoutes.get( //Precisa do TOKEN do usuário na sessão de auth (Bearer Token) para acessar a rota;
-  "/:userId",
-  authMidlleware,
-  authUser,
-  tasksController.listarUserTarefa,
-);
-tasksRoutes.post("/", tasksController.criarTask);
+tasksRoutes.get("/:userId", tasksController.listarUserTarefa);
 tasksRoutes.put("/:id", tasksController.atualizarTask);
-tasksRoutes.delete('/:id', tasksController.deletarTask);
+tasksRoutes.post("/", tasksController.criarTask);
+tasksRoutes.delete("/:id", tasksController.deletarTask);
 
 export default tasksRoutes;

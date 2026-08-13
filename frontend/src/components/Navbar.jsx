@@ -1,5 +1,4 @@
 import logo from "../assets/logo.png";
-
 export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
@@ -23,19 +22,29 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav mx-auto gap-lg-4 mt-3 mt-lg-0">
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#funcionalidades">Funcionalidades</a>
+              <a className="nav-link fw-medium" href="#funcionalidades">
+                Funcionalidades
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#como-funciona">Como funciona</a>
+              <a className="nav-link fw-medium" href="#como-funciona">
+                Como funciona
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#sobre">Sobre</a>
+              <a className="nav-link fw-medium" href="#sobre">
+                Sobre
+              </a>
             </li>
           </ul>
 
           <div className="d-flex gap-2 mt-3 mt-lg-0">
-            <a href="#entrar" className="btn btn-rp-outline">Entrar</a>
-            <a href="#cadastro" className="btn btn-rp-primary">Cadastre-se</a>
+            <a href="#entrar" className="btn btn-rp-outline">
+              Entrar
+            </a>
+            <a href="#cadastro" className="btn btn-rp-primary">
+              Cadastrar
+            </a>
           </div>
         </div>
       </div>

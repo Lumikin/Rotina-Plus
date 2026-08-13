@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { api_rotinaplus } from "../services/api";
+import { registerUser } from "../services/authService";
 
-export function Registar() {
+export function Registrar() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
+
+  const Enviar = registerUser(email, senha, nome, dataN);
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
@@ -18,7 +22,7 @@ export function Registar() {
             <p className="text-muted mb-0">Crie sua conta para começar</p>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={Enviar}>
             <div className="mb-3">
               <label htmlFor="nome" className="form-label">
                 Nome de usuário
@@ -39,8 +43,8 @@ export function Registar() {
                 Data de nascimento
               </label>
               <input
-                id="dataN"
                 required
+                id="dataN"
                 className="form-control"
                 type="date"
                 value={dataN}
@@ -49,7 +53,7 @@ export function Registar() {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">
+              <label inputMode="email" className="form-label">
                 Email
               </label>
               <input

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useLogin";
+import { useRegister } from "../hooks/useRegister";
 
 export function Registrar() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
-  const { register, loading, error, success } = useAuth();
+  const { register, loading, error, success } = useRegister();
 
-  async function handleSubmit(e) {
+  async function Enviar(e) {
     e.preventDefault();
 
     try {
@@ -21,16 +21,21 @@ export function Registrar() {
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
-      <div className="card shadow-sm border-0" style={{ maxWidth: "420px", width: "100%" }}>
+      <div
+        className="card shadow-sm border-0"
+        style={{ maxWidth: "420px", width: "100%" }}
+      >
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
             <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
             <p className="text-muted mb-0">Crie sua conta para começar!</p>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={Enviar}>
             <div className="mb-3">
-              <label htmlFor="nome" className="form-label">Nome de usuário</label>
+              <label htmlFor="nome" className="form-label">
+                Nome de usuário
+              </label>
 
               <input
                 id="nome"
@@ -44,7 +49,9 @@ export function Registrar() {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="dataN" className="form-label">Data de nascimento</label>
+              <label htmlFor="dataN" className="form-label">
+                Data de nascimento
+              </label>
 
               <input
                 required
@@ -57,7 +64,9 @@ export function Registrar() {
             </div>
 
             <div className="mb-3">
-              <label inputMode="email" className="form-label">Email</label>
+              <label inputMode="email" className="form-label">
+                Email
+              </label>
 
               <input
                 id="email"
@@ -71,7 +80,9 @@ export function Registrar() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="senha" className="form-label">Senha</label>
+              <label htmlFor="senha" className="form-label">
+                Senha
+              </label>
 
               <input
                 id="senha"
@@ -118,4 +129,4 @@ export function Registrar() {
       </div>
     </div>
   );
-};
+}

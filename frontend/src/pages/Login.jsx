@@ -1,24 +1,23 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useLogin";
+import { useLogin } from "../hooks/useLogin";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { login, loading, error, sucess } = useAuth();
+  const { login, loading, error, success } = useLogin();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       const response = await login(email, senha);
-      localStorage.setItem("token", response.token);
-      set
-      console.log(response.status);
-
+      // localStorage.setItem("token", response.token); //Armazena o token
+      console.log(response);
+      return response;
     } catch (err) {
       console.log(err);
-    };
-  };
+    }
+  }
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
@@ -34,7 +33,9 @@ export default function Login() {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email</label>
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
 
               <input
                 id="email"
@@ -48,7 +49,9 @@ export default function Login() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="senha" className="form-label">Senha</label>
+              <label htmlFor="senha" className="form-label">
+                Senha
+              </label>
 
               <input
                 id="senha"
@@ -67,9 +70,9 @@ export default function Login() {
               </div>
             )}
 
-            {sucess && (
+            {success && (
               <div className="alert alert-success" role="alert">
-                {sucess}
+                {success}
               </div>
             )}
 
@@ -85,4 +88,4 @@ export default function Login() {
       </div>
     </div>
   );
-};
+}

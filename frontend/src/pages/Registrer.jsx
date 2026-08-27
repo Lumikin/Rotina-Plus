@@ -29,7 +29,7 @@ export function Registrar() {
       >
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
-            <h1 className="h3 fw-bold mb-1" style={{ color: "#0bc2d7" }}>
+            <h1 className="display-5 fw-bold mb-1" style={{ color: "#26b9ca" }}>
               Rotina Plus
             </h1>
             <p style={{ color: "#475569" }} className="mb-0">
@@ -47,7 +47,7 @@ export function Registrar() {
                 required
                 className="form-control"
                 type="text"
-                placeholder="User"
+                placeholder="Usuário"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
               />

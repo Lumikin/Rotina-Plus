@@ -113,7 +113,7 @@ const usersController = {
     try {
       const { id } = req.params;
       const user = await usersRepository.listarIDUsuarios(id);
-      if (!user || user.length === 0) {
+      if (!user || user.length === 0) { 
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);

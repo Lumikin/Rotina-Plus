@@ -28,5 +28,15 @@ const authRepositorie = {
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
+  alterarSenhaltera: async (userId, novaSenha) => {
+    const [result] = await pool.execute(
+      `UPDATE users
+       SET password_hash = ?
+       WHERE userId = ?`,
+      [novaSenha, userId],
+    );
+
+    return result;
+  },
 };
 export default authRepositorie;

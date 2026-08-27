@@ -2,31 +2,45 @@ import transporter from "../config/Nodemailer.js";
 import fs from "fs";
 import path from "path";
 
-const emailService = {
-  novoUser: async (email, nome) => {
-    const caminho = path.join(import.meta.dirname, "../view/");
-    const caminhoTemplate = path.join(caminho, "bem-vindo.html");
-    if (!caminhoTemplate) {
-      throw new Error("Template não encontrado");
-    }
-    let htmlModificado = fs.readFileSync(caminhoTemplate, "utf-8");
-    htmlModificado = htmlModificado
-      .replace(/{{nome}}/g, nome)
-      .replace(/{{baseUrl}}/g, process.env.BASE_URL)
-      .replace(/{{unsubscribeUrl}}/g, process.env.BASE_URL + "/unsubscribe");
-    try {
-      const info = await transporter.sendMail({
-        from: process.env.EMAIL_USER, // Quem está enviando
-        to: email, // Para quem vai (pode ser mais de um, separados por vírgula)
-        subject: "Bem-vindo ao sistema!", // Assunto do e-mail
-        html: htmlModificado,
-      });
+const BASE_URL = process.env.BASE_URL || "http://localhost:5173";
+const VIEW_DIR = path.join(import.meta.dirname, "../view");
 
-      console.log("E-mail enviado com sucesso!");
-      console.log("ID da mensagem:", info.messageId);
-    } catch (error) {
-      console.error("Erro ao enviar e-mail:", error);
-    }
+function loadTemplate(templateName) {
+  const templatePath = path.join(VIEW_DIR, templateName);
+
+  if (!fs.existsSync(templatePath)) {
+    throw new Error(`Template "${templateName}" não encontrado`);
+  }
+
+  return fs.readFileSync(templatePath, "utf-8");
+}
+
+function replacePlaceholders(html, variables) {
+  return Object.entries(variables).reduce(
+    (result, [key, value]) => result.replace(new RegExp(`{{${key}}}`, "g"), value || ""),
+    html
+  );
+}
+
+const emailService = {
+  novoUser: async (email, nome, verificationToken) => {
+    const html = loadTemplate("bem-vindo.html");
+
+    const htmlModificado = replacePlaceholders(html, {
+      nome,
+      baseUrl: BASE_URL,
+      unsubscribeUrl: `${BASE_URL}/unsubscribe`,
+      verificationToken,
+    });
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Bem-vindo ao sistema!",
+      html: htmlModificado,
+    });
+
+    console.log("E-mail enviado com sucesso! ID:", info.messageId);
   },
 };
 

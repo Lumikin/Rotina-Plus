@@ -8,34 +8,38 @@ export function Registrar() {
   const [dataN, setDataN] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
 
-  // Manipulador para o envio do formulário
   const handleEnviar = (e) => {
-    e.preventDefault(); // Impede o recarregamento da página
-    setModalAberto(true); // Abre o popup de verificação
+    e.preventDefault();
+    setModalAberto(true);
   };
 
-  // Função disparada ao confirmar o código no modal
   const handleConfirmarCodigo = (codigo) => {
     console.log("Código inserido:", codigo);
-    // Aqui você chamaria a sua função de registro da API passando os dados
     setModalAberto(false);
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div 
+      className="d-flex align-items-center justify-content-center min-vh-100" 
+      style={{ backgroundColor: "#F8FAFC" }}
+    >
       <div
-        className="card shadow-sm border-0"
-        style={{ maxWidth: "420px", width: "100%" }}
+        className="card shadow border-0"
+        style={{ maxWidth: "420px", width: "100%", borderRadius: "16px" }}
       >
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
-            <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
-            <p className="text-muted mb-0">Crie sua conta para começar</p>
+            <h1 className="h3 fw-bold mb-1" style={{ color: "#0bc2d7" }}>
+              Rotina Plus
+            </h1>
+            <p style={{ color: "#475569" }} className="mb-0">
+              Crie sua conta para começar
+            </p>
           </div>
 
           <form onSubmit={handleEnviar}>
-            <div className="mb-3">
-              <label htmlFor="nome" className="form-label">
+            <div className="mb-3 text-start">
+              <label className="form-label fw-bold" style={{ color: "#0F172A" }}>
                 Nome de usuário
               </label>
               <input
@@ -49,8 +53,8 @@ export function Registrar() {
               />
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="dataN" className="form-label">
+            <div className="mb-3 text-start">
+              <label className="form-label fw-bold" style={{ color: "#0F172A" }}>
                 Data de nascimento
               </label>
               <input
@@ -63,8 +67,8 @@ export function Registrar() {
               />
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
+            <div className="mb-3 text-start">
+              <label className="form-label fw-bold" style={{ color: "#0F172A" }}>
                 Email
               </label>
               <input
@@ -78,8 +82,8 @@ export function Registrar() {
               />
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="senha" className="form-label">
+            <div className="mb-4 text-start">
+              <label className="form-label fw-bold" style={{ color: "#0F172A" }}>
                 Senha
               </label>
               <input
@@ -95,17 +99,24 @@ export function Registrar() {
 
             <button
               type="submit"
-              className="btn btn-info text-white w-100 fw-semibold py-2"
+              className="btn w-100 fw-bold py-2 shadow-sm"
+              style={{
+                backgroundColor: "#0bc2d7",
+                borderColor: "#0bc2d7",
+                color: "#17264a",
+                borderRadius: "8px",
+              }}
             >
               Registrar
             </button>
           </form>
 
-          <p className="text-center text-muted mt-4 mb-0 small">
+          <p className="text-center mt-4 mb-0 small" style={{ color: "#475569" }}>
             Já tem uma conta?{" "}
             <a
               href="/login"
-              className="text-info text-decoration-none fw-semibold"
+              className="text-decoration-none fw-bold"
+              style={{ color: "#26b9ca" }}
             >
               Entrar
             </a>
@@ -113,7 +124,6 @@ export function Registrar() {
         </div>
       </div>
 
-      {/* MODAL DE VERIFICAÇÃO INTEGRADO */}
       <ModalVerificacao
         visible={modalAberto}
         email={email}

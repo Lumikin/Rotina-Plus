@@ -108,7 +108,71 @@ const authController = {
     }
   },
   mudarSenha: async (req, res) => {
-    // TODO: implementar
-  },
+  try {
+    const { senhaAtual, novaSenha, confirmarSenha } = req.body;
+
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+      return res.status(400).json({
+        message: "Todos os campos são obrigatórios",
+      });
+    }
+
+    if (novaSenha !== confirmarSenha) {
+      return res.status(400).json({
+        message: "A nova senha e a confirmação não são iguais",
+      });
+    }
+
+    if (novaSenha.length < 4) {
+      return res.status(400).json({
+        message: "A nova senha deve ter no mínimo 4 caracteres",
+      });
+    }
+
+    const userId = req.user.userId;
+
+    const users = await usersRepository.listarUserId(userId);
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        message: "Usuário não encontrado",
+      });
+    }
+
+    const user = users[0];
+
+    const senhaCorreta = await bcrypt.compare(
+      senhaAtual,
+      user.password_hash
+    );
+
+    if (!senhaCorreta) {
+      return res.status(400).json({
+        message: "A senha atual está incorreta",
+      });
+    }
+
+    const novaSenhaHash = await bcrypt.hash(novaSenha, 10);
+
+    await usersRepository.alterarSenha(
+      userId,
+      novaSenhaHash
+    );
+
+    return res.status(200).json({
+      message: "Senha alterada com sucesso",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Ocorreu um erro no servidor",
+      error: error.message,
+    });
+  }
+},
+
 };
 export default authController;
+

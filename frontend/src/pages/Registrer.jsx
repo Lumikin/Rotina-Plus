@@ -1,14 +1,25 @@
 import { useState } from "react";
-import { api_rotinaplus } from "../services/api";
-import { registerUser } from "../services/authService";
+import ModalVerificacao from "../components/ModalVerificacao";
 
 export function Registrar() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
+  const [modalAberto, setModalAberto] = useState(false);
 
-  const Enviar = registerUser(email, senha, nome, dataN);
+  // Manipulador para o envio do formulário
+  const handleEnviar = (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
+    setModalAberto(true); // Abre o popup de verificação
+  };
+
+  // Função disparada ao confirmar o código no modal
+  const handleConfirmarCodigo = (codigo) => {
+    console.log("Código inserido:", codigo);
+    // Aqui você chamaria a sua função de registro da API passando os dados
+    setModalAberto(false);
+  };
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
@@ -22,7 +33,7 @@ export function Registrar() {
             <p className="text-muted mb-0">Crie sua conta para começar</p>
           </div>
 
-          <form onSubmit={Enviar}>
+          <form onSubmit={handleEnviar}>
             <div className="mb-3">
               <label htmlFor="nome" className="form-label">
                 Nome de usuário
@@ -34,7 +45,7 @@ export function Registrar() {
                 type="text"
                 placeholder="User"
                 value={nome}
-                onChange={e => setNome(e.target.value)}
+                onChange={(e) => setNome(e.target.value)}
               />
             </div>
 
@@ -48,12 +59,12 @@ export function Registrar() {
                 className="form-control"
                 type="date"
                 value={dataN}
-                onChange={e => setDataN(e.target.value)}
+                onChange={(e) => setDataN(e.target.value)}
               />
             </div>
 
             <div className="mb-3">
-              <label inputMode="email" className="form-label">
+              <label htmlFor="email" className="form-label">
                 Email
               </label>
               <input
@@ -63,7 +74,7 @@ export function Registrar() {
                 className="form-control"
                 placeholder="seuemail@exemplo.com"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -78,7 +89,7 @@ export function Registrar() {
                 className="form-control"
                 placeholder="Digite uma senha segura"
                 value={senha}
-                onChange={e => setSenha(e.target.value)}
+                onChange={(e) => setSenha(e.target.value)}
               />
             </div>
 
@@ -101,6 +112,14 @@ export function Registrar() {
           </p>
         </div>
       </div>
+
+      {/* MODAL DE VERIFICAÇÃO INTEGRADO */}
+      <ModalVerificacao
+        visible={modalAberto}
+        email={email}
+        onClose={() => setModalAberto(false)}
+        onConfirm={handleConfirmarCodigo}
+      />
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import { Router } from "express";
-import authMidlleware from "../middlewares/auth.middleware.js";
 import authController from "../controller/auth.controller.js";
-import { authPlugins } from "mysql2";
 
 const authRoutes = Router();
 
 authRoutes.post("/login", authController.login);
 authRoutes.post("/register", authController.criarUsuarios);
+authRoutes.post("/verify", authController.verificarCodigo);
+authRoutes.post("/resend-email", authController.reenviarEmail);
 
 export default authRoutes;

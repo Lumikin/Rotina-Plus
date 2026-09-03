@@ -1,6 +1,6 @@
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { Registrar } from "./pages/Registrer";
+import { Registrar } from "./pages/Register";
 
 function App() {
   return <Login />;

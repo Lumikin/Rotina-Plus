@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRegister } from "../hooks/useRegister";
 
 export function Registrar() {
@@ -117,7 +117,7 @@ export function Registrar() {
           </form>
 
           <p className="text-center text-muted mt-4 mb-0 small">
-            Já tem uma conta?{" "}
+            Já tem uma conta?
             <a
               href="/login"
               className="text-info text-decoration-none fw-semibold"

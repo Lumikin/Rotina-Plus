@@ -3,6 +3,7 @@ export const prioridadeEnum = {
   media: "Media",
   alta: "Alta",
 };
+
 export const statusEnum = {
   pendente: "Pendente",
   emAndamento: "Em andamento",

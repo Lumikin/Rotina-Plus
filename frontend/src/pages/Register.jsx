@@ -6,17 +6,24 @@ export function Registrar() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
-  const { register, loading, error, success } = useRegister();
+  const [executar, setExecutar] = useState(false);
 
-  async function Enviar(e) {
+  const { loading, error, success } = useRegister(
+    nome,
+    email,
+    senha,
+    dataN,
+    executar
+  );
+
+  function Enviar(e) {
     e.preventDefault();
 
-    try {
-      await register(nome, email, senha, dataN);
-      console.log("Usuário cadastrado com sucesso!");
-    } catch (err) {
-      console.log(err);
-    }
+    setExecutar(false);
+
+    setTimeout(() => {
+      setExecutar(true);
+    }, 0);
   }
 
   return (
@@ -26,12 +33,19 @@ export function Registrar() {
         style={{ maxWidth: "420px", width: "100%" }}
       >
         <div className="card-body p-4 p-md-5">
+
           <div className="text-center mb-4">
-            <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
-            <p className="text-muted mb-0">Crie sua conta para começar!</p>
+            <h1 className="h3 fw-bold text-info mb-1">
+              Rotina Plus
+            </h1>
+
+            <p className="text-muted mb-0">
+              Crie sua conta para começar!
+            </p>
           </div>
 
           <form onSubmit={Enviar}>
+
             <div className="mb-3">
               <label htmlFor="nome" className="form-label">
                 Nome de usuário
@@ -54,8 +68,8 @@ export function Registrar() {
               </label>
 
               <input
-                required
                 id="dataN"
+                required
                 className="form-control"
                 type="date"
                 value={dataN}
@@ -64,7 +78,7 @@ export function Registrar() {
             </div>
 
             <div className="mb-3">
-              <label inputMode="email" className="form-label">
+              <label htmlFor="email" className="form-label">
                 Email
               </label>
 
@@ -96,13 +110,13 @@ export function Registrar() {
             </div>
 
             {error && (
-              <div className="alert alert-danger" role="alert">
+              <div className="alert alert-danger">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="alert alert-success" role="alert">
+              <div className="alert alert-success">
                 {success}
               </div>
             )}
@@ -114,10 +128,12 @@ export function Registrar() {
             >
               {loading ? "Registrando..." : "Registrar"}
             </button>
+
           </form>
 
           <p className="text-center text-muted mt-4 mb-0 small">
             Já tem uma conta?{" "}
+
             <a
               href="/login"
               className="text-info text-decoration-none fw-semibold"
@@ -125,8 +141,10 @@ export function Registrar() {
               Entrar
             </a>
           </p>
+
         </div>
       </div>
     </div>
   );
 }
+

@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `rotinaplus`
-;
+CREATE DATABASE IF NOT EXISTS `rotinaplus`;
 USE `rotinaplus`;
 
 DROP TABLE IF EXISTS `clientes`;

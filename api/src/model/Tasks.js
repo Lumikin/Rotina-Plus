@@ -6,6 +6,7 @@ export class Task {
   #dataTarefa;
   #prioridade;
   #status;
+  #pontos;  
 
   constructor(
     userId,
@@ -15,6 +16,7 @@ export class Task {
     prioridade,
     status,
     tarefaId,
+    pontos,
   ) {
     this.#userId = userId;
     this.#nome = nome;
@@ -23,6 +25,7 @@ export class Task {
     this.#prioridade = prioridade;
     this.#status = status;
     this.#tarefaId = tarefaId;
+    this.#pontos = pontos;
   }
 
   // GETTERS
@@ -54,6 +57,10 @@ export class Task {
     return this.#status;
   }
 
+  get pontos() {
+    return this.#pontos;
+  }
+
   // SETTERS
   set nome(value) {
     this.#nome = value;
@@ -81,6 +88,10 @@ export class Task {
 
   set tarefaId(value) {
     this.#tarefaId = value;
+  }
+
+  set pontos(value) {
+    this.#pontos = value;
   }
 
   // VALIDADORES
@@ -116,6 +127,12 @@ export class Task {
     }
   }
 
+  #validarPontos(value) {
+    if (value < 0 || value > 100) {
+      throw new Error("Pontos devem estar entre 0 e 100");
+    }
+  }
+
   // FACTORY METHODS
   static criar(data) {
     return new Task(
@@ -125,6 +142,7 @@ export class Task {
       data.dataTarefa,
       data.prioridade,
       data.status,
+      data.pontos,
       null,
     );
   }
@@ -137,6 +155,7 @@ export class Task {
       data.dataTarefa,
       data.prioridade,
       data.status,
+      data.pontos,
       id,
     );
   }

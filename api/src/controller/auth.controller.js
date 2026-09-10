@@ -3,17 +3,19 @@ import jwt from "jsonwebtoken";
 import usersRepository from "../repositories/user.repositorie.js";
 import authRepositorie from "../repositories/auth.repositorie.js";
 import bcrypt from "bcrypt";
-import emailService from "../services/nodemailer.controller.js";
 import { Users } from "../model/Users.js";
+import { sendAuthEmail } from "../services/emailService.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const getExpirationDate = (minutes = 20) => {
-  // Verifica se o token esta espirado (20min)
+// Faz o tempo de expiração do código, pegando a data atual e somando mais 10 Min
+function dataExpiracao() {
   const date = new Date();
-  date.setMinutes(date.getMinutes() + minutes);
+  date.setMinutes(date.getMinutes() + 10); //10 Minutos
   return date;
-};
+}
+
+const saltRounds = 10;
 
 const authController = {
   login: async (req, res) => {
@@ -24,6 +26,9 @@ const authController = {
         return res.status(400).json({ message: "Informe o email e a senha" });
       }
 
+      /**
+       * Consulta o usuario por email e armazena as informações
+       */
       const users = await usersRepository.listarUserEmail(email);
 
       if (!users || users.length === 0) {
@@ -32,11 +37,17 @@ const authController = {
 
       const user = users[0];
 
+      /**
+       * Pega o hash da senha no banco e verifica se esta igual a o que esta nos parametros
+       */
       const verificarSenha = await bcrypt.compare(senha, user.password_hash);
       if (!verificarSenha) {
         return res.status(400).json({ message: "Senha inválida" });
       }
 
+      /**
+       * Cria o token com o id, email do usuario que dura 2 Horas
+       */
       const accessToken = jwt.sign(
         { userId: user.userId, email: user.email },
         JWT_SECRET,
@@ -60,12 +71,14 @@ const authController = {
     try {
       const { nome, email, senha, dataNascimento } = req.body;
 
+      /**
+       * Verificação de campos
+       */
       if (!nome || !email || !senha || !dataNascimento) {
         return res
           .status(400)
           .json({ message: "Todos os campos são obrigatórios" });
       }
-
       if (senha.length < 4) {
         return res
           .status(400)
@@ -78,12 +91,17 @@ const authController = {
           .json({ message: "O nome deve ter no mínimo 4 caracteres" });
       }
 
+      /**
+       * Verificação de email válido
+       */
       const consultaEmail = await usersRepository.listarUserEmail(email);
       if (consultaEmail.length > 0) {
         return res.status(400).json({ message: "Email já cadastrado" });
       }
 
-      const saltRounds = 10;
+      /**
+       * Guarda a senha criptografa ela com base no saltRounds
+       */
       const hashedPassword = await bcrypt.hash(senha, saltRounds);
 
       const user = Users.criar({
@@ -98,13 +116,11 @@ const authController = {
       const consultaUser = await usersRepository.listarUserEmail(email);
       const userId = consultaUser[0].userId;
 
-      const verificationCode = await emailService.novoUser(
-        user.email,
-        user.nome,
-      );
+      const codigo = await sendAuthEmail(email);
+      const hashCode = bcrypt.hash(codigo, saltRounds);
 
-      const expirationDate = getExpirationDate(20);
-      await authRepositorie.criar(userId, verificationCode, expirationDate);
+      const expirationDate = dataExpiracao();
+      await authRepositorie.criarCodigo(userId, hashCode, expirationDate);
 
       return res.status(201).json({
         message:
@@ -115,6 +131,7 @@ const authController = {
       console.error(error);
       return res.status(500).json({
         message: "Ocorreu um erro no servidor",
+        status: 500,
         error: error.message,
       });
     }
@@ -125,45 +142,50 @@ const authController = {
       const { email, code } = req.body;
 
       if (!email || !code) {
-        return res
-          .status(400)
-          .json({ message: "Email e código são obrigatórios" });
+        return res.status(400).json({
+          message: "Email e código são obrigatórios",
+        });
       }
 
       const users = await usersRepository.listarUserEmail(email);
       if (!users || users.length === 0) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
+        return res.status(404).json({
+          message: "Usuário não encontrado",
+          status: 404,
+        });
       }
 
       const userId = users[0].userId;
+      const userAuthorization =
+        await authRepositorie.buscarCodigoValido(userId);
 
-      const authRecord = await authRepositorie.buscarPorToken(code);
-      if (!authRecord || authRecord.length === 0) {
-        return res.status(404).json({ message: "Código inválido" });
+      const userData = userAuthorization[0];
+      const hashcode = userData.hashCode;
+
+      console.log("código hash:", hashcode);
+      console.log("código:", code);
+
+      const verificarCodigo = await bcrypt.compare(
+        String(code),
+        String(hashcode),
+      );
+      if (!verificarCodigo) {
+        return res.status(400).json({
+          message: "Código inválido!",
+          status: 400,
+        });
       }
-
-      const record = authRecord[0];
-
-      if (record.userId !== userId) {
-        return res
-          .status(400)
-          .json({ message: "Código não pertence a este usuário" });
+      console.log("Validador de Código:", verificarCodigo);
+      const agora = new Date();
+      const expiracaoCodigo = userData.expiration_date;
+      if (agora > expiracaoCodigo) {
+        return res.status(400).json({
+          message: "Código expirado. Solicite um novo.",
+        });
       }
+      console.log("ValidarData", expiracaoCodigo);
 
-      if (record.isvalid === 1) {
-        return res.status(400).json({ message: "Código já utilizado" });
-      }
-
-      const now = new Date();
-      const expiration = new Date(record.expiration_date);
-      if (now > expiration) {
-        return res
-          .status(400)
-          .json({ message: "Código expirado. Solicite um novo." });
-      }
-
-      await authRepositorie.validarToken(code);
-
+      await authRepositorie.validarCodigo(userData.hashCode);
       return res.status(200).json({ message: "E-mail validado com sucesso!" });
     } catch (error) {
       console.error(error);
@@ -189,17 +211,13 @@ const authController = {
 
       const user = users[0];
 
-      const verificationCode = await emailService.novoUser(
-        user.email,
-        user.nome,
-      );
+      await authRepositorie.invalidarCodigos(user.userId);
 
-      const expirationDate = getExpirationDate(20);
-      await authRepositorie.criar(
-        user.userId,
-        verificationCode,
-        expirationDate,
-      );
+      const code = await sendAuthEmail(email);
+      const hashCode = await bcrypt.hash(code, saltRounds);
+      const expirationDate = dataExpiracao();
+
+      await authRepositorie.criarCodigo(user.userId, hashCode, expirationDate);
 
       return res.status(200).json({
         message: "Código de verificação reenviado com sucesso!",

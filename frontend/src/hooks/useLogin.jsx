@@ -1,32 +1,43 @@
-import { useState, useCallback } from "react";
+
+
+import { useState, useEffect } from "react";
 import { loginUser } from "../services/authService";
 
-export function useLogin() {
+export function useLogin(email, senha, executar) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const login = useCallback(async (email, senha) => {
-    setError("");
-    setSuccess("");
-    setLoading(true);
+  useEffect(() => {
+    if (!executar) {
+      return;
+    }
 
-    try {
-      const response = await loginUser(email, senha);
+    async function login() {
+      setLoading(true);
+      setError("");
+      setSuccess("");
 
-      setSuccess("Login realizado com sucesso!");
+      try {
+        const response = await loginUser(email, senha);
 
-      return response;
-    } catch (err) {
-      console.error("Erro no login:", err);
+        console.log(response);
+        setSuccess("Login realizado com sucesso!");
+      } catch (err) {
+        console.error("Erro no login:", err);
+        setError("Erro no login");
+      }
 
-      setError("Erro no login");
-
-      throw err;
-    } finally {
       setLoading(false);
     }
-  }, []);
 
-  return { login, loading, error, success };
+    login();
+  }, [executar, email, senha]);
+
+  return {
+    loading,
+    error,
+    success
+  };
 }
+

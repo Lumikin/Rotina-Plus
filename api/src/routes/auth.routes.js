@@ -9,4 +9,5 @@ authRoutes.post("/register", authController.criarUsuarios);
 authRoutes.post("/verify", authController.verificarCodigo);
 authRoutes.post("/resend-email", authController.reenviarEmail);
 authRoutes.put("/alterar-senha", authMiddleware, authController.mudarSenha);
+
 export default authRoutes;

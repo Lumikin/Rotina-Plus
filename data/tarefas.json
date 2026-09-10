@@ -1,30 +1,52 @@
 [
   {
-    "id": 1,
-    "titulo": "Estudar React",
+    "tarefaId": 1,
+    "userId": 1,
+    "nome": "Estudar React",
     "descricao": "Revisar componentes e hooks",
-    "concluida": false,
-    "usuarioId": 1
+    "dataTarefa": "2026-09-15T10:00:00",
+    "Prioridade": "Alta",
+    "Status": "Pendente",
+    "DataCad": "2026-09-01T08:00:00"
   },
   {
-    "id": 2,
-    "titulo": "Fazer exercícios",
+    "tarefaId": 2,
+    "userId": 2,
+    "nome": "Fazer exercícios",
     "descricao": "Praticar lógica de programação",
-    "concluida": true,
-    "usuarioId": 2
+    "dataTarefa": "2026-09-12T14:30:00",
+    "Prioridade": "Media",
+    "Status": "Concluida",
+    "DataCad": "2026-09-02T09:00:00"
   },
   {
-    "id": 3,
-    "titulo": "Entregar projeto",
+    "tarefaId": 3,
+    "userId": 1,
+    "nome": "Entregar projeto",
     "descricao": "Finalizar e submeter o trabalho",
-    "concluida": false,
-    "usuarioId": 1
+    "dataTarefa": "2026-09-20T18:00:00",
+    "Prioridade": "Alta",
+    "Status": "Em andamento",
+    "DataCad": "2026-09-03T10:00:00"
   },
   {
-    "id": 4,
-    "titulo": "Limpar a casa",
+    "tarefaId": 4,
+    "userId": 3,
+    "nome": "Limpar a casa",
     "descricao": "Organizar sala e quarto",
-    "concluida": false,
-    "usuarioId": 3
+    "dataTarefa": "2026-09-11T09:00:00",
+    "Prioridade": "Baixa",
+    "Status": "Pendente",
+    "DataCad": "2026-09-04T11:00:00"
+  },
+  {
+    "tarefaId": 5,
+    "userId": 2,
+    "nome": "Revisar banco de dados",
+    "descricao": "Estudar normalização e indices",
+    "dataTarefa": "2026-09-18T16:00:00",
+    "Prioridade": "Media",
+    "Status": "Pendente",
+    "DataCad": "2026-09-05T12:00:00"
   }
 ]

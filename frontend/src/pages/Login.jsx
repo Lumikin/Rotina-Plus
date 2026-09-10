@@ -4,19 +4,22 @@ import { useLogin } from "../hooks/useLogin";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { login, loading, error, success } = useLogin();
+  const [executar, setExecutar] = useState(false);
 
-  async function handleSubmit(e) {
+  const { loading, error, success } = useLogin(
+    email,
+    senha,
+    executar
+  );
+
+  function handleSubmit(e) {
     e.preventDefault();
 
-    try {
-      const response = await login(email, senha);
-      // localStorage.setItem("token", response.token); //Armazena o token
-      console.log(response);
-      return response;
-    } catch (err) {
-      console.log(err);
-    }
+    setExecutar(false);
+
+    setTimeout(() => {
+      setExecutar(true);
+    }, 0);
   }
 
   return (
@@ -26,12 +29,19 @@ export default function Login() {
         style={{ maxWidth: "420px", width: "100%" }}
       >
         <div className="card-body p-4 p-md-5">
+
           <div className="text-center mb-4">
-            <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
-            <p className="text-muted mb-0">Faça login para continuar</p>
+            <h1 className="h3 fw-bold text-info mb-1">
+              Rotina Plus
+            </h1>
+
+            <p className="text-muted mb-0">
+              Faça login para continuar
+            </p>
           </div>
 
           <form onSubmit={handleSubmit}>
+
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Email
@@ -65,13 +75,13 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="alert alert-danger" role="alert">
+              <div className="alert alert-danger">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="alert alert-success" role="alert">
+              <div className="alert alert-success">
                 {success}
               </div>
             )}
@@ -83,6 +93,7 @@ export default function Login() {
             >
               {loading ? "Entrando..." : "Entrar"}
             </button>
+
           </form>
         </div>
       </div>

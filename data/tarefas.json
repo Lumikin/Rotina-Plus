@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "titulo": "Estudar React",
+    "descricao": "Revisar componentes e hooks",
+    "concluida": false,
+    "usuarioId": 1
+  },
+  {
+    "id": 2,
+    "titulo": "Fazer exercícios",
+    "descricao": "Praticar lógica de programação",
+    "concluida": true,
+    "usuarioId": 2
+  },
+  {
+    "id": 3,
+    "titulo": "Entregar projeto",
+    "descricao": "Finalizar e submeter o trabalho",
+    "concluida": false,
+    "usuarioId": 1
+  },
+  {
+    "id": 4,
+    "titulo": "Limpar a casa",
+    "descricao": "Organizar sala e quarto",
+    "concluida": false,
+    "usuarioId": 3
+  }
+]

@@ -1,8 +1,6 @@
 import { prioridadeEnum, statusEnum } from "../enum/database.enum.js";
 import Task from "../model/Tasks.js";
 import tasksRepositories from "../repositories/tasks.repositorie.js";
-import usersRepository from "../repositories/user.repositorie.js";
-import jwt from "jsonwebtoken";
 
 const tasksController = {
   listarTasks: async (req, res) => {
@@ -31,7 +29,7 @@ const tasksController = {
       const response = await tasksRepositories.listarUserTask(userId);
       if (response.length === 0) {
         return res.status(200).json({
-          message: "Não foi encontrada tarefas desse usuario",
+          message: "Nao foi encontrada tarefas desse usuario",
         });
       }
       return res.status(200).json({
@@ -57,7 +55,7 @@ const tasksController = {
         !status
       ) {
         return res.status(400).json({
-          message: "Todos os campos são obrigatórios",
+          message: "Todos os campos sao obrigatorios",
         });
       }
       if (
@@ -66,7 +64,7 @@ const tasksController = {
         status != statusEnum.concluida
       ) {
         return res.status(400).json({
-          message: "status inválido",
+          message: "status invalido",
         });
       }
       if (
@@ -75,26 +73,17 @@ const tasksController = {
         prioridade != prioridadeEnum.alta
       ) {
         return res.status(400).json({
-          message: "prioridade inválido",
+          message: "prioridade invalido",
         });
       }
       const task = Task.criar({
         userId,
         nome,
         descricao,
-        dataTarefa, // ano-mes-data
+        dataTarefa,
         prioridade,
         status,
       });
-      console.log(
-        "Task a ser criada:",
-        task.userId,
-        task.nome,
-        task.descricao,
-        task.dataTarefa,
-        task.prioridade,
-        task.status,
-      );
       const response = await tasksRepositories.criarTask(task);
       return res.status(201).json({
         message: "Tarefa criada com sucesso",
@@ -113,37 +102,35 @@ const tasksController = {
       const { id } = req.params;
       if (!id) {
         return res.status(400).json({
-          message: "ID da tarefa é obrigatório",
+          message: "ID da tarefa e obrigatorio",
         });
       }
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
-          message: "Tarefa não encontrada",
+          message: "Tarefa nao encontrada",
         });
       }
       const dadosAtuais = validarTask[0];
-      console.log("dadosAtuais:", dadosAtuais);
 
       const { nome, descricao, dataTarefa, prioridade, status } = req.body;
 
       const nomeFinal = nome || dadosAtuais.nome;
       const descricaoFinal = descricao || dadosAtuais.descricao;
       const dataTarefaFinal = dataTarefa || dadosAtuais.dataTarefa;
-      const prioridadeFinal = prioridade || dadosAtuais.Prioridade;
-      const statusFinal = status || dadosAtuais.Status;
+      const prioridadeFinal = prioridade || dadosAtuais.prioridade;
+      const statusFinal = status || dadosAtuais.status;
 
       const task = Task.atualizar(
         {
           nome: nomeFinal,
           descricao: descricaoFinal,
-          dataTarefa: dataTarefaFinal, // ano-mes-data
+          dataTarefa: dataTarefaFinal,
           prioridade: prioridadeFinal,
           status: statusFinal,
         },
         id,
       );
-      console.log("task a atualizar:", task);
       const response = await tasksRepositories.atualizarTask(id, task);
       return res.status(200).json({
         message: "Tarefa atualizada com sucesso",
@@ -162,13 +149,13 @@ const tasksController = {
       const { id } = req.params;
       if (!id) {
         return res.status(400).json({
-          message: "ID da tarefa é obrigatório",
+          message: "ID da tarefa e obrigatorio",
         });
       }
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
-          message: "Tarefa não encontrada",
+          message: "Tarefa nao encontrada",
         });
       }
       const response = await tasksRepositories.deletarTask(id);

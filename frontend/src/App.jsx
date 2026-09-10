@@ -1,8 +1,7 @@
-import Home from "./pages/Home";
-import { Registrar } from "./pages/Registrer";
+import Tarefas from "./pages/Tarefas";
 
 function App() {
-  return <Registrar />;
+  return <Tarefas />;
 }
 
 export default App;

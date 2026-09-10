@@ -5,7 +5,7 @@ export default function Login() {
   const [senha, setSenha] = useState("");
 
   async function Enviar(email, senha) {
-    const response = await loginUser(email, senha);
+    const response = await loginUser(email, senha);     
     return response;
   }
   return (
@@ -15,7 +15,7 @@ export default function Login() {
         style={{ maxWidth: "420px", width: "100%" }}
       >
         <div className="card-body p-4 p-md-5">
-          <div className="text-center mb-4">
+          <div classNa. me="text-center mb-4">
             <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
             <p className="text-muted mb-0">Faça login para continuar</p>
           </div>

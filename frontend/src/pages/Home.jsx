@@ -6,14 +6,14 @@ import CallToAction from "../components/CallToAction";
 import Footer from "../components/Footer";
 
 export default function Home() {
-  return (
+  return (        
     <div>
       <Navbar />
       <Hero />
       <Features />
       <HowItWorks />
       <CallToAction />
-      <Footer />
+      <Footer />   
     </div>
   );
 }

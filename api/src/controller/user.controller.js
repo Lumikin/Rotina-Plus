@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt"; // Criptografia
 import usersRepository from "../repositories/user.repositorie.js";
 import { Users } from "../model/Users.js";
-import emailService from "../services/nodemailer.controller.js";
 
 const saltRounds = 10; //O quao complexo será o hash
 
@@ -113,7 +112,7 @@ const usersController = {
     try {
       const { id } = req.params;
       const user = await usersRepository.listarIDUsuarios(id);
-      if (!user || user.length === 0) { 
+      if (!user || user.length === 0) {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);

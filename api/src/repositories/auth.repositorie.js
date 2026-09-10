@@ -1,34 +1,33 @@
 import { connection } from "../config/Databse.js";
 
 const authRepositorie = {
-  criar: async (userId, token, expirationDate) => {
-    const sql = `INSERT INTO autentication (userId, token, isvalid, expiration_date) VALUES (?, ?, 0, ?)`;
-    const values = [userId, token, expirationDate];
+  criarCodigo: async (userId, hashCode, expirationDate) => {
+    const sql = `INSERT INTO autentication (userId, hashCode, isvalid, expiration_date) VALUES (?, ?, 1, ?)`;
+    const values = [userId, hashCode, expirationDate];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
-  buscarPorToken: async token => {
-    const sql = `SELECT * FROM autentication WHERE token = ?`;
-    const values = [token];
+  buscarCodigoValido: async userId => {
+    const sql = `SELECT * FROM autentication WHERE userId = ? AND isvalid = 1 ORDER BY dataCad DESC LIMIT 1`;
+    const [rows] = await connection.execute(sql, [userId]);
+    return rows;
+  },
+
+  validarCodigo: async hashCode => {
+    const sql = `UPDATE autentication SET isvalid = 0 WHERE hashCode = ?`;
+    const values = [hashCode];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
-  validarToken: async token => {
-    const sql = `UPDATE autentication SET isvalid = 1 WHERE token = ?`;
-    const values = [token];
-    const [rows] = await connection.execute(sql, values);
-    return rows;
-  },
-
-  invalidarTokensAnteriores: async userId => {
-    const sql = `UPDATE autentication SET isvalid = 0 WHERE userId = ? AND isvalid = 0`;
+  invalidarCodigos: async userId => {
+    const sql = `UPDATE autentication SET isvalid = 0 WHERE userId = ? AND isvalid = 1`;
     const values = [userId];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  alterarSenhaltera: async (userId, novaSenha) => {
+  alterarSenha: async (userId, novaSenha) => {
     const [result] = await pool.execute(
       `UPDATE users
        SET password_hash = ?

@@ -2,26 +2,24 @@ import { useEffect, useState } from "react";
 import { ApiLogin } from "../services/userService";
 
 export function useUsers() {
-    const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
-    const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function loadUsers() {
-            try {
-                const data = await ApiLogin(email, senha);
-                setEmail(data);
+  useEffect(() => {
+    async function loadUsers() {
+      try {
+        const data = await ApiLogin(email, senha);
+        setEmail(data);
+      } catch (error) {
+        console.log("Erro ao buscar usuários:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-            } catch (error) {
-                console.log("Erro ao buscar usuários:", error);
-            
-            } finally {
-                setLoading(false);
-            }
-        }
+    loadUsers();
+  }, []);
 
-        loadUsers();
-    }, []);
-
-    return { users, loading };
-};
+  return { users, loading };
+}

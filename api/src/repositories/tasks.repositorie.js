@@ -19,14 +19,14 @@ const tasksRepositories = {
     return rows;
   },
 
-  listarTask: async tarefaID => {
-    const sql = `SELECT * FROM tarefas WHERE tarefaID = ?;`;
-    const [rows] = await connection.execute(sql, [tarefaID]);
+  listarTask: async tarefaUUID => {
+    const sql = `SELECT * FROM tarefas WHERE UUID = ?;`;
+    const [rows] = await connection.execute(sql, [tarefaUUID]);
     return rows;
   },
 
   criarTask: async task => {
-    const sql = `INSERT INTO tarefas (userId, Nome, descricao, DataTarefa, Prioridade, Status) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO tarefas (UUID, userId, nome, descricao, dataTarefa, prioridade, status) VALUES (UUID(), ?, ?, ?, ?, ?, ?)`;
     const values = [
       task.userId,
       task.nome,
@@ -40,13 +40,12 @@ const tasksRepositories = {
   },
 
   atualizarTask: async (id, task) => {
-    // Busca status anterior para não pontuar 2x
     const [tarefaAtual] = await connection.execute(
-      `SELECT Status, Prioridade, userId FROM tarefas WHERE tarefaID = ?`,
+      `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
       [id]
     );
 
-    const sql = `UPDATE tarefas SET Nome = ?, descricao = ?, DataTarefa = ?, Prioridade = ?, Status = ? WHERE tarefaID = ?`;
+    const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
     const values = [
       task.nome,
       task.descricao,
@@ -57,30 +56,36 @@ const tasksRepositories = {
     ];
     const [rows] = await connection.execute(sql, values);
 
-    // Se mudou de "não concluída" para "concluida", soma pontos
-    const statusAnterior = tarefaAtual[0]?.Status;
-    if (statusAnterior !== "concluida" && task.status === "concluida") {
+    const statusAnterior = tarefaAtual[0]?.status;
+    if (statusAnterior !== "Concluida" && task.status === "Concluida") {
       const pontos = PONTOS_POR_PRIORIDADE[task.prioridade?.toLowerCase()] ?? 0;
-      await tasksRepositories.adicionarPontos(tarefaAtual[0].userId, pontos);
+      await tasksRepositories.adicionarPontos(tarefaAtual[0].userId, id, pontos);
     }
 
     return rows;
   },
 
   deletarTask: async id => {
-    const sql = `DELETE FROM tarefas WHERE tarefaID = ?`;
+    const sql = `DELETE FROM tarefas WHERE UUID = ?`;
     const [rows] = await connection.execute(sql, [id]);
     return rows;
   },
 
-  adicionarPontos: async (userId, pontos) => {
-    const sql = `UPDATE usuarios SET pontos = pontos + ? WHERE id = ?`;
-    const [rows] = await connection.execute(sql, [pontos, userId]);
+  adicionarPontos: async (userId, tarefaId, pontos) => {
+    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos, dataCad) VALUES (UUID(), ?, ?, NOW())`;
+    const [rows] = await connection.execute(sql, [tarefaId, pontos]);
     return rows;
   },
 
   listarRanking: async () => {
-    const sql = `SELECT id, nome, pontos FROM usuarios ORDER BY pontos DESC;`;
+    const sql = `
+      SELECT u.UUID, u.nome, COALESCE(SUM(p.pontos), 0) AS totalPontos
+      FROM usuarios u
+      LEFT JOIN tarefas t ON t.userId = u.UUID
+      LEFT JOIN pontos p ON p.tarefaId = t.UUID
+      GROUP BY u.UUID, u.nome
+      ORDER BY totalPontos DESC;
+    `;
     const [rows] = await connection.execute(sql);
     return rows;
   },

@@ -1,12 +1,12 @@
 export class Task {
-  #tarefaId;
+  #UUID;
   #userId;
   #nome;
   #descricao;
   #dataTarefa;
   #prioridade;
   #status;
-  #pontos;  
+  #pontos;
 
   constructor(
     userId,
@@ -15,7 +15,7 @@ export class Task {
     dataTarefa,
     prioridade,
     status,
-    tarefaId,
+    UUID,
     pontos,
   ) {
     this.#userId = userId;
@@ -24,13 +24,12 @@ export class Task {
     this.#dataTarefa = dataTarefa;
     this.#prioridade = prioridade;
     this.#status = status;
-    this.#tarefaId = tarefaId;
+    this.#UUID = UUID;
     this.#pontos = pontos;
   }
 
-  // GETTERS
-  get tarefaId() {
-    return this.#tarefaId;
+  get UUID() {
+    return this.#UUID;
   }
 
   get userId() {
@@ -61,7 +60,6 @@ export class Task {
     return this.#pontos;
   }
 
-  // SETTERS
   set nome(value) {
     this.#nome = value;
   }
@@ -86,15 +84,14 @@ export class Task {
     this.#userId = value;
   }
 
-  set tarefaId(value) {
-    this.#tarefaId = value;
+  set UUID(value) {
+    this.#UUID = value;
   }
 
   set pontos(value) {
     this.#pontos = value;
   }
 
-  // VALIDADORES
   #validarnome(value) {
     if (!value || value.length < 3 || value.length > 64) {
       throw new Error("nome deve ter entre 3 e 64 caracteres");
@@ -103,27 +100,27 @@ export class Task {
 
   #validarDescricao(value) {
     if (value && value.length > 255) {
-      throw new Error("Descrição não pode passar de 255 caracteres");
+      throw new Error("Descricao nao pode passar de 255 caracteres");
     }
   }
 
   #validarData(value) {
     if (!value) {
-      throw new Error("Data da tarefa é obrigatória");
+      throw new Error("Data da tarefa e obrigatoria");
     }
   }
 
   #validarprioridade(value) {
     const validos = ["Baixa", "Media", "Alta"];
     if (!validos.includes(value)) {
-      throw new Error("prioridade inválida");
+      throw new Error("prioridade invalida");
     }
   }
 
   #validarstatus(value) {
     const validos = ["Pendente", "Em andamento", "Concluida"];
     if (!validos.includes(value)) {
-      throw new Error("status inválido");
+      throw new Error("status invalido");
     }
   }
 
@@ -133,7 +130,6 @@ export class Task {
     }
   }
 
-  // FACTORY METHODS
   static criar(data) {
     return new Task(
       data.userId,
@@ -142,12 +138,12 @@ export class Task {
       data.dataTarefa,
       data.prioridade,
       data.status,
-      data.pontos,
       null,
+      data.pontos,
     );
   }
 
-  static atualizar(data, id) {
+  static atualizar(data, UUID) {
     return new Task(
       data.userId,
       data.nome,
@@ -155,8 +151,8 @@ export class Task {
       data.dataTarefa,
       data.prioridade,
       data.status,
+      UUID,
       data.pontos,
-      id,
     );
   }
 }

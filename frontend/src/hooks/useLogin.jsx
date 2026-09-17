@@ -23,8 +23,8 @@ export function useLogin(email, senha, executar) {
 
         console.log(response);
         setSuccess("Login realizado com sucesso!");
-      } catch (err) {
-        console.error("Erro no login:", err);
+      } catch (erro) {
+        console.error("Erro no login:", erro);
         setError("Erro no login");
       }
 

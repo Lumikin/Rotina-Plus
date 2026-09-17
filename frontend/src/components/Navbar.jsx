@@ -1,5 +1,13 @@
+import { useNavigate } from "react-router";
 import logo from "../assets/logo.png";
 export default function Navbar() {
+  const navigate = useNavigate();
+  function handleRegistro() {
+    navigate("/register");
+  }
+  function handleLogin() {
+    navigate("/login");
+  }
   return (
     <nav className="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
       <div className="container">
@@ -39,12 +47,8 @@ export default function Navbar() {
           </ul>
 
           <div className="d-flex gap-2 mt-3 mt-lg-0">
-            <a href="#entrar" className="btn btn-rp-outline">
-              Entrar
-            </a>
-            <a href="#cadastro" className="btn btn-rp-primary">
-              Cadastrar
-            </a>
+            <button onClick={handleLogin}>Entrar</button>
+            <button onClick={handleRegistro}>Cadastrar</button>
           </div>
         </div>
       </div>

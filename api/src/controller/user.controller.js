@@ -59,9 +59,7 @@ const usersController = {
         return res.status(404).json({ message: "Usuario nao encontrado" });
       }
       if (senha && senha.length < 4) {
-        return res
-          .status(400)
-          .json({ message: "A senha deve ter no minimo 4 caracteres" });
+        return res.status(400).json({ message: "A senha deve ter no minimo 4 caracteres" });
       }
       if (!nome && !email && !senha) {
         return res.status(400).json({
@@ -81,9 +79,7 @@ const usersController = {
           dadosAtuais.password_hash,
         );
         if (senhaDuplicada) {
-          return res
-            .status(400)
-            .json({ message: "A senha nao pode ser a mesma que a atual" });
+          return res.status(400).json({ message: "A senha nao pode ser a mesma que a atual" });
         }
         hashedPassword = await bcrypt.hash(senha, saltRounds);
       } else {
@@ -98,9 +94,10 @@ const usersController = {
       return res.status(200).json({ result: updated });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .json({ message: "Ocorreu um erro no servidor", error: error.message });
+      res.status(500).json({
+        message: "Ocorreu um erro no servidor",
+        error: error.message,
+      });
     }
   },
   deletarUsuario: async (req, res) => {
@@ -111,9 +108,10 @@ const usersController = {
         return res.status(404).json({ message: "Usuario nao encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);
-      return res
-        .status(200)
-        .json({ message: "usuario deletado!", result: result });
+      return res.status(200).json({
+        message: "usuario deletado!",
+        result: result,
+      });
     } catch (error) {
       console.error(error);
       res

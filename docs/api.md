@@ -19,6 +19,7 @@ Prefixo base: `/auth`
 - **Método:** `POST`
 - **Rota:** `/auth/login`
 - **Descrição:** Autentica o usuário no sistema com base no e-mail e senha, retornando um token JWT.
+
 - **Body (JSON):**
   ```json
   {
@@ -64,6 +65,7 @@ Prefixo base: `/auth`
 - **Método:** `POST`
 - **Rota:** `/auth/register`
 - **Descrição:** Cria uma nova conta de usuário, criptografa a senha e dispara e-mail de verificação.
+
 - **Body (JSON):**
   ```json
   {
@@ -149,8 +151,10 @@ Prefixo base: `/api/users`
 ### 2.2. Buscar Usuário por ID
 - **Método:** `GET`
 - **Rota:** `/api/users/:id`
+
 - **Descrição:** Busca um usuário específico pelo seu identificador único.
 - **Body:** Nenhum (`GET`)
+
 - **Retornos (Status Codes):**
   - `200 OK`: Usuário encontrado.
     ```json
@@ -254,6 +258,7 @@ Prefixo base: `/api/tasks`
 - **Método:** `GET`
 - **Rota:** `/api/tasks/`
 - **Descrição:** Retorna todas as tarefas cadastradas no sistema.
+
 - **Body:** Nenhum (`GET`)
 - **Retornos (Status Codes):**
   - `200 OK`: Tarefas listadas com sucesso.
@@ -263,27 +268,28 @@ Prefixo base: `/api/tasks`
       "result": [ ... ]
     }
     ```
-  - `404 Not Found`: Nenhuma tarefa encontrada.
+  - `404 Not Found`: Caso nenhuma tarefa se encontre registrada, nenhuma atividade poderá ser executada.
     ```json
     {
-      "message": "Nenhuma tarefa encontrada"
+      "message": "Nenhuma tarefa se encontra registrada."
     }
     ```
-  - `500 Internal Server Error`: Erro no servidor.
+  - `500 Internal Server Error`: Caso algum erro venha a ocorrer no servidor.
     ```json
     {
       "message": "Erro no servidor",
-      "error": "detalhes do erro"
+      "error": "Detalhe do erro"
     }
     ```
 
 ### 3.2. Listar Tarefas por Usuário (`userId`)
 - **Método:** `GET`
 - **Rota:** `/api/tasks/:userId`
-- **Descrição:** Retorna as tarefas associadas a um usuário específico.
+- **Descrição:** Retorna as tarefas que se encontram associadas a um usuário específico.
+
 - **Body:** Nenhum (`GET`)
 - **Retornos (Status Codes):**
-  - `200 OK`: Lista de tarefas do usuário (ou mensagem se não houver tarefas).
+  - `200 OK`: Apresenta as tarefas vinculadas ao usuário, ou informa caso nenhuma se encontre registrada.
     ```json
     {
       "response": [ ... ]
@@ -292,7 +298,7 @@ Prefixo base: `/api/tasks`
     ou
     ```json
     {
-      "message": "Não foi encontrada tarefas desse usuario"
+      "message": "Nenhuma tarefa se encontra registrada para este usuário."
     }
     ```
   - `500 Internal Server Error`: Erro ao buscar tarefas.
@@ -305,7 +311,8 @@ Prefixo base: `/api/tasks`
 ### 3.3. Criar Tarefa
 - **Método:** `POST`
 - **Rota:** `/api/tasks/`
-- **Descrição:** Cria uma nova tarefa associada a um usuário.
+- **Descrição:** Registra uma nova tarefa, vinculando-a ao usuário designado.
+
 - **Body (JSON):**
   ```json
   {
@@ -318,14 +325,14 @@ Prefixo base: `/api/tasks`
   }
   ```
 - **Retornos (Status Codes):**
-  - `201 Created`: Tarefa criada com sucesso.
+  - `201 Created`: A tarefa foi devidamente registrada.
     ```json
     {
       "message": "Tarefa criada com sucesso",
       "result": { ... }
     }
     ```
-  - `400 Bad Request`: Campos obrigatórios faltando, status ou prioridade inválidos.
+  - `400 Bad Request`: Há campos obrigatórios por preencher, status ou a prioridade informados não são válidos.
     ```json
     {
       "message": "Todos os campos são obrigatórios"
@@ -334,28 +341,29 @@ Prefixo base: `/api/tasks`
     ou
     ```json
     {
-      "message": "status inválido"
+      "message": "Status inválido"
     }
     ```
     ou
     ```json
     {
-      "message": "prioridade inválido"
+      "message": "Prioridade inválida"
     }
     ```
   - `500 Internal Server Error`: Erro no servidor.
     ```json
     {
       "message": "Erro no servidor",
-      "error": "detalhes do erro"
+      "error": "Detalhes do erro"
     }
     ```
 
 ### 3.4. Atualizar Tarefa
 - **Método:** `PUT`
 - **Rota:** `/api/tasks/:id`
-- **Descrição:** Atualiza os dados de uma tarefa existente.
-- **Body (JSON):** (Campos opcionais/parciais para atualização)
+- **Descrição:** Atualiza as informações de uma tarefa previamente cadastrada no sistema
+
+- **Body (JSON):** Campos opcionais destinados à atualização específica das informações cadastradas.
   ```json
   {
     "nome": "Nome Atualizado",
@@ -366,20 +374,20 @@ Prefixo base: `/api/tasks`
   }
   ```
 - **Retornos (Status Codes):**
-  - `200 OK`: Tarefa atualizada com sucesso.
+  - `200 OK`: Caso a atualização dos dados da tarefa seja concluída com sucesso.
     ```json
     {
       "message": "Tarefa atualizada com sucesso",
       "result": { ... }
     }
     ```
-  - `400 Bad Request`: ID da tarefa não informado.
+  - `400 Bad Request`: Caso o identificador correspondente à tarefa não seja fornecido.
     ```json
     {
       "message": "ID da tarefa é obrigatório"
     }
     ```
-  - `404 Not Found`: Tarefa não encontrada.
+  - `404 Not Found`: Na ausência de uma tarefa correspondente ao identificador informado.
     ```json
     {
       "message": "Tarefa não encontrada"
@@ -389,14 +397,15 @@ Prefixo base: `/api/tasks`
     ```json
     {
       "message": "Erro no servidor",
-      "error": "detalhes do erro"
+      "error": "Detalhes do erro"
     }
     ```
 
 ### 3.5. Deletar Tarefa
 - **Método:** `DELETE`
 - **Rota:** `/api/tasks/:id`
-- **Descrição:** Remove uma tarefa pelo seu ID.
+- **Descrição:** Remove a tarefa mediante o seu respectivo identificador.
+
 - **Body:** Nenhum (`DELETE`)
 - **Retornos (Status Codes):**
   - `200 OK`: Tarefa deletada com sucesso.
@@ -406,13 +415,13 @@ Prefixo base: `/api/tasks`
       "result": { ... }
     }
     ```
-  - `400 Bad Request`: ID da tarefa não informado.
+  - `400 Bad Request`: Caso o identificador correspondente à tarefa não seja fornecido.
     ```json
     {
       "message": "ID da tarefa é obrigatório"
     }
     ```
-  - `404 Not Found`: Tarefa não encontrada.
+  - `404 Not Found`: Na ausência de uma tarefa correspondente ao identificador informado.
     ```json
     {
       "message": "Tarefa não encontrada"

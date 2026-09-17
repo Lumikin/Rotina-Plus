@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { api_rotinaplus } from "../services/api";
 
-export function useRegister(
-  nome,
-  email,
-  senha,
-  dataNascimento,
-  executar
-) {
+export function useVerifyCode(email, code, executar) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -17,31 +11,29 @@ export function useRegister(
       return;
     }
 
-    async function cadastrar() {
+    async function verificar() {
       setLoading(true);
       setError("");
       setSuccess("");
 
       try {
-        const response = await api_rotinaplus.post("/auth/register", {
-          nome,
+        const response = await api_rotinaplus.post("/auth/verify", {
           email,
-          senha,
-          dataNascimento,
+          code,
         });
 
         console.log(response);
-        setSuccess(response.data.message || "Conta criada com sucesso!");
+        setSuccess(response.data.message || "Email verificado com sucesso!");
       } catch (err) {
-        console.error("Erro no cadastro:", err);
-        setError(err.response?.data?.message || "Erro no cadastro");
+        console.error("Erro na verificação:", err);
+        setError(err.response?.data?.message || "Erro na verificação do código");
       }
 
       setLoading(false);
     }
 
-    cadastrar();
-  }, [executar, nome, email, senha, dataNascimento]);
+    verificar();
+  }, [executar, email, code]);
 
   return {
     loading,

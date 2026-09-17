@@ -1,11 +1,12 @@
 export class Task {
-  #tarefaId;
+  #UUID;
   #userId;
   #nome;
   #descricao;
   #dataTarefa;
   #prioridade;
   #status;
+  #pontos;
 
   constructor(
     userId,
@@ -14,7 +15,8 @@ export class Task {
     dataTarefa,
     prioridade,
     status,
-    tarefaId,
+    UUID,
+    pontos,
   ) {
     this.#userId = userId;
     this.#nome = nome;
@@ -22,12 +24,12 @@ export class Task {
     this.#dataTarefa = dataTarefa;
     this.#prioridade = prioridade;
     this.#status = status;
-    this.#tarefaId = tarefaId;
+    this.#UUID = UUID;
+    this.#pontos = pontos;
   }
 
-  // GETTERS
-  get tarefaId() {
-    return this.#tarefaId;
+  get UUID() {
+    return this.#UUID;
   }
 
   get userId() {
@@ -54,7 +56,10 @@ export class Task {
     return this.#status;
   }
 
-  // SETTERS
+  get pontos() {
+    return this.#pontos;
+  }
+
   set nome(value) {
     this.#nome = value;
   }
@@ -79,11 +84,14 @@ export class Task {
     this.#userId = value;
   }
 
-  set tarefaId(value) {
-    this.#tarefaId = value;
+  set UUID(value) {
+    this.#UUID = value;
   }
 
-  // VALIDADORES
+  set pontos(value) {
+    this.#pontos = value;
+  }
+
   #validarnome(value) {
     if (!value || value.length < 3 || value.length > 64) {
       throw new Error("nome deve ter entre 3 e 64 caracteres");
@@ -92,31 +100,36 @@ export class Task {
 
   #validarDescricao(value) {
     if (value && value.length > 255) {
-      throw new Error("Descrição não pode passar de 255 caracteres");
+      throw new Error("Descricao nao pode passar de 255 caracteres");
     }
   }
 
   #validarData(value) {
     if (!value) {
-      throw new Error("Data da tarefa é obrigatória");
+      throw new Error("Data da tarefa e obrigatoria");
     }
   }
 
   #validarprioridade(value) {
     const validos = ["Baixa", "Media", "Alta"];
     if (!validos.includes(value)) {
-      throw new Error("prioridade inválida");
+      throw new Error("prioridade invalida");
     }
   }
 
   #validarstatus(value) {
     const validos = ["Pendente", "Em andamento", "Concluida"];
     if (!validos.includes(value)) {
-      throw new Error("status inválido");
+      throw new Error("status invalido");
     }
   }
 
-  // FACTORY METHODS
+  #validarPontos(value) {
+    if (value < 0 || value > 100) {
+      throw new Error("Pontos devem estar entre 0 e 100");
+    }
+  }
+
   static criar(data) {
     return new Task(
       data.userId,
@@ -126,10 +139,11 @@ export class Task {
       data.prioridade,
       data.status,
       null,
+      data.pontos,
     );
   }
 
-  static atualizar(data, id) {
+  static atualizar(data, UUID) {
     return new Task(
       data.userId,
       data.nome,
@@ -137,7 +151,8 @@ export class Task {
       data.dataTarefa,
       data.prioridade,
       data.status,
-      id,
+      UUID,
+      data.pontos,
     );
   }
 }

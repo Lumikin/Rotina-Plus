@@ -1,4 +1,5 @@
 import { connection } from "../config/Databse.js";
+import { statusEnum } from "../enum/database.enum.js";
 
 const PONTOS_POR_PRIORIDADE = {
   baixa: 5,
@@ -46,16 +47,9 @@ const tasksRepositories = {
       `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
     );
 
-    const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
-    const values = [
-      task.nome,
-      task.descricao,
-      task.dataTarefa,
-      task.prioridade,
-      task.status,
-      id,
-    ];
-    const [rows] = await connection.execute(sql, values);
+    if (tarefaAtual.length === 0) {
+      throw new Error("Tarefa nao encontrada");
+    }
 
     const statusAnterior = tarefaAtual[0]?.status;
     if (statusAnterior !== "Concluida" && task.status === "Concluida") {
@@ -66,7 +60,19 @@ const tasksRepositories = {
         pontos,
       );
     }
+  },
 
+  concluirTask: async idTask => {
+    const sql = `UPDATE tarefas SET status = 'Concluida' WHERE UUID = ?`;
+    const values = [idTask];
+    const [rows] = await connection.execute(sql, values);
+    return rows;
+  },
+
+  concluirTask: async idTask => {
+    const sql = `UPDATE tarefas SET status = 'Concluida' WHERE UUID = ?`;
+    const values = [idTask];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
@@ -77,8 +83,8 @@ const tasksRepositories = {
   },
 
   adicionarPontos: async (userId, tarefaId, pontos) => {
-    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos, dataCad) VALUES (UUID(), ?, ?, NOW())`;
-    const [rows] = await connection.execute(sql, [tarefaId, pontos]);
+    const sql = `INSERT INTO pontos (UUID, userId, tarefaId, pontos, dataCad) VALUES (UUID(), ?, ?, ?, NOW())`;
+    const [rows] = await connection.execute(sql, [userId, tarefaId, pontos]);
     return rows;
   },
 

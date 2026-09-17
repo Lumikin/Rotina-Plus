@@ -23,25 +23,22 @@ const tasksController = {
       });
     }
   },
+
   listarUserTarefa: async (req, res) => {
     try {
       const { userId } = req.params;
       const response = await tasksRepositories.listarUserTask(userId);
       if (response.length === 0) {
-        return res.status(200).json({
-          message: "Nao foi encontrada tarefas desse usuario",
-        });
+        return res.status(200).json({message: "Não foi encontrada tarefas deste usuário"});
       }
-      return res.status(200).json({
-        response,
-      });
+      return res.status(200).json({response});
+
     } catch (error) {
       console.error(error);
-      return res.status(500).json({
-        message: "Erro ao buscar tarefas",
-      });
+      return res.status(500).json({message: "Erro ao buscar tarefas"});
     }
   },
+
   criarTask: async (req, res) => {
     try {
       const { userId, nome, descricao, dataTarefa, prioridade, status } =
@@ -54,18 +51,14 @@ const tasksController = {
         !prioridade ||
         !status
       ) {
-        return res.status(400).json({
-          message: "Todos os campos sao obrigatorios",
-        });
+        return res.status(400).json({message: "Todos os campos são obrigatórios"});
       }
       if (
         status != statusEnum.pendente &&
         status != statusEnum.emAndamento &&
         status != statusEnum.concluida
       ) {
-        return res.status(400).json({
-          message: "status invalido",
-        });
+        return res.status(400).json({message: "status invalido"});
       }
       if (
         prioridade != prioridadeEnum.baixa &&
@@ -87,7 +80,7 @@ const tasksController = {
       const response = await tasksRepositories.criarTask(task);
       return res.status(201).json({
         message: "Tarefa criada com sucesso",
-        result: response,
+        result: response
       });
     } catch (error) {
       console.error(error);
@@ -97,6 +90,7 @@ const tasksController = {
       });
     }
   },
+
   atualizarTask: async (req, res) => {
     try {
       const { id } = req.params;
@@ -138,24 +132,26 @@ const tasksController = {
       });
     } catch (error) {
       console.error(error);
+      if (error.message === "Tarefa nao encontrada") {
+        return res.status(404).json({ message: error.message });
+      }
       return res.status(500).json({
         message: "Erro no servidor",
         error: error.message,
       });
     }
   },
+  
   deletarTask: async (req, res) => {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.status(400).json({
-          message: "ID da tarefa e obrigatorio",
-        });
+        return res.status(400).json({message: "ID da tarefa e obrigatório"});
       }
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
         return res.status(404).json({
-          message: "Tarefa nao encontrada",
+          message: "Tarefa não encontrada",
         });
       }
       const response = await tasksRepositories.deletarTask(id);
@@ -167,9 +163,10 @@ const tasksController = {
       console.error(error);
       return res.status(500).json({
         message: "Erro no servidor",
-        error: error.message,
+        error: error.message
       });
     }
-  },
+  }
 };
+
 export default tasksController;

@@ -8,15 +8,19 @@ const tasksController = {
       const response = await tasksRepositories.listarTasks();
 
       if (response.length === 0) {
-        return res.status(404).json({message: "Nenhuma tarefa se encontra registrada."});
+        return res
+          .status(404)
+          .json({ message: "Nenhuma tarefa se encontra registrada." });
       }
 
-      return res.status(200).json({message: "Tarefas Listadas:", result: response});
-
+      return res
+        .status(200)
+        .json({ message: "Tarefas Listadas:", result: response });
     } catch (error) {
-      
       console.error(error);
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Erro no servidor", error: error.message });
     }
   },
 
@@ -54,7 +58,10 @@ const tasksController = {
           .json({ message: "Todos os campos são obrigatórios" });
       }
 
-      if (status != statusEnum.pendente && status != statusEnum.emAndamento && status != statusEnum.concluida
+      if (
+        status != statusEnum.pendente &&
+        status != statusEnum.emAndamento &&
+        status != statusEnum.concluida
       ) {
         return res.status(400).json({ message: "status invalido" });
       }
@@ -63,9 +70,16 @@ const tasksController = {
         prioridade != prioridadeEnum.media &&
         prioridade != prioridadeEnum.alta
       ) {
-        return res.status(400).json({message: "Prioridade inválida"});
+        return res.status(400).json({ message: "Prioridade inválida" });
       }
-      const task = Task.criar({userId, nome, descricao, dataTarefa, prioridade, status});
+      const task = Task.criar({
+        userId,
+        nome,
+        descricao,
+        dataTarefa,
+        prioridade,
+        status,
+      });
       const response = await tasksRepositories.criarTask(task);
       return res.status(201).json({
         message: "Tarefa criada com sucesso",
@@ -74,7 +88,9 @@ const tasksController = {
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        message: "Erro no servidor", error: error.message});
+        message: "Erro no servidor",
+        error: error.message,
+      });
     }
   },
 
@@ -82,11 +98,11 @@ const tasksController = {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.status(400).json({message: "ID da tarefa é obrigatório"});
+        return res.status(400).json({ message: "ID da tarefa é obrigatório" });
       }
       const validarTask = await tasksRepositories.listarTask(id);
       if (validarTask.length === 0) {
-        return res.status(404).json({message: "Tarefa não encontrada"});
+        return res.status(404).json({ message: "Tarefa não encontrada" });
       }
       const dadosAtuais = validarTask[0];
 
@@ -109,14 +125,17 @@ const tasksController = {
         id,
       );
       const response = await tasksRepositories.atualizarTask(id, task);
-      return res.status(200).json({message: "Tarefa atualizada com sucesso", result: response});
-
+      return res
+        .status(200)
+        .json({ message: "Tarefa atualizada com sucesso", result: response });
     } catch (error) {
       console.error(error);
       if (error.message === "Tarefa não encontrada") {
         return res.status(404).json({ message: error.message });
       }
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Erro no servidor", error: error.message });
     }
   },
 
@@ -151,12 +170,17 @@ const tasksController = {
         return res.status(400).json({ message: "ID da tarefa e obrigatório" });
       }
       const validarTask = await tasksRepositories.listarTask(id);
+      const validarPonto = await tasksRepositories.listarTaskPontos(id);
+      if (validarPonto.length > 1) {
+        await tasksRepositories.removerPontos(id);
+      }
       if (validarTask.length === 0) {
-        return res.status(404).json({message: "Tarefa não encontrada"});
+        return res.status(404).json({ message: "Tarefa não encontrada" });
       }
       const response = await tasksRepositories.deletarTask(id);
-      return res.status(200).json({message: "Tarefa deletada com sucesso", result: response});
-
+      return res
+        .status(200)
+        .json({ message: "Tarefa deletada com sucesso", result: response });
     } catch (error) {
       console.error(error);
       return res.status(500).json({

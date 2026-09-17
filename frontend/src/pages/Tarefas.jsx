@@ -134,11 +134,14 @@ export default function Tarefas() {
         loadTasks();
     }
 
-    async function handleStatusChange(taskId, novoStatus) {
+    async function handleStatusChange(taskId, novoStatus, statusAtual) {
         setSavingId(taskId);
         setActionError("");
 
-        const response = novoStatus === "Concluida"
+        const isConcluir = (statusAtual !== "Concluida" && novoStatus === "Concluida") ||
+            (statusAtual === "Concluida" && novoStatus === "Em andamento");
+
+        const response = isConcluir
             ? await concluirTask(taskId)
             : await atualizarTask(taskId, { status: novoStatus });
 
@@ -516,7 +519,8 @@ export default function Tarefas() {
                                                     onChange={(e) =>
                                                         handleStatusChange(
                                                             task.UUID,
-                                                            e.target.value
+                                                            e.target.value,
+                                                            status
                                                         )
                                                     }
                                                 >

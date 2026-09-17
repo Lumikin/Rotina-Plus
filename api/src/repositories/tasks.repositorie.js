@@ -86,7 +86,9 @@ const tasksRepositories = {
     }
 
     const statusAnterior = tarefaAtual[0]?.status;
-    if (statusAnterior !== "Concluida") {
+    const novoStatus = statusAnterior === "Concluida" ? "Em andamento" : "Concluida";
+
+    if (novoStatus === "Concluida") {
       const prioridade = tarefaAtual[0]?.prioridade;
       const pontos = PONTOS_POR_PRIORIDADE[prioridade?.toLowerCase()] ?? 0;
       await tasksRepositories.adicionarPontos(
@@ -94,10 +96,12 @@ const tasksRepositories = {
         idTask,
         pontos,
       );
+    } else {
+      await tasksRepositories.removerPontos(idTask);
     }
 
-    const sql = `UPDATE tarefas SET status = 'Concluida' WHERE UUID = ?`;
-    const [rows] = await connection.execute(sql, [idTask]);
+    const sql = `UPDATE tarefas SET status = ? WHERE UUID = ?`;
+    const [rows] = await connection.execute(sql, [novoStatus, idTask]);
     return rows;
   },
 
@@ -111,6 +115,12 @@ const tasksRepositories = {
     const sql = `INSERT INTO pontos (UUID, tarefaId, pontos) VALUES (UUID(), ?, ?)`;
     const values = [tarefaId, pontos];
     const [rows] = await connection.execute(sql, values);
+    return rows;
+  },
+
+  removerPontos: async tarefaId => {
+    const sql = `DELETE FROM pontos WHERE tarefaId = ?`;
+    const [rows] = await connection.execute(sql, [tarefaId]);
     return rows;
   },
 

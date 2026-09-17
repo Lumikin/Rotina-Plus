@@ -82,7 +82,7 @@ export function Registrar() {
                 Email
               </label>
 
-              <input
+              <input 
                 id="email"
                 required
                 type="email"

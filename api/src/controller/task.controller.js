@@ -138,7 +138,7 @@ const tasksController = {
           nome: nomeFinal,
           descricao: descricaoFinal,
           dataTarefa: dataTarefaFinal, // ano-mes-data
-          prioridade: prioridadeFinal,
+          prioridade: prioridadeFinal, //
           status: statusFinal,
         },
         id,

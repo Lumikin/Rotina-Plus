@@ -15,13 +15,15 @@ const tasksRepositories = {
 
   listarUserTask: async userId => {
     const sql = `SELECT * FROM tarefas WHERE userId = ?;`;
-    const [rows] = await connection.execute(sql, [userId]);
+    const values = [userId];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
   listarTask: async tarefaUUID => {
     const sql = `SELECT * FROM tarefas WHERE UUID = ?;`;
-    const [rows] = await connection.execute(sql, [tarefaUUID]);
+    const values = [tarefaUUID];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
@@ -42,7 +44,6 @@ const tasksRepositories = {
   atualizarTask: async (id, task) => {
     const [tarefaAtual] = await connection.execute(
       `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
-      [id]
     );
 
     const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
@@ -59,7 +60,11 @@ const tasksRepositories = {
     const statusAnterior = tarefaAtual[0]?.status;
     if (statusAnterior !== "Concluida" && task.status === "Concluida") {
       const pontos = PONTOS_POR_PRIORIDADE[task.prioridade?.toLowerCase()] ?? 0;
-      await tasksRepositories.adicionarPontos(tarefaAtual[0].userId, id, pontos);
+      await tasksRepositories.adicionarPontos(
+        tarefaAtual[0].userId,
+        id,
+        pontos,
+      );
     }
 
     return rows;

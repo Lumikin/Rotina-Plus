@@ -1,22 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { login, loading, error, success } = useLogin();
+  const [executar, setExecutar] = useState(false);
+  const { loading, error, success } = useLogin(email, senha, executar);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    try {
-      const response = await login(email, senha);
-      // localStorage.setItem("token", response.token); //Armazena o token
-      console.log(response);
-      return response;
-    } catch (err) {
-      console.log(err);
-    }
+    setExecutar(true);
   }
 
   return (
@@ -28,6 +21,7 @@ export default function Login() {
         <div className="card-body p-4 p-md-5">
           <div className="text-center mb-4">
             <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
+
             <p className="text-muted mb-0">Faça login para continuar</p>
           </div>
 
@@ -64,17 +58,9 @@ export default function Login() {
               />
             </div>
 
-            {error && (
-              <div className="alert alert-danger" role="alert">
-                {error}
-              </div>
-            )}
+            {error && <div className="alert alert-danger">{error}</div>}
 
-            {success && (
-              <div className="alert alert-success" role="alert">
-                {success}
-              </div>
-            )}
+            {success && <div className="alert alert-success">{success}</div>}
 
             <button
               type="submit"

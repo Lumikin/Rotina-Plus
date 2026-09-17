@@ -1,33 +1,19 @@
-import { api_rotinaplus } from "./api";
+import usuarios from "../../../data/usuarios.json";
 
-export async function loginUser(email, senha) {
-  try {
-    const response = await api_rotinaplus.post("/auth/login", {
-      email: email,
-      senha: senha,
-    });
-
-    return response.data;
-
-  } catch (error) {
-    console.error("Erro ao fazer login: ", error);
-    throw error; // Força o erro em vez de retornar uma array vazia
+export async function loginUser(email, password_hash) {
+  const user = usuarios.find((u) => u.email === email && u.password_hash === password_hash);
+  if (!user) {
+    return { success: false, message: "Email ou senha incorretos." };
   }
-};
+  return { success: true, userId: user.userId, nome: user.nome };
+}
 
-export async function registerUser(nome, email, senha, dataNascimento) {
-  try {
-    const response = await api_rotinaplus.post("/auth/register", {
-      nome: nome,
-      email: email,
-      senha: senha,
-      dataNascimento: dataNascimento,
-    });
-
-    return response.data;
-
-  } catch (error) {
-    console.error("Erro ao cadastrar o usuário: ", error);
-    throw error; // Força o erro em vez de retornar uma array vazia
+export async function registerUser(email, password_hash, nome, dataNascimento) {
+  const exists = usuarios.find((u) => u.email === email);
+  if (exists) {
+    return { success: false, message: "Email já cadastrado." };
   }
-};
+  const newUser = { userId: usuarios.length + 1, nome, email, dataNascimento, password_hash };
+  usuarios.push(newUser);
+  return { success: true, userId: newUser.userId, nome: newUser.nome };
+}

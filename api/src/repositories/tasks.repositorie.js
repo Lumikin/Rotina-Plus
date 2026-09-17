@@ -1,26 +1,35 @@
 import { connection } from "../config/Databse.js";
+import { statusEnum } from "../enum/database.enum.js";
+
+const PONTOS_POR_PRIORIDADE = {
+  baixa: 5,
+  media: 10,
+  alta: 20,
+};
 
 const tasksRepositories = {
   listarTasks: async () => {
     const sql = `SELECT * FROM tarefas;`;
-    const values = [];
     const [rows] = await connection.execute(sql);
     return rows;
   },
-  listarUserTask: async Userid => {
+
+  listarUserTask: async userId => {
     const sql = `SELECT * FROM tarefas WHERE userId = ?;`;
-    const values = [Userid];
+    const values = [userId];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
-  listarTask: async tarefaID => {
-    const sql = `SELECT * FROM tarefas WHERE userId = ?;`;
-    const values = [tarefaID];
+
+  listarTask: async tarefaUUID => {
+    const sql = `SELECT * FROM tarefas WHERE UUID = ?;`;
+    const values = [tarefaUUID];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
+
   criarTask: async task => {
-    const sql = `INSERT INTO tarefas (userId, Nome, descricao, DataTarefa ,Prioridade, Status) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO tarefas (UUID, userId, nome, descricao, dataTarefa, prioridade, status) VALUES (UUID(), ?, ?, ?, ?, ?, ?)`;
     const values = [
       task.userId,
       task.nome,
@@ -32,8 +41,28 @@ const tasksRepositories = {
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
+
   atualizarTask: async (id, task) => {
-    const sql = `UPDATE tarefas SET Nome = ?, descricao = ?, DataTarefa = ?, Prioridade = ?, Status = ? WHERE tarefaID = ?`;
+    const [tarefaAtual] = await connection.execute(
+      `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
+      [id],
+    );
+
+    if (tarefaAtual.length === 0) {
+      throw new Error("Tarefa nao encontrada");
+    }
+
+    const statusAnterior = tarefaAtual[0]?.status;
+    if (statusAnterior !== "Concluida" && task.status === "Concluida") {
+      const pontos = PONTOS_POR_PRIORIDADE[task.prioridade?.toLowerCase()] ?? 0;
+      await tasksRepositories.adicionarPontos(
+        tarefaAtual[0].userId,
+        id,
+        pontos,
+      );
+    }
+
+    const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
     const values = [
       task.nome,
       task.descricao,
@@ -45,11 +74,68 @@ const tasksRepositories = {
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
+
+  concluirTask: async idTask => {
+    const [tarefaAtual] = await connection.execute(
+      `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
+      [idTask],
+    );
+
+    if (tarefaAtual.length === 0) {
+      throw new Error("Tarefa nao encontrada");
+    }
+
+    const statusAnterior = tarefaAtual[0]?.status;
+    const novoStatus = statusAnterior === "Concluida" ? "Em andamento" : "Concluida";
+
+    if (novoStatus === "Concluida") {
+      const prioridade = tarefaAtual[0]?.prioridade;
+      const pontos = PONTOS_POR_PRIORIDADE[prioridade?.toLowerCase()] ?? 0;
+      await tasksRepositories.adicionarPontos(
+        tarefaAtual[0].userId,
+        idTask,
+        pontos,
+      );
+    } else {
+      await tasksRepositories.removerPontos(idTask);
+    }
+
+    const sql = `UPDATE tarefas SET status = ? WHERE UUID = ?`;
+    const [rows] = await connection.execute(sql, [novoStatus, idTask]);
+    return rows;
+  },
+
   deletarTask: async id => {
-    const sql = `DELETE FROM tarefas WHERE tarefaId = ?`;
-    const values = [id];
+    const sql = `DELETE FROM tarefas WHERE UUID = ?`;
+    const [rows] = await connection.execute(sql, [id]);
+    return rows;
+  },
+
+  adicionarPontos: async (userId, tarefaId, pontos) => {
+    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos) VALUES (UUID(), ?, ?)`;
+    const values = [tarefaId, pontos];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
+
+  removerPontos: async tarefaId => {
+    const sql = `DELETE FROM pontos WHERE tarefaId = ?`;
+    const [rows] = await connection.execute(sql, [tarefaId]);
+    return rows;
+  },
+
+  listarRanking: async () => {
+    const sql = `
+      SELECT u.UUID, u.nome, COALESCE(SUM(p.pontos), 0) AS totalPontos
+      FROM usuarios u
+      LEFT JOIN tarefas t ON t.userId = u.UUID
+      LEFT JOIN pontos p ON p.tarefaId = t.UUID
+      GROUP BY u.UUID, u.nome
+      ORDER BY totalPontos DESC;
+    `;
+    const [rows] = await connection.execute(sql);
+    return rows;
+  },
 };
+
 export default tasksRepositories;

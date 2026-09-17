@@ -3,7 +3,7 @@ import router from "./routes/router.js";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(
@@ -14,5 +14,5 @@ app.use(
 );
 app.use(router);
 app.listen(PORT, () => {
-  console.log(`Server is running on  http://localhst:${PORT}`);
+  console.log(`Server is running on  http://localhost:${PORT}`);
 });

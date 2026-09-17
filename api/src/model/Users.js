@@ -3,13 +3,14 @@ export class Users {
   #email;
   #senha;
   #dataNascimento;
-  #id;
-  constructor(nome, email, senha, dataNascimento, id) {
+  #UUID;
+
+  constructor(nome, email, senha, dataNascimento, UUID) {
     this.#nome = nome;
     this.#email = email;
     this.#senha = senha;
     this.#dataNascimento = dataNascimento;
-    this.#id = id;
+    this.#UUID = UUID;
   }
 
   get nome() {
@@ -24,8 +25,8 @@ export class Users {
   get dataNascimento() {
     return this.#dataNascimento;
   }
-  get id() {
-    return this.#id;
+  get UUID() {
+    return this.#UUID;
   }
 
   set nome(nome) {
@@ -40,19 +41,14 @@ export class Users {
   set dataNascimento(dataNascimento) {
     this.#dataNascimento = dataNascimento;
   }
-  set id(id) {
-    this.#id = id;
-  }
-
-  #validarID(value) {
-    if (!value || isNaN(value) || value < 0)
-      throw new Error("O campo ID é obrigatório e deve ter 3 e 45 caracteres");
+  set UUID(UUID) {
+    this.#UUID = UUID;
   }
 
   #validarNome(value) {
     if (!value || value.length < 3 || value.length > 64)
       throw new Error(
-        "O campo nome é obrigatório e deve ter 3 e 64 caracteres",
+        "O campo nome e obrigatorio e deve ter entre 3 e 64 caracteres",
       );
   }
 
@@ -66,12 +62,13 @@ export class Users {
     );
   }
 
-  static atualizar(data, id) {
+  static atualizar(data, UUID) {
     return new Users(
       data.nome,
       data.email,
       data.senha,
-      id,
+      data.dataNascimento,
+      UUID,
     );
   }
 }

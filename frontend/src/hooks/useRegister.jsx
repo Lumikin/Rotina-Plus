@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { registerUser } from "../services/authService";
+import { api_rotinaplus } from "../services/api";
 
 export function useRegister(
   nome,
@@ -23,18 +23,18 @@ export function useRegister(
       setSuccess("");
 
       try {
-        const response = await registerUser(
+        const response = await api_rotinaplus.post("/auth/register", {
           nome,
           email,
           senha,
-          dataNascimento
-        );
+          dataNascimento,
+        });
 
         console.log(response);
-        setSuccess("Conta criada com sucesso!");
+        setSuccess(response.data.message || "Conta criada com sucesso!");
       } catch (err) {
         console.error("Erro no cadastro:", err);
-        setError("Erro no cadastro");
+        setError(err.response?.data?.message || "Erro no cadastro");
       }
 
       setLoading(false);
@@ -46,6 +46,6 @@ export function useRegister(
   return {
     loading,
     error,
-    success
+    success,
   };
 }

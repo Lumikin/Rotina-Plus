@@ -45,6 +45,7 @@ const tasksRepositories = {
   atualizarTask: async (id, task) => {
     const [tarefaAtual] = await connection.execute(
       `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
+      [id],
     );
 
     if (tarefaAtual.length === 0) {
@@ -60,19 +61,43 @@ const tasksRepositories = {
         pontos,
       );
     }
-  },
 
-  concluirTask: async idTask => {
-    const sql = `UPDATE tarefas SET status = 'Concluida' WHERE UUID = ?`;
-    const values = [idTask];
+    const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
+    const values = [
+      task.nome,
+      task.descricao,
+      task.dataTarefa,
+      task.prioridade,
+      task.status,
+      id,
+    ];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
   concluirTask: async idTask => {
+    const [tarefaAtual] = await connection.execute(
+      `SELECT status, prioridade, userId FROM tarefas WHERE UUID = ?`,
+      [idTask],
+    );
+
+    if (tarefaAtual.length === 0) {
+      throw new Error("Tarefa nao encontrada");
+    }
+
+    const statusAnterior = tarefaAtual[0]?.status;
+    if (statusAnterior !== "Concluida") {
+      const prioridade = tarefaAtual[0]?.prioridade;
+      const pontos = PONTOS_POR_PRIORIDADE[prioridade?.toLowerCase()] ?? 0;
+      await tasksRepositories.adicionarPontos(
+        tarefaAtual[0].userId,
+        idTask,
+        pontos,
+      );
+    }
+
     const sql = `UPDATE tarefas SET status = 'Concluida' WHERE UUID = ?`;
-    const values = [idTask];
-    const [rows] = await connection.execute(sql, values);
+    const [rows] = await connection.execute(sql, [idTask]);
     return rows;
   },
 
@@ -83,8 +108,9 @@ const tasksRepositories = {
   },
 
   adicionarPontos: async (userId, tarefaId, pontos) => {
-    const sql = `INSERT INTO pontos (UUID, userId, tarefaId, pontos, dataCad) VALUES (UUID(), ?, ?, ?, NOW())`;
-    const [rows] = await connection.execute(sql, [userId, tarefaId, pontos]);
+    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos) VALUES (UUID(), ?, ?)`;
+    const values = [tarefaId, pontos];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 

@@ -5,10 +5,11 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [executar, setExecutar] = useState(false);
+  const { loading, error, success } = useLogin(email, senha, executar);
 
-  async function handleSubmit(email, senha) {
-    const response = await loginUser(email, senha);
-    return response;
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setExecutar(true);
   }
 
   return (

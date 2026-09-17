@@ -123,16 +123,22 @@ const tasksController = {
   concluirTask: async (req, res) => {
     try {
       const { UUID } = req.params;
+      if (!UUID) {
+        return res.status(400).json({ message: "ID da tarefa é obrigatório" });
+      }
 
       const concluir = await tasksRepositories.concluirTask(UUID);
       return res.status(200).json({
-        message: "tarefa alterada",
+        message: "Tarefa concluída com sucesso",
         result: concluir,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      if (error.message === "Tarefa nao encontrada") {
+        return res.status(404).json({ message: "Tarefa não encontrada" });
+      }
       return res.status(500).json({
-        sucess: false,
+        message: "Erro no servidor",
         error: error.message,
       });
     }

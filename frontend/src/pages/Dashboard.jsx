@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { listarTasks as getAllTasks, listarTarefasUsuario as getTasksByUser } from "../services/taskService";
+import { getAllTasks, getTasksByUser } from "../services/taskService";
 import "./Dashboard.css";
 
 const views = {
@@ -48,16 +48,20 @@ export default function Tarefas() {
     setError("");
 
     try {
-      const data = activeView === "mine" && userId
-        ? await getTasksByUser(userId)
-        : activeView === "all"
-          ? await getAllTasks()
-          : [];
+      const data =
+        activeView === "mine" && userId
+          ? await getTasksByUser(userId)
+          : activeView === "all"
+            ? await getAllTasks()
+            : [];
 
       setTasks(data);
     } catch (requestError) {
       setTasks([]);
-      setError(requestError.response?.data?.message || "Não foi possível carregar as tarefas.");
+      setError(
+        requestError.response?.data?.message ||
+          "Não foi possível carregar as tarefas.",
+      );
     } finally {
       setLoading(false);
     }
@@ -74,15 +78,26 @@ export default function Tarefas() {
           <div>
             <p className="tasks-kicker">Rotina Plus</p>
             <h1 id="tasks-title">Tarefas</h1>
-            <p className="tasks-subtitle">Acompanhe as tarefas cadastradas e a sua lista pessoal.</p>
+            <p className="tasks-subtitle">
+              Acompanhe as tarefas cadastradas e a sua lista pessoal.
+            </p>
           </div>
-          <button className="refresh-button" type="button" onClick={loadTasks} disabled={loading}>
+          <button
+            className="refresh-button"
+            type="button"
+            onClick={loadTasks}
+            disabled={loading}
+          >
             {loading ? "Atualizando..." : "Atualizar"}
           </button>
         </header>
 
         <div className="tasks-toolbar">
-          <div className="tasks-tabs" role="tablist" aria-label="Filtro de tarefas">
+          <div
+            className="tasks-tabs"
+            role="tablist"
+            aria-label="Filtro de tarefas"
+          >
             {Object.entries(views).map(([key, label]) => (
               <button
                 key={key}
@@ -96,7 +111,9 @@ export default function Tarefas() {
               </button>
             ))}
           </div>
-          <span className="task-count">{tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"}</span>
+          <span className="task-count">
+            {tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"}
+          </span>
         </div>
 
         {!userId && activeView === "mine" && !loading && (
@@ -105,15 +122,22 @@ export default function Tarefas() {
           </div>
         )}
 
-        {error && <div className="tasks-error" role="alert">{error}</div>}
+        {error && (
+          <div className="tasks-error" role="alert">
+            {error}
+          </div>
+        )}
 
         {loading ? (
-          <div className="tasks-state" role="status">Carregando tarefas...</div>
+          <div className="tasks-state" role="status">
+            Carregando tarefas...
+          </div>
         ) : tasks.length > 0 ? (
           <div className="task-list">
-            {tasks.map((task) => {
+            {tasks.map(task => {
               const status = task.Status ?? task.status ?? "Pendente";
-              const priority = task.Prioridade ?? task.prioridade ?? "Sem prioridade";
+              const priority =
+                task.Prioridade ?? task.prioridade ?? "Sem prioridade";
               const dueDate = task.DataTarefa ?? task.dataTarefa;
 
               return (
@@ -121,7 +145,11 @@ export default function Tarefas() {
                   <div className="task-main">
                     <div className="task-title-row">
                       <h2>{task.Nome ?? task.nome ?? task.titulo}</h2>
-                      <span className={`status-badge ${getStatusClass(status)}`}>{statusLabels[status] ?? status}</span>
+                      <span
+                        className={`status-badge ${getStatusClass(status)}`}
+                      >
+                        {statusLabels[status] ?? status}
+                      </span>
                     </div>
                     <p>{task.descricao || "Sem descrição."}</p>
                   </div>

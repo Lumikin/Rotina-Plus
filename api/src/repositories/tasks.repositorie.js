@@ -79,8 +79,7 @@ const tasksRepositories = {
     }
 
     const statusAnterior = tarefaAtual[0]?.status;
-    const novoStatus =
-      statusAnterior === "Concluida" ? "Em andamento" : "Concluida";
+    const novoStatus = statusAnterior === "Concluida" ? "Em andamento" : "Concluida";
 
     if (novoStatus === "Concluida") {
       const prioridade = tarefaAtual[0]?.prioridade;
@@ -96,18 +95,11 @@ const tasksRepositories = {
   },
 
   deletarTask: async id => {
-    await connection.execute(`DELETE FROM pontos WHERE tarefaId = ?`, [id]);
     const sql = `DELETE FROM tarefas WHERE UUID = ?`;
     const [rows] = await connection.execute(sql, [id]);
     return rows;
   },
 
-  listarTaskPontos: async (id) => {
-    const sql = `SELECT * FROM pontos WHERE tarefaId = ?`;
-    const [rows] = await connection.execute(sql, [id]);
-    return rows;
-  },
-  
   adicionarPontos: async (userId, tarefaId, pontos) => {
     const sql = `INSERT INTO pontos (UUID, tarefaId, pontos) VALUES (UUID(), ?, ?)`;
     const values = [tarefaId, pontos];

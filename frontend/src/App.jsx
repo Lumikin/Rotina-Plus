@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Registrar from "./pages/Registrer";
-import Tarefas from "./pages/Tarefas";
+import Registrer from "./pages/Registrer";
+import VerifyCode from "./pages/VerifyCode";
+import Tarefas from "./pages/Dashboard";
 
 function App() {
   return (
@@ -10,8 +11,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Registrar />} />
-        <Route path="/dashbord" element={<Tarefas />} />
+        <Route path="/register" element={<Registrer />} />
+        <Route path="/dashboard" element={<Tarefas />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
       </Routes>
     </BrowserRouter>
   );

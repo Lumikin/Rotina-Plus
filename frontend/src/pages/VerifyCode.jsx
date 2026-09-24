@@ -1,21 +1,22 @@
 import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
 import Navbar from "../components/Navbar";
 
-export default function Login() {
+export default function VerifyCode() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const { login, loading, error, success } = useLogin();
-  const [executar, setExecutar] = useState(false);
+  const [codigo, setCodigo] = useState("");
+  const [novaSenha, setSenha] = useState("");
   const [temaEscuro, setTemaEscuro] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [mensagem, setMensagem] = useState(null);
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    setExecutar(false);
+    setLoading(true);
 
     setTimeout(() => {
-      setExecutar(true);
-    }, 0);
+      setLoading(false);
+      setMensagem("Senha redefinida com sucesso!");
+    }, 1000);
   }
 
   return (
@@ -25,7 +26,7 @@ export default function Login() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      {/* Navbar com Logo e botões Entrar e Cadastrar */}
+      {/* Navbar Oficial */}
       <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
 
       {/* Conteúdo Centralizado */}
@@ -40,14 +41,15 @@ export default function Login() {
             <div className="text-center mb-4">
               <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
               <p className={temaEscuro ? "text-light mb-0" : "text-muted mb-0"}>
-                Faça login para continuar
+                Recuperação de Senha
               </p>
             </div>
 
             <form onSubmit={handleSubmit}>
+              {/* Campo de E-mail Adicionado */}
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">
-                  Email
+                  E-mail
                 </label>
                 <input
                   id="email"
@@ -62,49 +64,56 @@ export default function Login() {
                 />
               </div>
 
-              <div className="mb-2">
-                <label htmlFor="senha" className="form-label">
-                  Senha
+              {/* Campo do Código */}
+              <div className="mb-3">
+                <label htmlFor="codigo" className="form-label">
+                  Código recebido por e-mail
                 </label>
                 <input
-                  id="senha"
+                  id="codigo"
                   required
-                  value={senha}
+                  value={codigo}
+                  onChange={e => setCodigo(e.target.value)}
+                  type="text"
+                  className={`form-control ${
+                    temaEscuro ? "bg-dark text-white border-secondary" : ""
+                  }`}
+                  placeholder="Digite o código de 6 dígitos"
+                />
+              </div>
+
+              {/* Campo da Nova Senha */}
+              <div className="mb-4">
+                <label htmlFor="novaSenha" className="form-label">
+                  Nova Senha
+                </label>
+                <input
+                  id="novaSenha"
+                  required
+                  value={novaSenha}
                   onChange={e => setSenha(e.target.value)}
                   type="password"
                   className={`form-control ${
                     temaEscuro ? "bg-dark text-white border-secondary" : ""
                   }`}
-                  placeholder="Digite uma senha"
+                  placeholder="Digite sua nova senha"
                 />
               </div>
 
-              <div className="d-flex justify-content-end mb-4">
-                <a
-                  href="/verify-code"
-                  className={`small text-decoration-none ${
-                    temaEscuro ? "text-info" : "text-primary"
-                  }`}
-                >
-                  Esqueci minha senha
-                </a>
-              </div>
-
-              {error && <div className="alert alert-danger">{error}</div>}
-              {success && <div className="alert alert-success">{success}</div>}
+              {mensagem && <div className="alert alert-success">{mensagem}</div>}
 
               <button
                 type="submit"
                 className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-3"
                 disabled={loading}
               >
-                {loading ? "Entrando..." : "Entrar"}
+                {loading ? "Redefinindo..." : "Redefinir Senha"}
               </button>
 
               <p className="text-center mb-0 small">
-                Ainda não tem uma conta?{" "}
-                <a href="/register" className="text-info text-decoration-none fw-semibold">
-                  Cadastre-se
+                Lembrou a senha?{" "}
+                <a href="/login" className="text-info text-decoration-none fw-semibold">
+                  Voltar ao Login
                 </a>
               </p>
             </form>

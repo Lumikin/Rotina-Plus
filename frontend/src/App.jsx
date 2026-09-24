@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registrer from "./pages/Registrer";
+import VerifyCode from "./pages/VerifyCode";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registrer />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
       </Routes>
     </BrowserRouter>
   );

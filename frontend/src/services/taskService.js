@@ -78,3 +78,7 @@ export async function deletarTask(id) {
   }
 }
 
+// Aliases para compatibilidade com Dashboard.jsx
+export const getAllTasks = listarTasks;
+export const getTasksByUser = listarTarefasUsuario;
+

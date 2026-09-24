@@ -27,16 +27,32 @@ const features = [
   },
 ];
 
-export default function Features() {
+export default function Features({ temaEscuro }) {
   return (
-    <section id="funcionalidades" className="py-6 bg-white">
+    <section
+      id="funcionalidades"
+      className={`py-6 ${temaEscuro ? "bg-dark text-white" : "bg-white text-dark"}`}
+      style={{ transition: "all 0.3s ease" }}
+    >
       <div className="container py-5">
-        <div className="text-center mb-5" style={{ maxWidth: "640px", margin: "0 auto" }}>
-          <span className="fw-semibold text-primary-rp text-uppercase" style={{ fontSize: "14px", letterSpacing: "1px" }}>
+        <div
+          className="text-center mb-5"
+          style={{ maxWidth: "640px", margin: "0 auto" }}
+        >
+          <span
+            className="fw-semibold text-primary-rp text-uppercase"
+            style={{ fontSize: "14px", letterSpacing: "1px" }}
+          >
             Funcionalidades
           </span>
-          <h2 className="mt-2 mb-3">Tudo que você precisa para manter sua rotina em dia</h2>
-          <p style={{ color: "var(--color-text-muted)" }}>
+          <h2 className="mt-2 mb-3">
+            Tudo que você precisa para manter sua rotina em dia
+          </h2>
+          <p
+            style={{
+              color: temaEscuro ? "#e0e0e0" : "var(--color-text-muted)",
+            }}
+          >
             O Rotina Plus une organização e gamificação para tornar seus hábitos
             diários mais simples de acompanhar e mais divertidos de manter.
           </p>
@@ -45,7 +61,7 @@ export default function Features() {
         <div className="row g-4">
           {features.map((feature) => (
             <div className="col-md-6 col-lg-3" key={feature.title}>
-              <FeatureCard {...feature} />
+              <FeatureCard {...feature} temaEscuro={temaEscuro} />
             </div>
           ))}
         </div>

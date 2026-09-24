@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getAllTasks, getTasksByUser } from "../services/taskService";
+import { listarTasks as getAllTasks, listarTarefasUsuario as getTasksByUser } from "../services/taskService";
 import "./Dashboard.css";
 
 const views = {

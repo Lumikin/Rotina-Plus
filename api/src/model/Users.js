@@ -3,13 +3,17 @@ export class Users {
   #email;
   #senha;
   #dataNascimento;
+  #tokenRecuperacao;
+  #expiracaoTokenRecuperacao;
   #UUID;
 
-  constructor(nome, email, senha, dataNascimento, UUID) {
+  constructor(nome, email, senha, dataNascimento, UUID, tokenRecuperacao, expiracaoTokenRecuperacao) {
     this.#nome = nome;
     this.#email = email;
     this.#senha = senha;
     this.#dataNascimento = dataNascimento;
+    this.#tokenRecuperacao = tokenRecuperacao;
+    this.#expiracaoTokenRecuperacao = expiracaoTokenRecuperacao;
     this.#UUID = UUID;
   }
 
@@ -24,6 +28,12 @@ export class Users {
   }
   get dataNascimento() {
     return this.#dataNascimento;
+  }
+  get tokenRecuperacao() { 
+    return this.#tokenRecuperacao; 
+  }
+  get expiracaoTokenRecuperacao() { 
+    return this.#expiracaoTokenRecuperacao;
   }
   get UUID() {
     return this.#UUID;
@@ -47,28 +57,14 @@ export class Users {
 
   #validarNome(value) {
     if (!value || value.length < 3 || value.length > 64)
-      throw new Error(
-        "O campo nome e obrigatorio e deve ter entre 3 e 64 caracteres",
-      );
+      throw new Error("O campo nome e obrigatorio e deve ter entre 3 e 64 caracteres");
   }
 
   static criar(data) {
-    return new Users(
-      data.nome,
-      data.email,
-      data.senha,
-      data.dataNascimento,
-      null,
-    );
+    return new Users(data.nome, data.email, data.senha, data.dataNascimento, null);
   }
 
   static atualizar(data, UUID) {
-    return new Users(
-      data.nome,
-      data.email,
-      data.senha,
-      data.dataNascimento,
-      UUID,
-    );
+    return new Users(data.nome, data.email, data.senha, data.dataNascimento, UUID);
   }
-}
+};

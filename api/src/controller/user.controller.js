@@ -59,7 +59,9 @@ const usersController = {
         return res.status(404).json({ message: "Usuario nao encontrado" });
       }
       if (senha && senha.length < 4) {
-        return res.status(400).json({ message: "A senha deve ter no minimo 4 caracteres" });
+        return res
+          .status(400)
+          .json({ message: "A senha deve ter no minimo 4 caracteres" });
       }
       if (!nome && !email && !senha) {
         return res.status(400).json({
@@ -79,7 +81,9 @@ const usersController = {
           dadosAtuais.password_hash,
         );
         if (senhaDuplicada) {
-          return res.status(400).json({ message: "A senha nao pode ser a mesma que a atual" });
+          return res
+            .status(400)
+            .json({ message: "A senha nao pode ser a mesma que a atual" });
         }
         hashedPassword = await bcrypt.hash(senha, saltRounds);
       } else {

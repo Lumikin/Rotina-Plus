@@ -9,7 +9,14 @@ export default function CallToAction() {
           <h2 style={{ color: "#ffffff" }} className="mb-3">
             Pronto para dar o próximo passo na sua rotina?
           </h2>
-          <p className="mb-4" style={{ color: "rgba(255,255,255,0.8)", maxWidth: "560px", margin: "0 auto" }}>
+          <p
+            className="mb-4"
+            style={{
+              color: "rgba(255,255,255,0.8)",
+              maxWidth: "560px",
+              margin: "0 auto",
+            }}
+          >
             Junte-se ao Rotina Plus e comece hoje mesmo a transformar seus
             hábitos em conquistas.
           </p>

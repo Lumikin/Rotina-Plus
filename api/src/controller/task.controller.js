@@ -170,7 +170,9 @@ const tasksController = {
         return res.status(400).json({ message: "ID da tarefa e obrigatório" });
       }
       const validarTask = await tasksRepositories.listarTask(id);
-      const validarPonto = await tasksRepositories.listarTaskPontos(id);
+      const validarPonto = await tasksRepositories.listarTaskPontos(id)
+
+      // Verificar caso existe pontos nessa tarefa
       if (validarPonto.length > 1) {
         await tasksRepositories.removerPontos(id);
       }

@@ -26,7 +26,9 @@ export function useVerifyCode(email, code, executar) {
         setSuccess(response.data.message || "Email verificado com sucesso!");
       } catch (err) {
         console.error("Erro na verificação:", err);
-        setError(err.response?.data?.message || "Erro na verificação do código");
+        setError(
+          err.response?.data?.message || "Erro na verificação do código",
+        );
       }
 
       setLoading(false);

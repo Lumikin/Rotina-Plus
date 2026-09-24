@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { api_rotinaplus } from "../services/api";
 
-export function useRegister(
-  nome,
-  email,
-  senha,
-  dataNascimento,
-  executar
-) {
+export function useRegister(nome, email, senha, dataNascimento, executar) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");

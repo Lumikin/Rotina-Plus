@@ -44,10 +44,7 @@ export async function criarTask(taskData) {
 // Atualiza uma tarefa existente (PUT /tasks/:id)
 export async function atualizarTask(id, taskData) {
   try {
-    const response = await api_rotinaplus.put(
-      `/api/tasks/${id}`,
-      taskData
-    );
+    const response = await api_rotinaplus.put(`/api/tasks/${id}`, taskData);
 
     return response.data;
   } catch (error) {
@@ -77,4 +74,3 @@ export async function deletarTask(id) {
     return null;
   }
 }
-

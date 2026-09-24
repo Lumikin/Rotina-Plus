@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [executar, setExecutar] = useState(false);
-  const { loading, error, success } = useLogin(email, senha, executar);
+  const { login, loading, error, success } = useLogin();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setExecutar(true);
+    await login(email, senha);
   }
 
   return (

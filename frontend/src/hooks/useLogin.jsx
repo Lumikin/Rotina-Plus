@@ -1,43 +1,40 @@
-
-
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { loginUser } from "../services/authService";
 
-export function useLogin(email, senha, executar) {
+export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    if (!executar) {
-      return;
-    }
+  // Só faz a requisição quando for chamada (no submit do formulário)
+  const login = useCallback(async (email, senha) => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-    async function login() {
-      setLoading(true);
-      setError("");
-      setSuccess("");
+    try {
+      const result = await loginUser(email, senha);
 
-      try {
-        const response = await loginUser(email, senha);
-
-        console.log(response);
-        setSuccess("Login realizado com sucesso!");
-      } catch (erro) {
-        console.error("Erro no login:", erro);
-        setError("Erro no login");
+      if (result.success) {
+        setSuccess(result.message || "Login realizado com sucesso!");
+      } else {
+        setError(result.message);
       }
 
+      return result;
+    } catch (erro) {
+      console.error("Erro no login:", erro);
+      setError("Erro no login");
+      return { success: false, message: "Erro no login" };
+    } finally {
       setLoading(false);
     }
-
-    login();
-  }, [executar, email, senha]);
+  }, []);
 
   return {
+    login,
     loading,
     error,
-    success
+    success,
   };
 }
-

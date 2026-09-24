@@ -1,19 +1,78 @@
-import usuarios from "../../../data/usuarios.json";
-
-export async function loginUser(email, password_hash) {
-  const user = usuarios.find((u) => u.email === email && u.password_hash === password_hash);
-  if (!user) {
-    return { success: false, message: "Email ou senha incorretos." };
-  }
-  return { success: true, userId: user.userId, nome: user.nome };
+import { api_rotinaplus } from "./api";
+ 
+const TOKEN_KEY = "token";
+ 
+// Retorna o token JWT salvo (ou null)
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
 }
-
-export async function registerUser(email, password_hash, nome, dataNascimento) {
-  const exists = usuarios.find((u) => u.email === email);
-  if (exists) {
-    return { success: false, message: "Email já cadastrado." };
-  }
-  const newUser = { userId: usuarios.length + 1, nome, email, dataNascimento, password_hash };
-  usuarios.push(newUser);
-  return { success: true, userId: newUser.userId, nome: newUser.nome };
+ 
+// Verifica se há um token salvo
+export function isAuthenticated() {
+  return Boolean(getToken());
 }
+ 
+// Remove o token (logout)
+export function logout() {
+  localStorage.removeItem(TOKEN_KEY);
+}
+ 
+// Faz login (POST /auth/login) e guarda o token JWT no localStorage
+export async function loginUser(email, senha) {
+  try {
+    const response = await api_rotinaplus.post("/auth/login", { email, senha });
+    const data = response.data;
+ 
+    // Ajuste aqui se o backend usar outro nome para o campo do token
+    const token = data.token ?? data.accessToken ?? data.jwt;
+ 
+    if (!token) {
+      return { success: false, message: "Resposta inválida do servidor: token não encontrado." };
+    }
+ 
+    localStorage.setItem(TOKEN_KEY, token);
+ 
+    return { success: true, token, message: data.message };
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+ 
+    return {
+      success: false,
+      message: error.response?.data?.message || "Email ou senha incorretos.",
+    };
+  }
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

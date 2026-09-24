@@ -4,7 +4,7 @@ export default function Navbar({ temaEscuro, toggleTema }) {
   return (
     <nav
       className={`navbar navbar-expand-lg shadow-sm sticky-top py-3 ${
-        temaEscuro ? "navbar-dark bg-dark border-bottom border-secondary" : "navbar-light bg-white"
+        temaEscuro ? "navbar-dark bg-dark" : "navbar-light bg-white"
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
@@ -30,7 +30,7 @@ export default function Navbar({ temaEscuro, toggleTema }) {
             <li className="nav-item">
               <a
                 className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : "text-dark"
+                  temaEscuro ? "text-light" : ""
                 }`}
                 href="#funcionalidades"
               >
@@ -40,7 +40,7 @@ export default function Navbar({ temaEscuro, toggleTema }) {
             <li className="nav-item">
               <a
                 className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : "text-dark"
+                  temaEscuro ? "text-light" : ""
                 }`}
                 href="#como-funciona"
               >
@@ -50,7 +50,7 @@ export default function Navbar({ temaEscuro, toggleTema }) {
             <li className="nav-item">
               <a
                 className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : "text-dark"
+                  temaEscuro ? "text-light" : ""
                 }`}
                 href="#sobre"
               >
@@ -60,10 +60,10 @@ export default function Navbar({ temaEscuro, toggleTema }) {
           </ul>
 
           <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-            {/* Botão para alternar Tema */}
+            {/* Botão para alternar Tema Claro / Escuro */}
             <button
               type="button"
-              className={`btn btn-sm px-3 rounded-pill me-2 ${
+              className={`btn btn-sm ${
                 temaEscuro ? "btn-outline-light" : "btn-outline-dark"
               }`}
               onClick={toggleTema}
@@ -71,15 +71,10 @@ export default function Navbar({ temaEscuro, toggleTema }) {
               {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
             </button>
 
-            <a
-              href="/login"
-              className={`btn btn-sm px-3 fw-semibold ${
-                temaEscuro ? "btn-outline-light text-white" : "btn-outline-info text-info"
-              }`}
-            >
+            <a href="/login" className="btn btn-rp-outline">
               Entrar
             </a>
-            <a href="/register" className="btn btn-info text-white btn-sm px-3 fw-semibold">
+            <a href="/register" className="btn btn-rp-primary">
               Cadastrar
             </a>
           </div>

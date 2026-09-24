@@ -1,7 +1,13 @@
 import logo from "../assets/logo.png";
-export default function Navbar() {
+
+export default function Navbar({ temaEscuro, toggleTema }) {
   return (
-    <nav className="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
+    <nav
+      className={`navbar navbar-expand-lg shadow-sm sticky-top py-3 ${
+        temaEscuro ? "navbar-dark bg-dark border-bottom border-secondary" : "navbar-light bg-white"
+      }`}
+      style={{ transition: "all 0.3s ease" }}
+    >
       <div className="container">
         <a className="navbar-brand d-flex align-items-center" href="#top">
           <img src={logo} alt="Rotina Plus" height="36" />
@@ -22,27 +28,58 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav mx-auto gap-lg-4 mt-3 mt-lg-0">
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#funcionalidades">
+              <a
+                className={`nav-link fw-medium ${
+                  temaEscuro ? "text-light" : "text-dark"
+                }`}
+                href="#funcionalidades"
+              >
                 Funcionalidades
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#como-funciona">
+              <a
+                className={`nav-link fw-medium ${
+                  temaEscuro ? "text-light" : "text-dark"
+                }`}
+                href="#como-funciona"
+              >
                 Como funciona
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-medium" href="#sobre">
+              <a
+                className={`nav-link fw-medium ${
+                  temaEscuro ? "text-light" : "text-dark"
+                }`}
+                href="#sobre"
+              >
                 Sobre
               </a>
             </li>
           </ul>
 
-          <div className="d-flex gap-2 mt-3 mt-lg-0">
-            <a href="#entrar" className="btn btn-rp-outline">
+          <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+            {/* Botão para alternar Tema */}
+            <button
+              type="button"
+              className={`btn btn-sm px-3 rounded-pill me-2 ${
+                temaEscuro ? "btn-outline-light" : "btn-outline-dark"
+              }`}
+              onClick={toggleTema}
+            >
+              {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
+            </button>
+
+            <a
+              href="/login"
+              className={`btn btn-sm px-3 fw-semibold ${
+                temaEscuro ? "btn-outline-light text-white" : "btn-outline-info text-info"
+              }`}
+            >
               Entrar
             </a>
-            <a href="#cadastro" className="btn btn-rp-primary">
+            <a href="/register" className="btn btn-info text-white btn-sm px-3 fw-semibold">
               Cadastrar
             </a>
           </div>

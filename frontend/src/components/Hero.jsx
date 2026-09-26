@@ -1,4 +1,7 @@
-export default function Hero({ temaEscuro }) {
+import { useTheme } from "../contexts/ThemeContext";
+
+export default function Hero() {
+  const { temaEscuro } = useTheme();
   return (
     <header id="top" className="py-6">
       <div className="container py-5">

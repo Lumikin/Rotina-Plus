@@ -1,49 +1,43 @@
-import { useState, useEffect } from "react";
-import { api_rotinaplus } from "../services/api";
+import { useState, useCallback } from "react";
+import { registerUser } from "../services/authService";
 
-export function useRegister(
-  nome,
-  email,
-  senha,
-  dataNascimento,
-  executar
-) {
+export function useRegister() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    if (!executar) {
-      return;
-    }
+  const register = useCallback(async ({ nome, email, senha, dataNascimento }) => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-    async function cadastrar() {
-      setLoading(true);
-      setError("");
-      setSuccess("");
+    try {
+      const result = await registerUser({ nome, email, senha, dataNascimento });
 
-      try {
-        const response = await api_rotinaplus.post("/auth/register", {
-          nome,
-          email,
-          senha,
-          dataNascimento,
-        });
-
-        console.log(response);
-        setSuccess(response.data.message || "Conta criada com sucesso!");
-      } catch (err) {
-        console.error("Erro no cadastro:", err);
-        setError(err.response?.data?.message || "Erro no cadastro");
+      if (result.success) {
+        setSuccess(result.message);
+      } else {
+        setError(result.message);
       }
 
+      return result;
+    } catch (erro) {
+      console.error("Erro no cadastro:", erro);
+      setError("Erro no cadastro");
+      return { success: false, message: "Erro no cadastro" };
+    } finally {
       setLoading(false);
     }
+  }, []);
 
-    cadastrar();
-  }, [executar, nome, email, senha, dataNascimento]);
+  const reset = useCallback(() => {
+    setError("");
+    setSuccess("");
+  }, []);
 
   return {
+    register,
+    reset,
     loading,
     error,
     success,

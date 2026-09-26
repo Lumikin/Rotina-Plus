@@ -1,17 +1,7 @@
-import { api_rotinaPlus } from "./api";
+import { loginUser } from "./authService";
 
+// Legado: mantido para compatibilidade. Prefira loginUser de authService.js,
+// que já salva o token JWT no localStorage.
 export async function ApiLogin(email, senha) {
-  try {
-    const response = await api_rotinaPlus.post("/auth/login", {
-      email: email,
-      senha: senha
-    });
-
-    return response.data;
-
-  } catch (error) {
-    console.error("Erro ao fazer login:", error);
-    
-    return [];
-  }
-};
+  return loginUser(email, senha);
+}

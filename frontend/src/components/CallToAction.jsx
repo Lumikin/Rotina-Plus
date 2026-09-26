@@ -1,4 +1,7 @@
-export default function CallToAction({ temaEscuro }) {
+import { useTheme } from "../contexts/ThemeContext";
+
+export default function CallToAction() {
+  const { temaEscuro } = useTheme();
   return (
     <section
       id="cadastro"

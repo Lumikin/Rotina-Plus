@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useRegister } from "../hooks/useRegister";
 import { useVerifyCode } from "../hooks/useVerifyCode";
 
@@ -9,51 +10,57 @@ export default function Registrer() {
   const [dataN, setDataN] = useState("");
   const [codigo, setCodigo] = useState("");
   const [etapa, setEtapa] = useState(1);
-  const [executarRegister, setExecutarRegister] = useState(false);
-  const [executarVerify, setExecutarVerify] = useState(false);
 
   const [temaEscuro, setTemaEscuro] = useState(false);
+  const navigate = useNavigate();
 
   const {
+    register,
     loading: loadingRegister,
     error: errorRegister,
     success: successRegister,
-  } = useRegister(nome, email, senha, dataN, executarRegister);
+  } = useRegister();
 
   const {
+    verify,
+    resend,
     loading: loadingVerify,
+    resending,
     error: errorVerify,
     success: successVerify,
-  } = useVerifyCode(email, codigo, executarVerify);
+  } = useVerifyCode();
 
-  useEffect(() => {
-    if (successRegister) {
-      setEtapa(2);
-      setExecutarRegister(false);
-    }
-  }, [successRegister]);
-
-  useEffect(() => {
-    if (successVerify) {
-      alert("Email verificado com sucesso! Redirecionando...");
-      window.location.href = "/login";
-    }
-  }, [successVerify]);
-
-  function handleEnviarDados(e) {
+  async function handleEnviarDados(e) {
     e.preventDefault();
-    setExecutarRegister(false);
-    setTimeout(() => {
-      setExecutarRegister(true);
-    }, 0);
+
+    const result = await register({
+      nome: nome.trim(),
+      email: email.trim(),
+      senha,
+      dataNascimento: dataN,
+    });
+
+    if (result.success) {
+      setEtapa(2);
+    }
   }
 
-  function handleValidarCodigo(e) {
+  async function handleValidarCodigo(e) {
     e.preventDefault();
-    setExecutarVerify(false);
-    setTimeout(() => {
-      setExecutarVerify(true);
-    }, 0);
+
+    const result = await verify(email.trim(), codigo.trim());
+
+    if (result.success) {
+      setTimeout(() => navigate("/login", { replace: true }), 1200);
+    }
+  }
+
+  async function handleReenviarCodigo() {
+    await resend(email.trim());
+  }
+
+  function handleVoltar() {
+    setEtapa(1);
   }
 
   return (
@@ -84,19 +91,19 @@ export default function Registrer() {
             {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
           </button>
 
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="btn btn-outline-info btn-sm fw-semibold px-3"
           >
             Entrar
-          </a>
+          </Link>
 
-          <a
-            href="/register"
+          <Link
+            to="/register"
             className="btn btn-info text-white btn-sm fw-semibold px-3"
           >
             Cadastrar
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -180,6 +187,7 @@ export default function Registrer() {
                   <input
                     id="senha"
                     required
+                    minLength={4}
                     type="password"
                     className={`form-control ${
                       temaEscuro ? "bg-dark text-white border-secondary" : ""
@@ -237,6 +245,11 @@ export default function Registrer() {
                 {errorVerify && (
                   <div className="alert alert-danger mb-3">{errorVerify}</div>
                 )}
+                {successVerify && (
+                  <div className="alert alert-success mb-3">
+                    {successVerify} Redirecionando para o login...
+                  </div>
+                )}
 
                 <button
                   type="submit"
@@ -248,11 +261,20 @@ export default function Registrer() {
 
                 <button
                   type="button"
+                  className="btn btn-outline-info w-100 btn-sm fw-semibold mb-2"
+                  onClick={handleReenviarCodigo}
+                  disabled={loadingVerify || resending}
+                >
+                  {resending ? "Reenviando..." : "Reenviar código"}
+                </button>
+
+                <button
+                  type="button"
                   className={`btn btn-link w-100 btn-sm text-decoration-none ${
                     temaEscuro ? "text-light" : "text-muted"
                   }`}
-                  onClick={() => setEtapa(1)}
-                  disabled={loadingVerify}
+                  onClick={handleVoltar}
+                  disabled={loadingVerify || resending}
                 >
                   Voltar e alterar e-mail
                 </button>
@@ -261,12 +283,12 @@ export default function Registrer() {
 
             <p className="text-center mt-4 mb-0 small">
               Já tem uma conta?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="text-info text-decoration-none fw-semibold"
               >
                 Entrar
-              </a>
+              </Link>
             </p>
           </div>
         </div>

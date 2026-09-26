@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import Navbar from "../components/Navbar";
 
@@ -6,16 +7,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const { login, loading, error, success } = useLogin();
-  const [executar, setExecutar] = useState(false);
   const [temaEscuro, setTemaEscuro] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setExecutar(false);
 
-    setTimeout(() => {
-      setExecutar(true);
-    }, 0);
+    const result = await login(email.trim(), senha);
+
+    if (result.success) {
+      navigate("/dashboard", { replace: true });
+    }
   }
 
   return (
@@ -59,6 +61,7 @@ export default function Login() {
                     temaEscuro ? "bg-dark text-white border-secondary" : ""
                   }`}
                   placeholder="seuemail@exemplo.com"
+                  disabled={loading}
                 />
               </div>
 
@@ -75,19 +78,20 @@ export default function Login() {
                   className={`form-control ${
                     temaEscuro ? "bg-dark text-white border-secondary" : ""
                   }`}
-                  placeholder="Digite uma senha"
+                  placeholder="Digite sua senha"
+                  disabled={loading}
                 />
               </div>
 
               <div className="d-flex justify-content-end mb-4">
-                <a
-                  href="/verify-code"
+                <Link
+                  to="/verify-code"
                   className={`small text-decoration-none ${
                     temaEscuro ? "text-info" : "text-primary"
                   }`}
                 >
                   Esqueci minha senha
-                </a>
+                </Link>
               </div>
 
               {error && <div className="alert alert-danger">{error}</div>}
@@ -103,9 +107,9 @@ export default function Login() {
 
               <p className="text-center mb-0 small">
                 Ainda não tem uma conta?{" "}
-                <a href="/register" className="text-info text-decoration-none fw-semibold">
+                <Link to="/register" className="text-info text-decoration-none fw-semibold">
                   Cadastre-se
-                </a>
+                </Link>
               </p>
             </form>
           </div>

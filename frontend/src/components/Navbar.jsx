@@ -1,7 +1,10 @@
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { useTheme } from "../contexts/ThemeContext";
 
-export default function Navbar({ temaEscuro, toggleTema }) {
+export default function Navbar() {
+  const { temaEscuro, toggleTema } = useTheme();
+
   return (
     <nav
       className={`navbar navbar-expand-lg shadow-sm sticky-top py-3 ${
@@ -72,12 +75,12 @@ export default function Navbar({ temaEscuro, toggleTema }) {
               {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
             </button>
 
-            <a href="/login" className="btn btn-rp-outline">
+            <Link to="/login" className="btn btn-rp-outline">
               Entrar
-            </a>
-            <a href="/register" className="btn btn-rp-primary">
+            </Link>
+            <Link to="/register" className="btn btn-rp-primary">
               Cadastrar
-            </a>
+            </Link>
           </div>
         </div>
       </div>

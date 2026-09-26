@@ -1,22 +1,38 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useVerifyCode } from "../hooks/useVerifyCode";
 import Navbar from "../components/Navbar";
 
 export default function VerifyCode() {
   const [email, setEmail] = useState("");
   const [codigo, setCodigo] = useState("");
-  const [novaSenha, setSenha] = useState("");
+  const [etapa, setEtapa] = useState(1);
   const [temaEscuro, setTemaEscuro] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [mensagem, setMensagem] = useState(null);
+  const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const {
+    verify,
+    resend,
+    loading,
+    resending,
+    error,
+    success,
+  } = useVerifyCode();
+
+  async function handleSolicitarCodigo(e) {
     e.preventDefault();
-    setLoading(true);
+    const result = await resend(email.trim());
+    if (result.success) {
+      setEtapa(2);
+    }
+  }
 
-    setTimeout(() => {
-      setLoading(false);
-      setMensagem("Senha redefinida com sucesso!");
-    }, 1000);
+  async function handleValidarCodigo(e) {
+    e.preventDefault();
+    const result = await verify(email.trim(), codigo.trim());
+    if (result.success) {
+      setTimeout(() => navigate("/login", { replace: true }), 1500);
+    }
   }
 
   return (
@@ -41,82 +57,110 @@ export default function VerifyCode() {
             <div className="text-center mb-4">
               <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
               <p className={temaEscuro ? "text-light mb-0" : "text-muted mb-0"}>
-                Recuperação de Senha
+                {etapa === 1 ? "Solicitar código de verificação" : "Verificar código"}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              {/* Campo de E-mail Adicionado */}
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  E-mail
-                </label>
-                <input
-                  id="email"
-                  required
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  type="email"
-                  className={`form-control ${
-                    temaEscuro ? "bg-dark text-white border-secondary" : ""
+            {error && <div className="alert alert-danger">{error}</div>}
+            {success && <div className="alert alert-success">{success}</div>}
+
+            {etapa === 1 ? (
+              <form onSubmit={handleSolicitarCodigo}>
+                <div className="mb-4">
+                  <label htmlFor="email" className="form-label">
+                    E-mail
+                  </label>
+                  <input
+                    id="email"
+                    required
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    type="email"
+                    className={`form-control ${
+                      temaEscuro ? "bg-dark text-white border-secondary" : ""
+                    }`}
+                    placeholder="seuemail@exemplo.com"
+                    disabled={resending}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-3"
+                  disabled={resending}
+                >
+                  {resending ? "Enviando..." : "Enviar código"}
+                </button>
+
+                <p className="text-center mb-0 small">
+                  Lembrou a senha?{" "}
+                  <Link to="/login" className="text-info text-decoration-none fw-semibold">
+                    Voltar ao Login
+                  </Link>
+                </p>
+              </form>
+            ) : (
+              <form onSubmit={handleValidarCodigo}>
+                <div className="alert alert-info small text-center mb-3">
+                  Enviamos um código para: <br />
+                  <strong>{email}</strong>
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="codigo" className="form-label">
+                    Código recebido por e-mail
+                  </label>
+                  <input
+                    id="codigo"
+                    required
+                    value={codigo}
+                    onChange={e => setCodigo(e.target.value)}
+                    type="text"
+                    maxLength="6"
+                    className={`form-control text-center fw-bold ${
+                      temaEscuro ? "bg-dark text-white border-secondary" : ""
+                    }`}
+                    placeholder="Digite o código de 6 dígitos"
+                    disabled={loading}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-2"
+                  disabled={loading}
+                >
+                  {loading ? "Verificando..." : "Verificar código"}
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-info w-100 btn-sm fw-semibold mb-2"
+                  onClick={() => resend(email.trim())}
+                  disabled={loading || resending}
+                >
+                  {resending ? "Reenviando..." : "Reenviar código"}
+                </button>
+
+                <button
+                  type="button"
+                  className={`btn btn-link w-100 btn-sm text-decoration-none ${
+                    temaEscuro ? "text-light" : "text-muted"
                   }`}
-                  placeholder="seuemail@exemplo.com"
-                />
-              </div>
+                  onClick={() => setEtapa(1)}
+                  disabled={loading || resending}
+                >
+                  Alterar e-mail
+                </button>
 
-              {/* Campo do Código */}
-              <div className="mb-3">
-                <label htmlFor="codigo" className="form-label">
-                  Código recebido por e-mail
-                </label>
-                <input
-                  id="codigo"
-                  required
-                  value={codigo}
-                  onChange={e => setCodigo(e.target.value)}
-                  type="text"
-                  className={`form-control ${
-                    temaEscuro ? "bg-dark text-white border-secondary" : ""
-                  }`}
-                  placeholder="Digite o código de 6 dígitos"
-                />
-              </div>
-
-              {/* Campo da Nova Senha */}
-              <div className="mb-4">
-                <label htmlFor="novaSenha" className="form-label">
-                  Nova Senha
-                </label>
-                <input
-                  id="novaSenha"
-                  required
-                  value={novaSenha}
-                  onChange={e => setSenha(e.target.value)}
-                  type="password"
-                  className={`form-control ${
-                    temaEscuro ? "bg-dark text-white border-secondary" : ""
-                  }`}
-                  placeholder="Digite sua nova senha"
-                />
-              </div>
-
-              {mensagem && <div className="alert alert-success">{mensagem}</div>}
-
-              <button
-                type="submit"
-                className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-3"
-                disabled={loading}
-              >
-                {loading ? "Redefinindo..." : "Redefinir Senha"}
-              </button>
-
-              <p className="text-center mb-0 small">
-                Lembrou a senha?{" "}
-                <a href="/login" className="text-info text-decoration-none fw-semibold">
-                  Voltar ao Login
-                </a>
-              </p>
-            </form>
+                <p className="text-center mb-0 small mt-2">
+                  Código verificado?{" "}
+                  <Link to="/login" className="text-info text-decoration-none fw-semibold">
+                    Voltar ao Login
+                  </Link>
+                </p>
+              </form>
+            )}
           </div>
         </div>
       </div>

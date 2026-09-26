@@ -1,42 +1,71 @@
-import { useState, useEffect } from "react";
-import { api_rotinaplus } from "../services/api";
+import { useState, useCallback } from "react";
+import { verifyCode as verifyCodeRequest, resendCode as resendCodeRequest } from "../services/authService";
 
-export function useVerifyCode(email, code, executar) {
+export function useVerifyCode() {
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    if (!executar) {
-      return;
-    }
+  const verify = useCallback(async (email, code) => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-    async function verificar() {
-      setLoading(true);
-      setError("");
-      setSuccess("");
+    try {
+      const result = await verifyCodeRequest(email, code);
 
-      try {
-        const response = await api_rotinaplus.post("/auth/verify", {
-          email,
-          code,
-        });
-
-        console.log(response);
-        setSuccess(response.data.message || "Email verificado com sucesso!");
-      } catch (err) {
-        console.error("Erro na verificação:", err);
-        setError(err.response?.data?.message || "Erro na verificação do código");
+      if (result.success) {
+        setSuccess(result.message);
+      } else {
+        setError(result.message);
       }
 
+      return result;
+    } catch (err) {
+      console.error("Erro na verificação:", err);
+      setError("Erro na verificação do código");
+      return { success: false, message: "Erro na verificação do código" };
+    } finally {
       setLoading(false);
     }
+  }, []);
 
-    verificar();
-  }, [executar, email, code]);
+  const resend = useCallback(async email => {
+    setResending(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const result = await resendCodeRequest(email);
+
+      if (result.success) {
+        setSuccess(result.message);
+      } else {
+        setError(result.message);
+      }
+
+      return result;
+    } catch (err) {
+      console.error("Erro ao reenviar código:", err);
+      setError("Erro ao reenviar o código");
+      return { success: false, message: "Erro ao reenviar o código" };
+    } finally {
+      setResending(false);
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    setError("");
+    setSuccess("");
+  }, []);
 
   return {
+    verify,
+    resend,
+    reset,
     loading,
+    resending,
     error,
     success,
   };

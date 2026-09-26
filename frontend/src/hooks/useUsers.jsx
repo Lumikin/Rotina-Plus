@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
-import { ApiLogin } from "../services/userService";
+import { useState, useEffect } from "react";
 
+/**
+ * @deprecated Hook legado quebrado — não usar.
+ * Mantido apenas para não quebrar imports antigos.
+ * Para o fluxo de registro, use `useRegister` (função `register`).
+ */
 export function useUsers() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(false);
 
   useEffect(() => {
-    async function loadUsers() {
-      try {
-        const data = await ApiLogin(email, senha);
-        setEmail(data);
-      } catch (error) {
-        console.log("Erro ao buscar usuários:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadUsers();
+    console.warn(
+      "useUsers está depreciado e não faz nada. Use useLogin/useRegister em vez disso.",
+    );
   }, []);
 
-  return { users, loading };
+  return { users: [], loading };
 }

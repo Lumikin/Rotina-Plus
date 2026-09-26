@@ -1,4 +1,5 @@
 import FeatureCard from "./FeatureCard";
+import { useTheme } from "../contexts/ThemeContext";
 
 const features = [
   {
@@ -27,7 +28,8 @@ const features = [
   },
 ];
 
-export default function Features({ temaEscuro }) {
+export default function Features() {
+  const { temaEscuro } = useTheme();
   return (
     <section
       id="funcionalidades"
@@ -61,7 +63,7 @@ export default function Features({ temaEscuro }) {
         <div className="row g-4">
           {features.map((feature) => (
             <div className="col-md-6 col-lg-3" key={feature.title}>
-              <FeatureCard {...feature} temaEscuro={temaEscuro} />
+              <FeatureCard {...feature} />
             </div>
           ))}
         </div>

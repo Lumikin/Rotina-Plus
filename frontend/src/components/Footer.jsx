@@ -1,6 +1,8 @@
 import logo from "../assets/logo.png";
+import { useTheme } from "../contexts/ThemeContext";
 
-export default function Footer({ temaEscuro }) {
+export default function Footer() {
+  const { temaEscuro } = useTheme();
   return (
     <footer
       id="sobre"

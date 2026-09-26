@@ -7,7 +7,32 @@ const PONTOS_POR_PRIORIDADE = {
   alta: 20,
 };
 
+function hojeKey() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${dia}`;
+}
+
+// Regra: tarefa atrasada (prazo antes de hoje) e não concluída vira Pendente.
+async function marcarAtrasadasComoPendentes() {
+  const sql = `UPDATE tarefas SET status = 'Pendente' WHERE DATE(dataTarefa) < CURDATE() AND status != 'Concluida' AND status != 'Pendente'`;
+  await connection.execute(sql);
+}
+
+function aplicarStatusAtraso(dataTarefa, status) {
+  if (!dataTarefa || status === "Concluida") return status;
+  const chave = String(dataTarefa).slice(0, 10);
+  return chave < hojeKey() ? "Pendente" : status;
+}
+
 const tasksRepositories = {
+  // Troca para Pendente todas as tarefas atrasadas e não concluídas.
+  // Chame ela sempre antes de listar.
+  atualizarTarefasAtrasadas: async () => {
+    await marcarAtrasadasComoPendentes();
+  },
+
   listarTasks: async () => {
     const sql = `SELECT * FROM tarefas;`;
     const [rows] = await connection.execute(sql);
@@ -45,8 +70,9 @@ const tasksRepositories = {
   },
 
   criarTask: async task => {
+    const statusFinal = aplicarStatusAtraso(task.dataTarefa, task.status);
     const sql = `INSERT INTO tarefas (UUID, userId, nome, descricao, dataTarefa, prioridade, status) VALUES (UUID(), ?, ?, ?, ?, ?, ?)`;
-    const values = [task.userId, task.nome, task.descricao, task.dataTarefa, task.prioridade, task.status];
+    const values = [task.userId, task.nome, task.descricao, task.dataTarefa, task.prioridade, statusFinal];
 
     const [rows] = await connection.execute(sql, values);
     return rows;
@@ -60,13 +86,14 @@ const tasksRepositories = {
     }
 
     const statusAnterior = tarefaAtual[0]?.status;
-    if (statusAnterior !== "Concluida" && task.status === "Concluida") {
+    const statusFinal = aplicarStatusAtraso(task.dataTarefa, task.status);
+    if (statusAnterior !== "Concluida" && statusFinal === "Concluida") {
       const pontos = PONTOS_POR_PRIORIDADE[task.prioridade?.toLowerCase()] ?? 0;
       await tasksRepositories.adicionarPontos(tarefaAtual[0].userId, id, pontos);
     }
 
     const sql = `UPDATE tarefas SET nome = ?, descricao = ?, dataTarefa = ?, prioridade = ?, status = ? WHERE UUID = ?`;
-    const values = [task.nome, task.descricao, task.dataTarefa, task.prioridade, task.status, id];
+    const values = [task.nome, task.descricao, task.dataTarefa, task.prioridade, statusFinal, id];
     const [rows] = await connection.execute(sql, values);
     return rows;
   },
@@ -101,7 +128,7 @@ const tasksRepositories = {
   },
 
   adicionarPontos: async (userId, tarefaId, pontos) => {
-    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos) VALUES (UUID(), ?, ?)`;
+    const sql = `INSERT INTO pontos (UUID, tarefaId, pontos, dataCad) VALUES (UUID(), ?, ?, NOW())`;
     const values = [tarefaId, pontos];
     const [rows] = await connection.execute(sql, values);
     return rows;

@@ -1,13 +1,13 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import CallToAction from "../components/CallToAction";
 import Footer from "../components/Footer";
-import { useTheme } from "../contexts/ThemeContext";
 
 export default function Home() {
-  const { temaEscuro } = useTheme();
+  const [temaEscuro, setTemaEscuro] = useState(false);
 
   return (
     <div
@@ -15,12 +15,12 @@ export default function Home() {
       className={temaEscuro ? "bg-dark text-white" : "bg-white text-dark"}
       style={{ minHeight: "100vh", transition: "all 0.3s ease" }}
     >
-      <Navbar />
-      <Hero />
-      <Features />
+      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Hero temaEscuro={temaEscuro} />
+      <Features temaEscuro={temaEscuro} />
       <HowItWorks />
-      <CallToAction />
-      <Footer />
+      <CallToAction temaEscuro={temaEscuro} />
+      <Footer temaEscuro={temaEscuro} />
     </div>
   );
 }

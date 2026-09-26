@@ -23,6 +23,7 @@ const tasksController = {
 
   listarTasks: async (_req, res) => {
     try {
+      await tasksRepositories.atualizarTarefasAtrasadas();
       const response = await tasksRepositories.listarTasks();
 
       if (response.length === 0) {
@@ -41,6 +42,7 @@ const tasksController = {
   listarUserTarefa: async (req, res) => {
     try {
       const { userId } = req.params;
+      await tasksRepositories.atualizarTarefasAtrasadas();
       const response = await tasksRepositories.listarUserTask(userId);
 
       if (response.length === 0) {

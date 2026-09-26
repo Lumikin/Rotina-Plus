@@ -1,5 +1,4 @@
 import FeatureCard from "./FeatureCard";
-import { useTheme } from "../contexts/ThemeContext";
 
 const features = [
   {
@@ -28,8 +27,7 @@ const features = [
   },
 ];
 
-export default function Features() {
-  const { temaEscuro } = useTheme();
+export default function Features({ temaEscuro }) {
   return (
     <section
       id="funcionalidades"

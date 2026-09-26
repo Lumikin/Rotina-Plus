@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { useTheme } from "../contexts/ThemeContext";
 
-export default function Navbar() {
-  const { temaEscuro, toggleTema } = useTheme();
+export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "", onSair }) {
+  const logado = Boolean(nomeUsuario && onSair);
 
   return (
     <nav
@@ -30,57 +29,47 @@ export default function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarContent">
-          <ul className="navbar-nav mx-auto gap-lg-4 mt-3 mt-lg-0">
-            <li className="nav-item">
-              <a
-                className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : ""
-                }`}
-                href="#funcionalidades"
-              >
-                Funcionalidades
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : ""
-                }`}
-                href="#como-funciona"
-              >
-                Como funciona
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link fw-medium ${
-                  temaEscuro ? "text-light" : ""
-                }`}
-                href="#sobre"
-              >
-                Sobre
-              </a>
-            </li>
-          </ul>
+          <div className="mx-auto" />
 
           <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-            {/* Botão para alternar Tema Claro / Escuro */}
-            <button
-              type="button"
-              className={`btn btn-sm ${
-                temaEscuro ? "btn-outline-light" : "btn-outline-dark"
-              }`}
-              onClick={toggleTema}
-            >
-              {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
-            </button>
+            {toggleTema && (
+              <button
+                type="button"
+                className={`btn btn-sm ${
+                  temaEscuro ? "btn-outline-light" : "btn-outline-dark"
+                }`}
+                onClick={toggleTema}
+              >
+                {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
+              </button>
+            )}
 
-            <Link to="/login" className="btn btn-rp-outline">
-              Entrar
-            </Link>
-            <Link to="/register" className="btn btn-rp-primary">
-              Cadastrar
-            </Link>
+            {logado ? (
+              <>
+                <Link to="/dashboard" className="btn btn-sm btn-rp-outline">
+                  Tarefas
+                </Link>
+                <span className={temaEscuro ? "text-light" : "text-dark"}>
+                  Olá, {nomeUsuario}
+                </span>
+                <button
+                  type="button"
+                  className="btn btn-rp-outline"
+                  onClick={onSair}
+                >
+                  Sair
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="btn btn-rp-outline">
+                  Entrar
+                </Link>
+                <Link to="/register" className="btn btn-rp-primary">
+                  Cadastrar
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

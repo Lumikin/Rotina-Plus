@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { useRegister } from "../hooks/useRegister";
 import { useVerifyCode } from "../hooks/useVerifyCode";
 
@@ -70,42 +71,7 @@ export default function Registrer() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      {/* Barra Superior Completa */}
-      <header
-        className={`w-100 py-3 px-4 d-flex align-items-center justify-content-between border-bottom ${
-          temaEscuro
-            ? "bg-dark border-secondary text-white"
-            : "bg-white border-light-subtle text-dark"
-        }`}
-      >
-        <span className="fw-bold h5 mb-0 text-info">Rotina Plus</span>
-
-        <div className="d-flex align-items-center gap-2">
-          <button
-            type="button"
-            className={`btn btn-sm rounded-pill px-3 ${
-              temaEscuro ? "btn-outline-light" : "btn-dark text-white"
-            }`}
-            onClick={() => setTemaEscuro(!temaEscuro)}
-          >
-            {temaEscuro ? "☀️ Claro" : "🌙 Escuro"}
-          </button>
-
-          <Link
-            to="/login"
-            className="btn btn-outline-info btn-sm fw-semibold px-3"
-          >
-            Entrar
-          </Link>
-
-          <Link
-            to="/register"
-            className="btn btn-info text-white btn-sm fw-semibold px-3"
-          >
-            Cadastrar
-          </Link>
-        </div>
-      </header>
+      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
 
       {/* Conteúdo Centralizado */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">

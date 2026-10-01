@@ -21,6 +21,23 @@ const tasksController = {
     }
   },
 
+  obterPontos: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: "ID do usuário é obrigatório" });
+      }
+
+      const totalPontos = await tasksRepositories.obterPontosUsuario(userId);
+
+      return res.status(200).json({ message: "Pontos obtidos com sucesso", totalPontos });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Erro no servidor", error: error.message });
+    }
+  },
+
   listarTasks: async (_req, res) => {
     try {
       await tasksRepositories.atualizarTarefasAtrasadas();

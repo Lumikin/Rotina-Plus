@@ -4,6 +4,7 @@ import tasksController from "../controller/task.controller.js";
 const tasksRoutes = Router();
 
 tasksRoutes.get("/", tasksController.listarTasks);
+tasksRoutes.get("/pontos/:userId", tasksController.obterPontos);
 tasksRoutes.get("/ofensiva/:userId", tasksController.obterOfensiva);
 tasksRoutes.get("/:userId", tasksController.listarUserTarefa);
 tasksRoutes.post("/", tasksController.criarTask);

@@ -122,6 +122,7 @@ const tasksRepositories = {
   },
 
   deletarTask: async id => {
+    await connection.execute(`DELETE FROM pontos WHERE tarefaId = ?`, [id]);
     const sql = `DELETE FROM tarefas WHERE UUID = ?`;
     const [rows] = await connection.execute(sql, [id]);
     return rows;
@@ -151,6 +152,17 @@ const tasksRepositories = {
     `;
     const [rows] = await connection.execute(sql);
     return rows;
+  },
+
+  obterPontosUsuario: async userId => {
+    const sql = `
+      SELECT COALESCE(SUM(p.pontos), 0) AS totalPontos
+      FROM tarefas t
+      LEFT JOIN pontos p ON p.tarefaId = t.UUID
+      WHERE t.userId = ?;
+    `;
+    const [rows] = await connection.execute(sql, [userId]);
+    return rows[0]?.totalPontos ?? 0;
   }
 };
 

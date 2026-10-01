@@ -85,7 +85,7 @@ export default function Login() {
 
               <div className="d-flex justify-content-end mb-4">
                 <Link
-                  to="/verify-code"
+                  to="/esqueci-senha"
                   className={`small text-decoration-none ${
                     temaEscuro ? "text-info" : "text-primary"
                   }`}

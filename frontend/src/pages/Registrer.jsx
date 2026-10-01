@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useRegister } from "../hooks/useRegister";
-import { useVerifyCode } from "../hooks/useVerifyCode";
 
 export default function Registrer() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [dataN, setDataN] = useState("");
-  const [codigo, setCodigo] = useState("");
   const [etapa, setEtapa] = useState(1);
 
   const [temaEscuro, setTemaEscuro] = useState(false);
@@ -21,15 +19,6 @@ export default function Registrer() {
     error: errorRegister,
     success: successRegister,
   } = useRegister();
-
-  const {
-    verify,
-    resend,
-    loading: loadingVerify,
-    resending,
-    error: errorVerify,
-    success: successVerify,
-  } = useVerifyCode();
 
   async function handleEnviarDados(e) {
     e.preventDefault();
@@ -44,20 +33,6 @@ export default function Registrer() {
     if (result.success) {
       setEtapa(2);
     }
-  }
-
-  async function handleValidarCodigo(e) {
-    e.preventDefault();
-
-    const result = await verify(email.trim(), codigo.trim());
-
-    if (result.success) {
-      setTimeout(() => navigate("/login", { replace: true }), 1200);
-    }
-  }
-
-  async function handleReenviarCodigo() {
-    await resend(email.trim());
   }
 
   function handleVoltar() {
@@ -179,72 +154,38 @@ export default function Registrer() {
                   className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3"
                   disabled={loadingRegister}
                 >
-                  {loadingRegister ? "Enviando..." : "Enviar Código por E-mail"}
+                  {loadingRegister ? "Criando conta..." : "Criar conta"}
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleValidarCodigo}>
-                <div className="alert alert-info small text-center mb-3">
-                  Enviamos um código de verificação para o e-mail: <br />
-                  <strong>{email}</strong>
+              <div className="text-center">
+                <div className="display-6 mb-3" role="status" aria-label="Verifique seu e-mail">
+                  &#128231;
                 </div>
-
-                <div className="mb-4">
-                  <label htmlFor="codigo" className="form-label fw-bold">
-                    Código de Verificação
-                  </label>
-                  <input
-                    id="codigo"
-                    required
-                    className={`form-control text-center fw-bold fs-5 ${
-                      temaEscuro ? "bg-dark text-white border-secondary" : ""
-                    }`}
-                    type="text"
-                    placeholder="000000"
-                    maxLength="6"
-                    value={codigo}
-                    onChange={e => setCodigo(e.target.value)}
-                    disabled={loadingVerify}
-                  />
-                </div>
-
-                {errorVerify && (
-                  <div className="alert alert-danger mb-3">{errorVerify}</div>
-                )}
-                {successVerify && (
-                  <div className="alert alert-success mb-3">
-                    {successVerify} Redirecionando para o login...
-                  </div>
-                )}
+                <h2 className="h5 fw-bold mb-2">Verifique seu e-mail</h2>
+                <p className={temaEscuro ? "text-light" : "text-muted"}>
+                  Enviamos um e-mail para <strong>{email}</strong> com um botão para
+                  verificar sua conta. O link expira em 24 horas.
+                </p>
 
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={() => navigate("/login", { replace: true })}
                   className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-2"
-                  disabled={loadingVerify}
                 >
-                  {loadingVerify ? "Verificando..." : "Confirmar Código"}
+                  Ir para o login
                 </button>
 
                 <button
                   type="button"
-                  className="btn btn-outline-info w-100 btn-sm fw-semibold mb-2"
-                  onClick={handleReenviarCodigo}
-                  disabled={loadingVerify || resending}
-                >
-                  {resending ? "Reenviando..." : "Reenviar código"}
-                </button>
-
-                <button
-                  type="button"
+                  onClick={handleVoltar}
                   className={`btn btn-link w-100 btn-sm text-decoration-none ${
                     temaEscuro ? "text-light" : "text-muted"
                   }`}
-                  onClick={handleVoltar}
-                  disabled={loadingVerify || resending}
                 >
-                  Voltar e alterar e-mail
+                  Usar outro e-mail
                 </button>
-              </form>
+              </div>
             )}
 
             <p className="text-center mt-4 mb-0 small">

@@ -47,7 +47,8 @@ export async function loginUser(email, senha) {
   }
 }
 
-// Cria a conta (POST /auth/register). O backend envia o código por e-mail.
+// Cria a conta (POST /auth/register). O backend envia por e-mail o botão de
+// verificação da conta.
 export async function registerUser({ nome, email, senha, dataNascimento }) {
   try {
     const response = await api_rotinaplus.post("/auth/register", {
@@ -65,28 +66,48 @@ export async function registerUser({ nome, email, senha, dataNascimento }) {
   }
 }
 
-// Valida o código de verificação (POST /auth/verify)
-export async function verifyCode(email, code) {
+// Verifica a conta (POST /auth/verify) a partir do token do link do e-mail.
+export async function verifyEmailToken(token) {
   try {
-    const response = await api_rotinaplus.post("/auth/verify", { email, code });
+    const response = await api_rotinaplus.post("/auth/verify", { token });
 
-    return { success: true, message: response.data?.message || "Email verificado com sucesso!" };
+    return { success: true, message: response.data?.message || "Conta verificada!" };
   } catch (error) {
-    console.error("Erro na verificação:", error);
+    console.error("Erro na verificação do e-mail:", error);
 
-    return { success: false, message: toMessage(error, "Erro na verificação do código") };
+    return { success: false, message: toMessage(error, "Erro na verificação do e-mail") };
   }
 }
 
-// Reenvia o código de verificação (POST /auth/resend-email)
-export async function resendCode(email) {
+// Envia o e-mail com o botão de redefinição (POST /auth/forgot-password)
+export async function forgotPassword(email) {
   try {
-    const response = await api_rotinaplus.post("/auth/resend-email", { email });
+    const response = await api_rotinaplus.post("/auth/forgot-password", { email });
 
-    return { success: true, message: response.data?.message || "Código reenviado!" };
+    return {
+      success: true,
+      message: response.data?.message || "E-mail enviado com sucesso!",
+    };
   } catch (error) {
-    console.error("Erro ao reenviar código:", error);
+    console.error("Erro ao solicitar redefinição:", error);
 
-    return { success: false, message: toMessage(error, "Erro ao reenviar o código") };
+    return { success: false, message: toMessage(error, "Erro ao enviar o e-mail") };
+  }
+}
+
+// Troca a senha usando o token do link (POST /auth/reset-password)
+export async function resetPassword({ token, novaSenha, confirmarSenha }) {
+  try {
+    const response = await api_rotinaplus.post("/auth/reset-password", {
+      token,
+      novaSenha,
+      confirmarSenha,
+    });
+
+    return { success: true, message: response.data?.message || "Senha alterada com sucesso!" };
+  } catch (error) {
+    console.error("Erro ao redefinir a senha:", error);
+
+    return { success: false, message: toMessage(error, "Erro ao alterar a senha") };
   }
 }

@@ -1,22 +1,31 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useLogin } from "../hooks/useLogin";
+import { Link } from "react-router-dom";
+import { forgotPassword } from "../services/authService";
 import Navbar from "../components/Navbar";
 
-export default function Login() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const { login, loading, error, success } = useLogin();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [temaEscuro, setTemaEscuro] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-    const result = await login(email.trim(), senha);
+    try {
+      const result = await forgotPassword(email.trim());
 
-    if (result.success) {
-      navigate("/dashboard", { replace: true });
+      if (result.success) {
+        setSuccess(result.message);
+      } else {
+        setError(result.message);
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -27,10 +36,8 @@ export default function Login() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      {/* Navbar com Logo e botões Entrar e Cadastrar */}
       <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
 
-      {/* Conteúdo Centralizado */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
         <div
           className={`card shadow-sm border-0 ${
@@ -42,12 +49,15 @@ export default function Login() {
             <div className="text-center mb-4">
               <h1 className="h3 fw-bold text-info mb-1">Rotina Plus</h1>
               <p className={temaEscuro ? "text-light mb-0" : "text-muted mb-0"}>
-                Faça login para continuar
+                Recuperar senha
               </p>
             </div>
 
+            {error && <div className="alert alert-danger">{error}</div>}
+            {success && <div className="alert alert-success">{success}</div>}
+
             <form onSubmit={handleSubmit}>
-              <div className="mb-3">
+              <div className="mb-4">
                 <label htmlFor="email" className="form-label">
                   Email
                 </label>
@@ -63,52 +73,21 @@ export default function Login() {
                   placeholder="seuemail@exemplo.com"
                   disabled={loading}
                 />
+                <div className="form-text">Enviaremos um botão para você escolher uma nova senha.</div>
               </div>
-
-              <div className="mb-2">
-                <label htmlFor="senha" className="form-label">
-                  Senha
-                </label>
-                <input
-                  id="senha"
-                  required
-                  value={senha}
-                  onChange={e => setSenha(e.target.value)}
-                  type="password"
-                  className={`form-control ${
-                    temaEscuro ? "bg-dark text-white border-secondary" : ""
-                  }`}
-                  placeholder="Digite sua senha"
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="d-flex justify-content-end mb-4">
-                <Link
-                  to="/esqueci-senha"
-                  className={`small text-decoration-none ${
-                    temaEscuro ? "text-info" : "text-primary"
-                  }`}
-                >
-                  Esqueci minha senha
-                </Link>
-              </div>
-
-              {error && <div className="alert alert-danger">{error}</div>}
-              {success && <div className="alert alert-success">{success}</div>}
 
               <button
                 type="submit"
                 className="btn btn-info text-white w-100 fw-semibold py-2 rounded-3 mb-3"
                 disabled={loading}
               >
-                {loading ? "Entrando..." : "Entrar"}
+                {loading ? "Enviando..." : "Enviar link de redefinição"}
               </button>
 
               <p className="text-center mb-0 small">
-                Ainda não tem uma conta?{" "}
-                <Link to="/register" className="text-info text-decoration-none fw-semibold">
-                  Cadastre-se
+                Lembrou a senha?{" "}
+                <Link to="/login" className="text-info text-decoration-none fw-semibold">
+                  Voltar ao Login
                 </Link>
               </p>
             </form>

@@ -15,6 +15,17 @@ async function authMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Tokens de link ("Verificar conta" e "Redefinir senha") são assinados com a
+    // mesma chave, mas não são tokens de sessão: sem esta checagem eles
+    // funcionariam como Bearer token em rotas protegidas.
+    const claimsNaoSessao = ["verificacaoConta", "resetSenha"];
+
+    if (claimsNaoSessao.some(claim => decoded[claim] !== undefined)) {
+      return res.status(401).json({
+        message: "Token inválido",
+      });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {

@@ -64,7 +64,7 @@ Prefixo base: `/auth`
 ### 1.2. Registro de Usuário
 - **Método:** `POST`
 - **Rota:** `/auth/register`
-- **Descrição:** Cria uma nova conta de usuário, criptografa a senha e dispara e-mail de verificação.
+- **Descrição:** Cria uma nova conta de usuário, criptografa a senha e envia um e-mail com um **botão para verificar a conta**. O link aponta para `FRONTEND_URL/verificar-email?token=<jwt>`, vale por 24 horas e só pode ser usado uma vez.
 
 - **Body (JSON):**
   ```json
@@ -114,6 +114,109 @@ Prefixo base: `/auth`
       "error": "detalhes do erro"
     }
     ```
+
+### 1.3. Confirmar Verificação de E-mail
+- **Método:** `POST`
+- **Rota:** `/auth/verify`
+- **Descrição:** Consome o token do link enviado no cadastro. O link aponta para `FRONTEND_URL/verificar-email?token=<jwt>` e a tela chama esta rota automaticamente. O token vale por **24 horas** e só pode ser usado uma vez.
+- **Quem chama:** a tela `/verificar-email` do frontend. Não é chamada diretamente pelo usuário.
+- **Body (JSON):**
+  ```json
+  {
+    "token": "token_jwt_recebido_na_query_do_link"
+  }
+  ```
+- **Retornos (Status Codes):**
+  - `200 OK`: Token válido e ainda não utilizado.
+    ```json
+    {
+      "message": "Conta verificada com sucesso!"
+    }
+    ```
+  - `400 Bad Request`: Token ausente, inválido, expirado, de outro fluxo (`resetSenha`) ou já utilizado. Todos retornam `{ "message": "..." }` com o motivo:
+    | Mensagem | Causa |
+    | :--- | :--- |
+    | `Token de verificação é obrigatório.` | Corpo sem `token`. |
+    | `Link de verificação expirado. Crie a conta novamente.` | Passaram as 24 h. |
+    | `Link de verificação inválido.` | Assinatura não confere, ou o token é de redefinição de senha. |
+    | `Este link de verificação já foi utilizado.` | Token já consumido antes. |
+  - `500 Internal Server Error`: Erro interno no servidor.
+
+> **Sem estado no banco:** não existe coluna de conta verificada. Consumir o token é o único registro de que a verificação aconteceu — não há como consultar o status de verificação de um usuário, e o login não é bloqueado para contas não verificadas.
+
+### 1.4. Solicitar Redefinição de Senha
+- **Método:** `POST`
+- **Rota:** `/auth/forgot-password`
+- **Descrição:** Envia um e-mail com um botão para redefinir a senha. O link aponta para `FRONTEND_URL/redefinir-senha?token=<jwt>`, vale por 1 hora e só pode ser usado uma vez.
+- **Body (JSON):**
+  ```json
+  {
+    "email": "usuario@email.com"
+  }
+  ```
+- **Retornos (Status Codes):**
+  - `200 OK`: E-mail enviado.
+    ```json
+    {
+      "message": "Enviamos um e-mail com o link para redefinir sua senha."
+    }
+    ```
+  - `400 Bad Request`: E-mail não informado.
+  - `404 Not Found`: Nenhum usuário com esse e-mail.
+  - `500 Internal Server Error`: Erro interno no servidor.
+
+### 1.5. Redefinir Senha
+- **Método:** `POST`
+- **Rota:** `/auth/reset-password`
+- **Descrição:** Troca a senha usando o token do link. Não exige a senha atual — o acesso é autorizado pelo link do e-mail.
+- **Body (JSON):**
+  ```json
+  {
+    "token": "token_jwt_recebido_na_query_do_link",
+    "novaSenha": "nova_senha_segura",
+    "confirmarSenha": "nova_senha_segura"
+  }
+  ```
+- **Retornos (Status Codes):**
+  - `200 OK`: Senha alterada.
+    ```json
+    {
+      "message": "Senha alterada com sucesso"
+    }
+    ```
+  - `400 Bad Request`: Campos faltando, senhas diferentes, senha menor que 4 caracteres, token ausente/inválido/expirado ou já utilizado.
+    ```json
+    {
+      "message": "Este link de redefinição já foi utilizado."
+    }
+    ```
+  - `500 Internal Server Error`: Erro interno no servidor.
+
+### 1.6. Alterar Senha (autenticado)
+- **Método:** `PUT`
+- **Rota:** `/auth/alterar-senha`
+- **Descrição:** Troca a senha de quem já está logado, exigindo a senha atual. Diferente da [1.5](#15-redefinir-senha), esta rota **exige `Authorization: Bearer <token de sessão>`** e usa `req.user.userId` como alvo.
+- **Body (JSON):**
+  ```json
+  {
+    "senhaAtual": "senha_atual",
+    "novaSenha": "nova_senha_segura",
+    "confirmarSenha": "nova_senha_segura"
+  }
+  ```
+- **Retornos (Status Codes):**
+  - `200 OK`: Senha alterada.
+    ```json
+    {
+      "message": "Senha alterada com sucesso"
+    }
+    ```
+  - `400 Bad Request`: Campos faltando, `novaSenha` ≠ `confirmarSenha`, senha nova menor que 4 caracteres, `senhaAtual` incorreta.
+  - `401 Unauthorized`: Token ausente, inválido ou expirado.
+  - `404 Not Found`: Nenhum usuário com o `userId` do token.
+  - `500 Internal Server Error`: Erro interno no servidor.
+
+> **Sessões antigas continuam válidas.** Trocar a senha não invalida JWTs já emitidos: sessões abertas em outros dispositivos seguem funcionando por até 2 horas.
 
 ---
 
@@ -434,3 +537,107 @@ Prefixo base: `/api/tasks`
       "error": "detalhes do erro"
     }
     ```
+
+### 3.6. Concluir Tarefa
+- **Método:** `PUT`
+- **Rota:** `/api/tasks/:UUID/concluir`
+- **Descrição:** **Alterna** o status entre `Concluida` e `Em andamento`. Ao concluir, credita os pontos conforme a prioridade; ao reabrir, remove a credição. É a única rota que mexe em `pontos`.
+- **Atenção:** o parâmetro chama-se `UUID` (maiúsculas) na rota, mas `atualizarTask` e `deletarTask` usam `id`. É apenas nomenclatura — o valor é o `UUID` da tarefa nos três casos.
+- **Body:** Nenhum (`PUT` sem corpo)
+- **Retornos (Status Codes):**
+  - `200 OK`: Status alternado com sucesso.
+    ```json
+    {
+      "message": "Tarefa concluída com sucesso",
+      "result": { "affectedRows": 1 }
+    }
+    ```
+  - `400 Bad Request`: Sem `UUID` na rota.
+    ```json
+    {
+      "message": "ID da tarefa é obrigatório"
+    }
+    ```
+  - `404 Not Found`: Nenhuma tarefa com esse `UUID`.
+    ```json
+    {
+      "message": "Tarefa não encontrada"
+    }
+    ```
+  - `500 Internal Server Error`: Erro no servidor.
+
+- **Pontos creditados por prioridade:**
+
+  | Prioridade | Pontos |
+  | :--- | ---: |
+  | Baixa | 5 |
+  | Media | 10 |
+  | Alta | 20 |
+
+- **Diferença em relação à [3.4](#34-atualizar-tarefa):** `PUT /api/tasks/:id` com `status: "Concluida"` **altera só o `status` e não credita pontos**. Para pontuar, é preciso usar esta rota. Alterar a prioridade de uma tarefa já concluída também não recalcula os pontos já creditados.
+
+### 3.7. Obter Pontos do Usuário
+- **Método:** `GET`
+- **Rota:** `/api/tasks/pontos/:userId`
+- **Descrição:** Retorna a **soma** dos pontos das tarefas concluídas do usuário. É o que alimenta o "Pontos totais" no painel.
+- **Parâmetros de rota:**
+  | Nome | Tipo | Obrigatório | Descrição |
+  | :--- | :--- | :--- | :--- |
+  | `userId` | string | sim | `UUID` do usuário. |
+- **Body:** Nenhum (`GET`)
+- **Retornos (Status Codes):**
+  - `200 OK`:
+    ```json
+    {
+      "message": "Pontos obtidos com sucesso",
+      "totalPontos": 30
+    }
+    ```
+    Retorna `0` — nunca `null` — quando o usuário não tem tarefas concluídas.
+  - `400 Bad Request`: Sem `userId` na rota.
+    ```json
+    {
+      "message": "ID do usuário é obrigatório"
+    }
+    ```
+  - `500 Internal Server Error`: Erro no servidor.
+
+### 3.8. Obter Ofensiva do Usuário
+- **Método:** `GET`
+- **Rota:** `/api/tasks/ofensiva/:userId`
+- **Descrição:** Conta **quantos dias distintos** o usuário concluiu ao menos uma tarefa — um indicador de constância, não de pontuação.
+- **Parâmetros de rota:**
+  | Nome | Tipo | Obrigatório | Descrição |
+  | :--- | :--- | :--- | :--- |
+  | `userId` | string | sim | `UUID` do usuário. |
+- **Body:** Nenhum (`GET`)
+- **Retornos (Status Codes):**
+  - `200 OK`:
+    ```json
+    {
+      "message": "Ofensiva obtida com sucesso",
+      "totalDias": 5
+    }
+    ```
+  - `400 Bad Request`: Sem `userId` na rota.
+    ```json
+    {
+      "message": "ID do usuário é obrigatório"
+    }
+    ```
+  - `500 Internal Server Error`: Erro no servidor.
+
+- **Como é calculado:** `COUNT(DISTINCT dataTarefa)` sobre as tarefas com `status = 'Concluida'`. Como `dataTarefa` é `datetime`, a contagem só equivale a "dias do calendário" porque o frontend sempre envia `YYYY-MM-DD` (o MySQL grava `00:00:00`). Se algum dia a coluna passar a guardar um horário real, a mesma tarefa em horas diferentes contou como dias distintos.
+- **Sem consumidor:** nenhuma tela do frontend chama esta rota. O repositório também tem `listarRanking`, mas ele **não é exposto por nenhuma rota**.
+
+---
+
+## Notas gerais
+
+**Autentização.** Apenas `PUT /auth/alterar-senha` exige `Authorization: Bearer`. Todas as rotas de `/api/users` e `/api/tasks` são **públicas** — `GET /api/users` devolve a lista de usuários, incluindo e-mails, sem qualquer credencial. As rotas importam `authMiddleware`/`authAdmin` mas não os aplicam.
+
+**Erros.** Todos os controllers seguem o mesmo formato: `{ "message": "..." }`, com `error` acrescentado nos `500`. Não há formato de erro padronizado por código — o texto da mensagem é a única forma de o cliente diferenciar as causas.
+
+**Identificadores.** Todas as chaves são `UUID` em `char(36)`, geradas por `UUID()` no próprio SQL do `INSERT`. Não há `id` numérico em nenhuma tabela.
+
+**Ausência de recurso vs. erro.** Listagens que não encontram nada devolvem `404` (`GET /api/tasks/` com o banco vazio), enquanto listagens por usuário devolvem `200` com `result: []`.

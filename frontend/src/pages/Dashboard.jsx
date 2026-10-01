@@ -6,6 +6,7 @@ import {
   atualizarTask,
   concluirTask,
   deletarTask,
+  obterPontosUsuario,
 } from "../services/taskService";
 import {api_rotinaplus} from "../services/api";
 import {logout} from "../services/authService";
@@ -42,6 +43,7 @@ export default function Dashboard() {
   const [userId] = useState(getUserId);
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [pontosTotais, setPontosTotais] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
   const [aba, setAba] = useState("atuais"); // "atuais" | "futuras"
@@ -74,6 +76,8 @@ export default function Dashboard() {
     try {
       const data = await listarTarefasUsuario(userId);
       setTasks(Array.isArray(data) ? data : []);
+      const pontos = await obterPontosUsuario(userId);
+      setPontosTotais(Number(pontos) || 0);
     } catch {
       setTasks([]);
       setErro("Não foi possível carregar as tarefas.");
@@ -188,6 +192,7 @@ export default function Dashboard() {
 
   function mostraTask(task) {
     const status = task.status ?? "Pendente";
+    const concluida = status === "Concluida";
     const salvando = salvandoId === task.UUID;
     const editando = editandoId === task.UUID;
 
@@ -267,15 +272,14 @@ export default function Dashboard() {
           </div>
         </dl>
         <div className="task-actions">
-          <select
-            value={status}
+          <button
+            type="button"
+            className={concluida ? "voltar-button" : "concluir-button"}
             disabled={salvando}
-            onChange={(e) => trocarStatus(task.UUID, e.target.value, status)}
+            onClick={() => trocarStatus(task.UUID, concluida ? "Em andamento" : "Concluida", status)}
           >
-            {STATUS.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+            {salvando ? "Salvando..." : concluida ? "Voltar" : "Concluir"}
+          </button>
           <button type="button" className="edit-button" disabled={salvando} onClick={() => comecarEditar(task)}>
             Editar
           </button>
@@ -306,6 +310,11 @@ export default function Dashboard() {
             {loading ? "Atualizando..." : "Atualizar"}
           </button>
         </header>
+
+        <section className="points-summary" aria-label="Pontos totais">
+          <span className="points-label">Pontos totais</span>
+          <strong className="points-value">{pontosTotais}</strong>
+        </section>
 
         {userId && (
           <form className="task-form" onSubmit={criar}>

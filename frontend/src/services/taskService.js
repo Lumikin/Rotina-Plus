@@ -78,6 +78,17 @@ export async function deletarTask(id) {
   }
 }
 
+// Pontos totais do usuário (GET /tasks/pontos/:userId)
+export async function obterPontosUsuario(userId) {
+  try {
+    const response = await api_rotinaplus.get(`/api/tasks/pontos/${userId}`);
+    return response.data?.totalPontos ?? 0;
+  } catch (error) {
+    console.error("Erro ao obter pontos:", error);
+    return 0;
+  }
+}
+
 // Aliases para compatibilidade com Dashboard.jsx
 export const getAllTasks = listarTasks;
 export const getTasksByUser = listarTarefasUsuario;

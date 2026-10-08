@@ -91,6 +91,7 @@ CREATE TABLE
     `dataTarefa` datetime NOT NULL,
     `prioridade` enum ('Baixa', 'Media', 'Alta') NOT NULL,
     `status` enum ('Pendente', 'Em andamento', 'Concluida') NOT NULL,
+    `recorrencia` enum ('nenhuma', 'diaria', 'semanal', 'mensal') NOT NULL DEFAULT 'nenhuma',
     `DataCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`UUID`, `userId`),
     KEY `user_UUID_idx` (`userId`),

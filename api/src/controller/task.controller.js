@@ -1,4 +1,4 @@
-import { prioridadeEnum, statusEnum } from "../enum/database.enum.js";
+import { prioridadeEnum, recorrenciaEnum, statusEnum } from "../enum/database.enum.js";
 import Task from "../model/Tasks.js";
 import tasksRepositories from "../repositories/tasks.repositorie.js";
 
@@ -75,7 +75,7 @@ const tasksController = {
 
   criarTask: async (req, res) => {
     try {
-      const { userId, nome, descricao, dataTarefa, prioridade, status } = req.body;
+      const { userId, nome, descricao, dataTarefa, prioridade, status, recorrencia } = req.body;
 
       if (!userId || !nome || !descricao || !dataTarefa || !prioridade || !status) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios" });
@@ -92,7 +92,11 @@ const tasksController = {
       ) {
         return res.status(400).json({message: "Prioridade inválida"});
       }
-      const task = Task.criar({userId, nome, descricao, dataTarefa, prioridade, status});
+      const recorrenciaFinal = recorrencia ?? recorrenciaEnum.nenhuma;
+      if (!Object.values(recorrenciaEnum).includes(recorrenciaFinal)) {
+        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
+      }
+      const task = Task.criar({userId, nome, descricao, dataTarefa, prioridade, status, recorrencia: recorrenciaFinal});
       const response = await tasksRepositories.criarTask(task);
 
       return res.status(201).json({message: "Tarefa criada com sucesso", result: response});
@@ -116,13 +120,17 @@ const tasksController = {
       }
       const dadosAtuais = validarTask[0];
 
-      const { nome, descricao, dataTarefa, prioridade, status } = req.body;
+      const { nome, descricao, dataTarefa, prioridade, status, recorrencia } = req.body;
 
       const nomeFinal = nome || dadosAtuais.nome;
       const descricaoFinal = descricao || dadosAtuais.descricao;
       const dataTarefaFinal = dataTarefa || dadosAtuais.dataTarefa;
       const prioridadeFinal = prioridade || dadosAtuais.prioridade;
       const statusFinal = status || dadosAtuais.status;
+      const recorrenciaFinal = recorrencia ?? dadosAtuais.recorrencia ?? recorrenciaEnum.nenhuma;
+      if (!Object.values(recorrenciaEnum).includes(recorrenciaFinal)) {
+        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
+      }
 
       const task = Task.atualizar(
         {
@@ -130,7 +138,8 @@ const tasksController = {
           descricao: descricaoFinal,
           dataTarefa: dataTarefaFinal, // ano-mes-data
           prioridade: prioridadeFinal, //
-          status: statusFinal
+          status: statusFinal,
+          recorrencia: recorrenciaFinal
         },
         id
       );
@@ -156,6 +165,9 @@ const tasksController = {
 
       const concluir = await tasksRepositories.concluirTask(UUID);
 
+      if (concluir?.proximaTarefa) {
+        return res.status(200).json({message: "Tarefa concluída com sucesso. Próxima ocorrência criada.", result: concluir, proximaTarefa: concluir.proximaTarefa});
+      }
       return res.status(200).json({message: "Tarefa concluída com sucesso", result: concluir});
     } catch (error) {
       console.error(error);

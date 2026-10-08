@@ -9,3 +9,10 @@ export const statusEnum = {
   emAndamento: "Em andamento",
   concluida: "Concluida",
 };
+
+export const recorrenciaEnum = {
+  nenhuma: "nenhuma",
+  diaria: "diaria",
+  semanal: "semanal",
+  mensal: "mensal",
+};

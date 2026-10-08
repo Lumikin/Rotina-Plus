@@ -27,6 +27,15 @@ function hashToken(token) {
 const saltRounds = 10;
 
 const authController = {
+  /**
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @param email
+   * @param senha Ultiliza a senha haseada dentro do banco de dados e compara com a senha que o usuario mandou
+   *
+   * Função para logar dentro do sistema, verificando **email** e **senha** dentro do código
+   */
   login: async (req, res) => {
     try {
       const { email, senha } = req.body;
@@ -54,11 +63,14 @@ const authController = {
         { expiresIn: "2h" },
       );
 
-      return res.status(200).json({message: `Bem vindo(a) ${user.nome}!`, token: accessToken});
-
+      return res
+        .status(200)
+        .json({ message: `Bem vindo(a) ${user.nome}!`, token: accessToken });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
 
@@ -67,14 +79,20 @@ const authController = {
       const { nome, email, senha, dataNascimento } = req.body;
 
       if (!nome || !email || !senha || !dataNascimento) {
-        return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+        return res
+          .status(400)
+          .json({ message: "Todos os campos são obrigatórios" });
       }
       if (senha.length < 4) {
-        return res.status(400).json({ message: "A senha deve ter no minimo 4 caracteres." });
+        return res
+          .status(400)
+          .json({ message: "A senha deve ter no minimo 4 caracteres." });
       }
 
       if (nome.length < 4) {
-        return res.status(400).json({ message: "O nome deve ter no minimo 4 caracteres." });
+        return res
+          .status(400)
+          .json({ message: "O nome deve ter no minimo 4 caracteres." });
       }
 
       const consultaEmail = await usersRepository.listarUserEmail(email);
@@ -83,7 +101,12 @@ const authController = {
       }
 
       const hashedPassword = await bcrypt.hash(senha, saltRounds);
-      const user = Users.criar({nome, email, senha: hashedPassword, dataNascimento});
+      const user = Users.criar({
+        nome,
+        email,
+        senha: hashedPassword,
+        dataNascimento,
+      });
 
       const result = await usersRepository.criarUsuarios(user);
 
@@ -96,7 +119,11 @@ const authController = {
         { expiresIn: "24h" },
       );
 
-      await authRepositorie.criarCodigo(userId, hashToken(token), dataExpiracao(24 * 60));
+      await authRepositorie.criarCodigo(
+        userId,
+        hashToken(token),
+        dataExpiracao(24 * 60),
+      );
 
       const link = `${process.env.FRONTEND_URL}/verificar-email?token=${token}`;
 
@@ -157,13 +184,17 @@ const authController = {
       });
 
       return res.status(201).json({
-        message: "Usuário criado com sucesso. Verifique seu e-mail e clique no botão para ativar a conta.",
+        message:
+          "Usuário criado com sucesso. Verifique seu e-mail e clique no botão para ativar a conta.",
         result,
       });
-
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: "Ocorreu um erro no servidor", status: 500, error: error.message});
+      return res.status(500).json({
+        message: "Ocorreu um erro no servidor",
+        status: 500,
+        error: error.message,
+      });
     }
   },
 
@@ -172,7 +203,9 @@ const authController = {
       const { token } = req.body;
 
       if (!token) {
-        return res.status(400).json({ message: "Token de verificação é obrigatório." });
+        return res
+          .status(400)
+          .json({ message: "Token de verificação é obrigatório." });
       }
 
       let payload;
@@ -189,7 +222,9 @@ const authController = {
       }
 
       if (payload[CLAIM_VERIFICACAO] !== true) {
-        return res.status(400).json({ message: "Link de verificação inválido." });
+        return res
+          .status(400)
+          .json({ message: "Link de verificação inválido." });
       }
 
       // invalidarCodigos só altera linhas que ainda estavam válidas (isvalid = 1),
@@ -203,10 +238,11 @@ const authController = {
       }
 
       return res.status(200).json({ message: "Conta verificada com sucesso!" });
-
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
 
@@ -236,7 +272,11 @@ const authController = {
         { expiresIn: "1h" },
       );
 
-      await authRepositorie.criarCodigo(user.UUID, hashToken(token), dataExpiracao(60));
+      await authRepositorie.criarCodigo(
+        user.UUID,
+        hashToken(token),
+        dataExpiracao(60),
+      );
 
       const link = `${process.env.FRONTEND_URL}/redefinir-senha?token=${token}`;
 
@@ -299,23 +339,33 @@ const authController = {
       return res.status(200).json({
         message: "Enviamos um e-mail com o link para redefinir sua senha.",
       });
-
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
-
+  /**
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   */
   resetarSenha: async (req, res) => {
     try {
       const { token, novaSenha, confirmarSenha } = req.body;
 
       if (!token || !novaSenha || !confirmarSenha) {
-        return res.status(400).json({message: "Todos os campos são obrigatórios"});
+        return res
+          .status(400)
+          .json({ message: "Todos os campos são obrigatórios" });
       }
 
       if (novaSenha !== confirmarSenha) {
-        return res.status(400).json({message: "A nova senha e a confirmação não são iguais"});
+        return res
+          .status(400)
+          .json({ message: "A nova senha e a confirmação não são iguais" });
       }
 
       if (novaSenha.length < 4) {
@@ -338,7 +388,9 @@ const authController = {
       }
 
       if (payload[CLAIM_RESET_SENHA] !== true) {
-        return res.status(400).json({ message: "Link de redefinição inválido." });
+        return res
+          .status(400)
+          .json({ message: "Link de redefinição inválido." });
       }
 
       const uso = await authRepositorie.validarCodigo(hashToken(token));
@@ -355,10 +407,11 @@ const authController = {
       );
 
       return res.status(200).json({ message: "Senha alterada com sucesso" });
-
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
+      return res
+        .status(500)
+        .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
 
@@ -367,12 +420,15 @@ const authController = {
       const { senhaAtual, novaSenha, confirmarSenha } = req.body;
 
       if (!senhaAtual || !novaSenha || !confirmarSenha) {
-        return res.status(400).json({message: "Todos os campos são obrigatórios"});
+        return res
+          .status(400)
+          .json({ message: "Todos os campos são obrigatórios" });
       }
 
       if (novaSenha !== confirmarSenha) {
-        return res.status(400).json({message: "A nova senha e a confirmação não são iguais",
-        });
+        return res
+          .status(400)
+          .json({ message: "A nova senha e a confirmação não são iguais" });
       }
 
       if (novaSenha.length < 4) {

@@ -7,6 +7,8 @@ export class Task {
   #prioridade;
   #status;
   #pontos;
+  #recorrencia;
+  #dataConclusao;
 
   constructor(
     userId,
@@ -17,6 +19,8 @@ export class Task {
     status,
     UUID,
     pontos,
+    recorrencia = "nenhuma",
+    dataConclusao = null,
   ) {
     this.#userId = userId;
     this.#nome = nome;
@@ -26,6 +30,8 @@ export class Task {
     this.#status = status;
     this.#UUID = UUID;
     this.#pontos = pontos;
+    this.#recorrencia = recorrencia ?? "nenhuma";
+    this.#dataConclusao = dataConclusao;
   }
 
   get UUID() {
@@ -60,6 +66,14 @@ export class Task {
     return this.#pontos;
   }
 
+  get recorrencia() {
+    return this.#recorrencia;
+  }
+
+  get dataConclusao() {
+    return this.#dataConclusao;
+  }
+
   set nome(value) {
     this.#nome = value;
   }
@@ -90,6 +104,14 @@ export class Task {
 
   set pontos(value) {
     this.#pontos = value;
+  }
+
+  set recorrencia(value) {
+    this.#recorrencia = value;
+  }
+
+  set dataConclusao(value) {
+    this.#dataConclusao = value;
   }
 
   #validarnome(value) {
@@ -124,7 +146,15 @@ export class Task {
     }
   }
 
+  #validarRecorrencia(value) {
+    const validos = ["nenhuma", "diaria", "semanal", "mensal"];
+    if (value !== undefined && value !== null && !validos.includes(value)) {
+      throw new Error("recorrencia invalida");
+    }
+  }
+
   #validarPontos(value) {
+    if (value === undefined || value === null) return;
     if (value < 0 || value > 100) {
       throw new Error("Pontos devem estar entre 0 e 100");
     }
@@ -140,6 +170,7 @@ export class Task {
       data.status,
       null,
       data.pontos,
+      data.recorrencia ?? "nenhuma",
     );
   }
 
@@ -153,6 +184,7 @@ export class Task {
       data.status,
       UUID,
       data.pontos,
+      data.recorrencia,
     );
   }
 }

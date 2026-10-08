@@ -12,7 +12,7 @@ export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "
       style={{ transition: "all 0.3s ease" }}
     >
       <div className="container">
-        <a className="navbar-brand d-flex align-items-center" href="#top">
+        <a className="navbar-brand d-flex align-items-center" href="/">
           <img src={logo} alt="Rotina Plus" height="36" />
         </a>
 

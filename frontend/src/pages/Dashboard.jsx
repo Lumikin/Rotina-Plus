@@ -7,6 +7,7 @@ import {
   concluirTask,
   deletarTask,
   obterPontosUsuario,
+  obterOfensivaUsuario,
 } from "../services/taskService";
 import {api_rotinaplus} from "../services/api";
 import {logout} from "../services/authService";
@@ -15,6 +16,12 @@ import "./Dashboard.css";
 
 const PRIORIDADES = ["Baixa", "Media", "Alta"];
 const STATUS = ["Pendente", "Em andamento", "Concluida"];
+const RECORRENCIAS = [
+  { value: "nenhuma", label: "Não repete" },
+  { value: "diaria", label: "Diária" },
+  { value: "semanal", label: "Semanal" },
+  { value: "mensal", label: "Mensal" },
+];
 
 function getUserId() {
   try {
@@ -44,6 +51,7 @@ export default function Dashboard() {
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [tasks, setTasks] = useState([]);
   const [pontosTotais, setPontosTotais] = useState(0);
+  const [diasOfensiva, setDiasOfensiva] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
   const [aba, setAba] = useState("atuais"); // "atuais" | "futuras"
@@ -56,6 +64,7 @@ export default function Dashboard() {
     descricao: "",
     dataTarefa: "",
     prioridade: "Media",
+    recorrencia: "nenhuma",
   });
   const [editForm, setEditForm] = useState({
     nome: "",
@@ -63,6 +72,7 @@ export default function Dashboard() {
     dataTarefa: "",
     prioridade: "Media",
     status: "Pendente",
+    recorrencia: "nenhuma",
   });
 
   async function carregar() {
@@ -78,6 +88,8 @@ export default function Dashboard() {
       setTasks(Array.isArray(data) ? data : []);
       const pontos = await obterPontosUsuario(userId);
       setPontosTotais(Number(pontos) || 0);
+      const ofensiva = await obterOfensivaUsuario(userId);
+      setDiasOfensiva(Number(ofensiva) || 0);
     } catch {
       setTasks([]);
       setErro("Não foi possível carregar as tarefas.");
@@ -119,7 +131,7 @@ export default function Dashboard() {
       setErro("Não foi possível criar a tarefa.");
       return;
     }
-    setForm({nome: "", descricao: "", dataTarefa: "", prioridade: "Media"});
+    setForm({nome: "", descricao: "", dataTarefa: "", prioridade: "Media", recorrencia: "nenhuma"});
     carregar();
   }
 
@@ -149,6 +161,7 @@ export default function Dashboard() {
       dataTarefa: task.dataTarefa ? String(task.dataTarefa).slice(0, 10) : "",
       prioridade: task.prioridade ?? "Media",
       status: task.status ?? "Pendente",
+      recorrencia: task.recorrencia ?? "nenhuma",
     });
   }
 
@@ -232,6 +245,16 @@ export default function Dashboard() {
             </select>
             <select
               className="task-form-input"
+              value={editForm.recorrencia}
+              onChange={(e) => setEditForm({...editForm, recorrencia: e.target.value})}
+              title="Recorrência: cria a próxima ocorrência ao concluir"
+            >
+              {RECORRENCIAS.map((r) => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
+            <select
+              className="task-form-input"
               value={editForm.status}
               onChange={(e) => setEditForm({...editForm, status: e.target.value})}
             >
@@ -270,6 +293,12 @@ export default function Dashboard() {
             <dt>Prazo</dt>
             <dd>{formatarData(task.dataTarefa)}</dd>
           </div>
+          {task.recorrencia && task.recorrencia !== "nenhuma" && (
+            <div>
+              <dt>Repete</dt>
+              <dd>{RECORRENCIAS.find((r) => r.value === task.recorrencia)?.label ?? task.recorrencia}</dd>
+            </div>
+          )}
         </dl>
         <div className="task-actions">
           <button
@@ -311,9 +340,17 @@ export default function Dashboard() {
           </button>
         </header>
 
-        <section className="points-summary" aria-label="Pontos totais">
-          <span className="points-label">Pontos totais</span>
-          <strong className="points-value">{pontosTotais}</strong>
+        <section className="stats-summary" aria-label="Resumo do usuário">
+          <div className="points-summary" aria-label="Pontos totais">
+            <span className="points-label">Pontos totais</span>
+            <strong className="points-value">{pontosTotais}</strong>
+          </div>
+          <div className="streak-summary" aria-label="Dias de ofensiva" title="Dias distintos com ao menos uma tarefa concluída">
+            <span className="streak-label">🔥 Dias de ofensiva</span>
+            <strong className="streak-value">
+              {diasOfensiva} {diasOfensiva === 1 ? "dia" : "dias"}
+            </strong>
+          </div>
         </section>
 
         {userId && (
@@ -349,6 +386,18 @@ export default function Dashboard() {
               {PRIORIDADES.map((p) => (
                 <option key={p} value={p}>
                   {p}
+                </option>
+              ))}
+            </select>
+            <select
+              className="task-form-input"
+              value={form.recorrencia}
+              onChange={(e) => setForm({...form, recorrencia: e.target.value})}
+              title="Recorrência: cria a próxima ocorrência ao concluir"
+            >
+              {RECORRENCIAS.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
                 </option>
               ))}
             </select>

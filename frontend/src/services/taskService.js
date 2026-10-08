@@ -89,6 +89,17 @@ export async function obterPontosUsuario(userId) {
   }
 }
 
+// Dias de ofensiva do usuário (GET /tasks/ofensiva/:userId)
+export async function obterOfensivaUsuario(userId) {
+  try {
+    const response = await api_rotinaplus.get(`/api/tasks/ofensiva/${userId}`);
+    return response.data?.totalDias ?? 0;
+  } catch (error) {
+    console.error("Erro ao obter ofensiva:", error);
+    return 0;
+  }
+}
+
 // Aliases para compatibilidade com Dashboard.jsx
 export const getAllTasks = listarTasks;
 export const getTasksByUser = listarTarefasUsuario;

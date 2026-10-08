@@ -53,15 +53,43 @@ margin: 8px 0 0;
 color: #60707a;
 }
 
+.stats-summary {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+margin-top: 20px;
+}
+
 .points-summary {
 display: flex;
 align-items: baseline;
 gap: 12px;
-margin-top: 20px;
 padding: 14px 16px;
 background: #ffffff;
 border: 1px solid #dce3e6;
 border-radius: 8px;
+}
+
+.streak-summary {
+display: flex;
+align-items: baseline;
+gap: 12px;
+padding: 14px 16px;
+background: #fff8ed;
+border: 1px solid #f0d9a8;
+border-radius: 8px;
+}
+
+.streak-label {
+color: #805b00;
+font-size: 0.9rem;
+font-weight: 600;
+}
+
+.streak-value {
+color: #b45309;
+font-size: 1.5rem;
+line-height: 1;
 }
 
 .points-label {
@@ -334,6 +362,10 @@ opacity: 0.85;
 @media (max-width: 640px) {
 .tasks-page {
 padding: 28px 16px;
+}
+
+.stats-summary {
+grid-template-columns: 1fr;
 }
 
 

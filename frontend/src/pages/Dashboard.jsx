@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import { Flame, Trophy } from "lucide-react";
 import {
   listarTarefasUsuario,
   criarTask,
@@ -342,11 +343,11 @@ export default function Dashboard() {
 
         <section className="stats-summary" aria-label="Resumo do usuário">
           <div className="points-summary" aria-label="Pontos totais">
-            <span className="points-label">Pontos totais</span>
+            <span className="points-label d-inline-flex align-items-center gap-1"><Trophy size={16} aria-hidden="true" /> Pontos totais</span>
             <strong className="points-value">{pontosTotais}</strong>
           </div>
           <div className="streak-summary" aria-label="Dias de ofensiva" title="Dias distintos com ao menos uma tarefa concluída">
-            <span className="streak-label">🔥 Dias de ofensiva</span>
+            <span className="streak-label d-inline-flex align-items-center gap-1"><Flame size={16} aria-hidden="true" /> Dias de ofensiva</span>
             <strong className="streak-value">
               {diasOfensiva} {diasOfensiva === 1 ? "dia" : "dias"}
             </strong>

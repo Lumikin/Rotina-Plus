@@ -1,26 +1,27 @@
+import { ListChecks, Gift, TrendingUp, CalendarCheck } from "lucide-react";
 import FeatureCard from "./FeatureCard";
 
 const features = [
   {
-    icon: "bi bi-check2-square",
+    Icon: ListChecks,
     title: "Gestão de tarefas",
     description:
       "Crie, edite e organize suas tarefas diárias e semanais definindo prioridades e prazos.",
   },
   {
-    icon: "bi bi-star",
+    Icon: Gift,
     title: "Pontos e recompensas",
     description:
       "Ganhe pontos a cada tarefa concluída e acompanhe sua evolução dentro do sistema de gamificação.",
   },
   {
-    icon: "bi bi-graph-up-arrow",
+    Icon: TrendingUp,
     title: "Acompanhamento de progresso",
     description:
       "Visualize seu histórico de conquistas e entenda como sua constância evolui ao longo do tempo.",
   },
   {
-    icon: "bi bi-calendar-check",
+    Icon: CalendarCheck,
     title: "Histórico de constância",
     description:
       "Registre seus acessos e mantenha sua sequência de dias ativos para não perder o ritmo.",

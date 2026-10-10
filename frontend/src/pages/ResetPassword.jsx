@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { CircleX } from "lucide-react";
 import { resetPassword } from "../services/authService";
 import Navbar from "../components/Navbar";
 
@@ -66,8 +67,8 @@ export default function ResetPassword() {
             style={{ maxWidth: "420px", width: "100%" }}
           >
             <div className="card-body p-4 p-md-5">
-              <div className="display-6 mb-3" role="alert">
-                &#128308;
+              <div className="mb-3 d-flex justify-content-center" role="alert">
+                <CircleX size={48} className="text-danger" aria-hidden="true" />
               </div>
               <h1 className="h5 fw-bold mb-2">Link inválido</h1>
               <p className={temaEscuro ? "text-light mb-4" : "text-muted mb-4"}>

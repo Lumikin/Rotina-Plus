@@ -6,6 +6,8 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Tarefas from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Ranking from "./pages/Ranking";
 import { isAuthenticated } from "./services/authService";
 
 function ProtectedRoute({ children }) {
@@ -30,6 +32,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/ranking" element={<Ranking />} />
         <Route path="/verificar-email" element={<VerifyEmail />} />
         <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/redefinir-senha" element={<ResetPassword />} />

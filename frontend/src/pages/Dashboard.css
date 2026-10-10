@@ -361,7 +361,7 @@ opacity: 0.85;
 
 @media (max-width: 640px) {
 .tasks-page {
-padding: 28px 16px;
+padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
 }
 
 .stats-summary {
@@ -371,7 +371,7 @@ grid-template-columns: 1fr;
 
 .tasks-header,
 .tasks-toolbar {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
 }
 
@@ -379,8 +379,33 @@ grid-template-columns: 1fr;
     font-size: 1.65rem;
 }
 
+.refresh-button {
+    width: 100%;
+    min-height: 44px;
+}
+
+.task-form {
+    padding: 12px;
+}
+
+.task-form-input {
+    flex: 1 1 100%;
+    min-height: 44px;
+    font-size: 16px;
+}
+
+.tasks-tabs {
+    width: 100%;
+}
+
+.task-tab {
+    flex: 1;
+    min-height: 44px;
+    text-align: center;
+}
+
 .task-item {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 18px;
 }
 
@@ -391,8 +416,39 @@ grid-template-columns: 1fr;
 }
 
 .task-details {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.task-actions {
+    flex-wrap: wrap;
+}
 
+.task-actions button,
+.task-actions select {
+    min-height: 44px;
+}
+
+.task-actions .concluir-button,
+.task-actions .voltar-button,
+.task-actions .edit-button,
+.task-actions .delete-button {
+    flex: 1 1 140px;
+}
+
+.task-edit-form {
+    display: grid;
+    gap: 10px;
+}
+
+}
+
+@media (max-width: 380px) {
+.task-details {
+    grid-template-columns: 1fr;
+}
+
+.points-value,
+.streak-value {
+    font-size: 1.25rem;
+}
 }

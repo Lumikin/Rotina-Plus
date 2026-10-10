@@ -33,3 +33,44 @@ export async function atualizarUsuario(id, dados) {
     };
   }
 }
+
+// Exclui a conta (DELETE /api/users/:id)
+export async function deletarUsuario(id) {
+  try {
+    const res = await api_rotinaplus.delete(`/api/users/${id}`);
+    return { success: true, message: res.data?.message || "Conta excluída.", dados: res.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Não foi possível excluir a conta.",
+    };
+  }
+}
+
+// Troca a senha logado (PUT /auth/alterar-senha)
+export async function alterarSenha({ senhaAtual, novaSenha, confirmarSenha }) {
+  try {
+    const res = await api_rotinaplus.put("/auth/alterar-senha", {
+      senhaAtual,
+      novaSenha,
+      confirmarSenha,
+    });
+    return { success: true, message: res.data?.message || "Senha alterada com sucesso!" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Não foi possível alterar a senha.",
+    };
+  }
+}
+
+// Extrai o userId do JWT salvo no localStorage
+export function getUserId() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    return JSON.parse(atob(token.split(".")[1])).userId ?? null;
+  } catch {
+    return null;
+  }
+}

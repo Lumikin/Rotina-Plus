@@ -1,3 +1,5 @@
+import { Gamepad2, CircleCheckBig, Circle, Star } from "lucide-react";
+
 export default function Hero({ temaEscuro }) {
   return (
     <header id="top" className="py-6">
@@ -5,13 +7,13 @@ export default function Hero({ temaEscuro }) {
         <div className="row align-items-center">
           <div className="col-lg-6">
             <span
-              className="badge rounded-pill px-3 py-2 mb-3"
+              className="badge rounded-pill px-3 py-2 mb-3 d-inline-flex align-items-center gap-2"
               style={{
                 backgroundColor: "rgba(46,196,182,0.12)",
                 color: "var(--color-primary)",
               }}
             >
-              🎮 Hábitos com gamificação
+              <Gamepad2 size={16} aria-hidden="true" /> Hábitos com gamificação
             </span>
 
             <h1 className="display-5 fw-bold mb-3">
@@ -47,7 +49,7 @@ export default function Hero({ temaEscuro }) {
               </a>
             </div>
 
-            <div className="d-flex gap-4 mt-5">
+            <div className="d-flex flex-wrap gap-4 mt-5">
               <div>
                 <h3 className="mb-0 fw-bold">+1000</h3>
                 <small className={temaEscuro ? "text-light" : "text-muted"}>
@@ -85,10 +87,11 @@ export default function Hero({ temaEscuro }) {
 
               <ul className="list-unstyled d-flex flex-column gap-3 mb-4">
                 <li className="d-flex align-items-center gap-2">
-                  <i
-                    className="bi bi-check-circle-fill"
+                  <CircleCheckBig
+                    size={20}
+                    aria-hidden="true"
                     style={{ color: "var(--color-primary)" }}
-                  ></i>
+                  />
                   <span
                     className={`text-decoration-line-through ${
                       temaEscuro ? "text-light opacity-50" : "text-muted"
@@ -98,10 +101,11 @@ export default function Hero({ temaEscuro }) {
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-2">
-                  <i
-                    className="bi bi-check-circle-fill"
+                  <CircleCheckBig
+                    size={20}
+                    aria-hidden="true"
                     style={{ color: "var(--color-primary)" }}
-                  ></i>
+                  />
                   <span
                     className={`text-decoration-line-through ${
                       temaEscuro ? "text-light opacity-50" : "text-muted"
@@ -111,21 +115,23 @@ export default function Hero({ temaEscuro }) {
                   </span>
                 </li>
                 <li className="d-flex align-items-center gap-2">
-                  <i
-                    className="bi bi-circle"
+                  <Circle
+                    size={20}
+                    aria-hidden="true"
                     style={{
                       color: temaEscuro ? "#fff" : "var(--color-text-muted)",
                     }}
-                  ></i>
+                  />
                   <span>Treinar na academia</span>
                 </li>
                 <li className="d-flex align-items-center gap-2">
-                  <i
-                    className="bi bi-circle"
+                  <Circle
+                    size={20}
+                    aria-hidden="true"
                     style={{
                       color: temaEscuro ? "#fff" : "var(--color-text-muted)",
                     }}
-                  ></i>
+                  />
                   <span>Organizar a semana</span>
                 </li>
               </ul>
@@ -151,10 +157,11 @@ export default function Hero({ temaEscuro }) {
               </div>
 
               <div className="d-flex align-items-center gap-2 mt-4">
-                <i
-                  className="bi bi-star-fill"
+                <Star
+                  size={18}
+                  aria-hidden="true"
                   style={{ color: "#F4A100" }}
-                ></i>
+                />
                 <small className="fw-medium">
                   +120 pontos ganhos essa semana
                 </small>

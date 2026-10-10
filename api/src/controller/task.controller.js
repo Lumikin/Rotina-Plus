@@ -196,6 +196,16 @@ const tasksController = {
       console.error(error);
       return res.status(500).json({message: "Erro no servidor", error: error.message});
     }
+  },
+
+  listarRanking: async (_req, res) => {
+    try {
+      const ranking = await tasksRepositories.listarRanking();
+      return res.status(200).json({ message: "Ranking obtido com sucesso", result: ranking });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Erro no servidor", error: error.message });
+    }
   }
 };
 

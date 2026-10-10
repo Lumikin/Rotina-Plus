@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { CircleCheckBig, CircleX } from "lucide-react";
 import { verifyEmailToken } from "../services/authService";
 import Navbar from "../components/Navbar";
 
@@ -66,8 +67,8 @@ export default function VerifyEmail() {
 
             {status === "success" && (
               <>
-                <div className="display-6 mb-3" role="status">
-                  &#9989;
+                <div className="mb-3 d-flex justify-content-center" role="status">
+                  <CircleCheckBig size={48} className="text-success" aria-hidden="true" />
                 </div>
                 <h2 className="h5 fw-bold mb-2">Conta verificada!</h2>
                 <p className={temaEscuro ? "text-light mb-0" : "text-muted mb-0"}>
@@ -78,8 +79,8 @@ export default function VerifyEmail() {
 
             {status === "error" && (
               <>
-                <div className="display-6 mb-3" role="alert">
-                  &#128308;
+                <div className="mb-3 d-flex justify-content-center" role="alert">
+                  <CircleX size={48} className="text-danger" aria-hidden="true" />
                 </div>
                 <h2 className="h5 fw-bold mb-2">Não foi possível verificar</h2>
                 <p className={temaEscuro ? "text-light mb-4" : "text-muted mb-4"}>{message}</p>

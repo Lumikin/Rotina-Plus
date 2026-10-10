@@ -104,3 +104,14 @@ export async function obterOfensivaUsuario(userId) {
 export const getAllTasks = listarTasks;
 export const getTasksByUser = listarTarefasUsuario;
 
+// Ranking global de pontos (GET /api/tasks/ranking)
+export async function obterRanking() {
+  try {
+    const response = await api_rotinaplus.get("/api/tasks/ranking");
+    return response.data?.result ?? [];
+  } catch (error) {
+    console.error("Erro ao obter ranking:", error);
+    return [];
+  }
+}
+

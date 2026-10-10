@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { MailCheck } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useRegister } from "../hooks/useRegister";
 
@@ -159,8 +160,8 @@ export default function Registrer() {
               </form>
             ) : (
               <div className="text-center">
-                <div className="display-6 mb-3" role="status" aria-label="Verifique seu e-mail">
-                  &#128231;
+                <div className="mb-3 d-flex justify-content-center" role="status" aria-label="Verifique seu e-mail">
+                  <MailCheck size={48} className="text-info" aria-hidden="true" />
                 </div>
                 <h2 className="h5 fw-bold mb-2">Verifique seu e-mail</h2>
                 <p className={temaEscuro ? "text-light" : "text-muted"}>

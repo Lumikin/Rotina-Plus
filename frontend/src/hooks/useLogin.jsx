@@ -6,7 +6,6 @@ export function useLogin() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Só faz a requisição quando for chamada (no submit do formulário)
   const login = useCallback(async (email, senha) => {
     setLoading(true);
     setError("");

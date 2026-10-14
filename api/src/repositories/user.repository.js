@@ -1,4 +1,4 @@
-import { connection } from "../config/Databse.js";
+import { connection } from "../config/Database.js";
 
 const usersRepository = {
   listarUsuarios: async () => {

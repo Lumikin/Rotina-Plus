@@ -1,5 +1,3 @@
-/* Base mobile-first global */
-
 *,
 *::before,
 *::after {
@@ -24,7 +22,7 @@ svg {
   height: auto;
 }
 
-/* Lucide: alinha o SVG ao texto e evita que estoure o layout */
+/* Alinha o SVG do Lucide ao texto. */
 .lucide {
   flex-shrink: 0;
   vertical-align: -3px;
@@ -35,7 +33,7 @@ svg {
   min-height: 100dvh;
 }
 
-/* Evita zoom automático no iOS e garante alvo de toque mínimo */
+/* Evita zoom automático no iOS. */
 input,
 select,
 textarea {
@@ -50,13 +48,12 @@ a.btn {
   touch-action: manipulation;
 }
 
-/* Utilitário Bootstrap 5.3 não tem py-6 — define aqui */
+/* Bootstrap 5.3 não tem py-6. */
 .py-6 {
   padding-top: 3.5rem;
   padding-bottom: 3.5rem;
 }
 
-/* Cards genéricos usados na Home */
 .rp-card {
   background: #fff;
   border: 1px solid #dce3e6;
@@ -78,7 +75,6 @@ a.btn {
   margin-bottom: 12px;
 }
 
-/* Títulos fluidos no mobile */
 .display-5 {
   font-size: clamp(1.9rem, 6vw, 3rem);
   line-height: 1.15;
@@ -92,7 +88,6 @@ h3 {
   text-wrap: balance;
 }
 
-/* Navbar mobile: botões empilham e ocupam largura total */
 @media (max-width: 991.98px) {
   .navbar-collapse .d-flex {
     flex-direction: column;
@@ -114,7 +109,6 @@ h3 {
   }
 }
 
-/* Home / Hero / CTA no mobile */
 @media (max-width: 575.98px) {
   .py-6 {
     padding-top: 2.25rem;
@@ -142,14 +136,14 @@ h3 {
   }
 }
 
-/* Respeita safe-area em celulares com notch */
+/* Aplica safe-area em celulares com notch. */
 @supports (padding: env(safe-area-inset-bottom)) {
   body {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-/* Menos animação para quem prefere */
+/* Reduz animação quando o usuário prefere. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

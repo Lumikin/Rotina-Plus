@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Trophy, Medal, Crown } from "lucide-react";
 import Navbar from "../components/Navbar";
-import { logout } from "../services/authService";
+import { logout, getUserId } from "../services/authService";
 import { obterRanking } from "../services/taskService";
-import { getUserId, buscarUsuario } from "../services/userService";
+import { useNomeUsuario } from "../hooks/useNomeUsuario";
 import "./Ranking.css";
 
 function Posicao({ pos }) {
@@ -17,7 +17,7 @@ function Posicao({ pos }) {
 export default function Ranking() {
   const navigate = useNavigate();
   const [userId] = useState(getUserId);
-  const [nomeUsuario, setNomeUsuario] = useState("");
+  const [nomeUsuario] = useNomeUsuario(userId);
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
@@ -37,20 +37,6 @@ export default function Ranking() {
   useEffect(() => {
     carregar();
   }, []);
-
-  useEffect(() => {
-    async function buscarNome() {
-      if (!userId) return;
-      try {
-        const res = await buscarUsuario(userId);
-        const nome = res.dados?.nome ?? "";
-        if (nome) setNomeUsuario(nome);
-      } catch {
-        // mantém vazio
-      }
-    }
-    buscarNome();
-  }, [userId]);
 
   function sair() {
     logout();

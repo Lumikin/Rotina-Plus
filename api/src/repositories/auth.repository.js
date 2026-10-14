@@ -1,6 +1,6 @@
-import { connection } from "../config/Databse.js";
+import { connection } from "../config/Database.js";
 
-const authRepositorie = {
+const authRepository = {
   criarCodigo: async (userId, hashCode, expirationDate) => {
     const sql = `INSERT INTO autenticacao (UUID, userId, hashCode, isvalid, expirationDate) VALUES (UUID(), ?, ?, 1, ?)`;
     const values = [userId, hashCode, expirationDate];
@@ -15,7 +15,7 @@ const authRepositorie = {
   },
 
   validarCodigo: async hashCode => {
-    const sql = `UPDATE autenticacao SET isvalid = 0 WHERE hashCode = ?`;
+    const sql = `UPDATE autenticacao SET isvalid = 0 WHERE hashCode = ? AND isvalid = 1 AND expirationDate > NOW()`;
     const values = [hashCode];
     const [rows] = await connection.execute(sql, values);
     return rows;
@@ -35,4 +35,4 @@ const authRepositorie = {
   },
 };
 
-export default authRepositorie;
+export default authRepository;

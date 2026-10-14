@@ -3,8 +3,7 @@ import { Sun, Moon, ListTodo, User, Trophy, LogIn, UserPlus, LogOut } from "luci
 import logo from "../assets/logo.png";
 
 function fecharMenu() {
-  // Fecha o menu mobile sem bloquear a navegação do React Router.
-  // (data-bs-toggle="collapse" nos Links impedia a troca de rota.)
+  // Remove manual para não bloquear a navegação do Router.
   document.getElementById("navbarContent")?.classList.remove("show");
 }
 

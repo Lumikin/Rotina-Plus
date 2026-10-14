@@ -10,52 +10,34 @@ import {
   obterPontosUsuario,
   obterOfensivaUsuario,
 } from "../services/taskService";
-import {api_rotinaplus} from "../services/api";
-import {logout} from "../services/authService";
+import {logout, getUserId} from "../services/authService";
+import {hojeKey, formatarDataBR, toInputDate} from "../utils/date";
+import {useNomeUsuario} from "../hooks/useNomeUsuario";
 import Navbar from "../components/Navbar";
 import "./Dashboard.css";
 
 const PRIORIDADES = ["Baixa", "Media", "Alta"];
 const STATUS = ["Pendente", "Em andamento", "Concluida"];
 const RECORRENCIAS = [
-  { value: "nenhuma", label: "Não repete" },
-  { value: "diaria", label: "Diária" },
-  { value: "semanal", label: "Semanal" },
-  { value: "mensal", label: "Mensal" },
+  { value: "Unica", label: "Não repete" },
+  { value: "Diaria", label: "Diária" },
+  { value: "Semanal", label: "Semanal" },
+  { value: "Mensal", label: "Mensal" },
 ];
 
-function getUserId() {
-  try {
-    const token = localStorage.getItem("token");
-    return JSON.parse(atob(token.split(".")[1])).userId ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function formatarData(data) {
-  if (!data) return "Sem prazo";
-  const [ano, mes, dia] = String(data).slice(0, 10).split("-");
-  return ano && mes && dia ? `${dia}/${mes}/${ano}` : "Sem prazo";
-}
-
-function hoje() {
-  const d = new Date();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const dia = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${dia}`;
-}
+const formatarData = formatarDataBR;
+const hoje = hojeKey;
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [userId] = useState(getUserId);
-  const [nomeUsuario, setNomeUsuario] = useState("");
+  const [nomeUsuario] = useNomeUsuario(userId);
   const [tasks, setTasks] = useState([]);
   const [pontosTotais, setPontosTotais] = useState(0);
   const [diasOfensiva, setDiasOfensiva] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
-  const [aba, setAba] = useState("atuais"); // "atuais" | "futuras"
+  const [aba, setAba] = useState("atuais");
   const [criando, setCriando] = useState(false);
   const [salvandoId, setSalvandoId] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
@@ -65,7 +47,7 @@ export default function Dashboard() {
     descricao: "",
     dataTarefa: "",
     prioridade: "Media",
-    recorrencia: "nenhuma",
+    recorrencia: "Unica",
   });
   const [editForm, setEditForm] = useState({
     nome: "",
@@ -73,7 +55,7 @@ export default function Dashboard() {
     dataTarefa: "",
     prioridade: "Media",
     status: "Pendente",
-    recorrencia: "nenhuma",
+    recorrencia: "Unica",
   });
 
   async function carregar() {
@@ -103,20 +85,6 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    async function buscarNome() {
-      if (!userId) return;
-      try {
-        const res = await api_rotinaplus.get(`/api/users/${userId}`);
-        const nome = res.data?.result?.[0]?.nome ?? res.data?.result?.nome ?? "";
-        if (nome) setNomeUsuario(nome);
-      } catch {
-        // mantém vazio, não quebra a tela
-      }
-    }
-    buscarNome();
-  }, [userId]);
-
   function sair() {
     logout();
     navigate("/login", {replace: true});
@@ -132,7 +100,7 @@ export default function Dashboard() {
       setErro("Não foi possível criar a tarefa.");
       return;
     }
-    setForm({nome: "", descricao: "", dataTarefa: "", prioridade: "Media", recorrencia: "nenhuma"});
+    setForm({nome: "", descricao: "", dataTarefa: "", prioridade: "Media", recorrencia: "Unica"});
     carregar();
   }
 
@@ -159,10 +127,10 @@ export default function Dashboard() {
     setEditForm({
       nome: task.nome ?? "",
       descricao: task.descricao ?? "",
-      dataTarefa: task.dataTarefa ? String(task.dataTarefa).slice(0, 10) : "",
+      dataTarefa: toInputDate(task.dataTarefa),
       prioridade: task.prioridade ?? "Media",
       status: task.status ?? "Pendente",
-      recorrencia: task.recorrencia ?? "nenhuma",
+      recorrencia: task.recorrencia ?? "Unica",
     });
   }
 
@@ -294,7 +262,7 @@ export default function Dashboard() {
             <dt>Prazo</dt>
             <dd>{formatarData(task.dataTarefa)}</dd>
           </div>
-          {task.recorrencia && task.recorrencia !== "nenhuma" && (
+          {task.recorrencia && task.recorrencia !== "Unica" && (
             <div>
               <dt>Repete</dt>
               <dd>{RECORRENCIAS.find((r) => r.value === task.recorrencia)?.label ?? task.recorrencia}</dd>
@@ -346,7 +314,7 @@ export default function Dashboard() {
             <span className="points-label d-inline-flex align-items-center gap-1"><Trophy size={16} aria-hidden="true" /> Pontos totais</span>
             <strong className="points-value">{pontosTotais}</strong>
           </div>
-          <div className="streak-summary" aria-label="Dias de ofensiva" title="Dias distintos com ao menos uma tarefa concluída">
+          <div className="streak-summary" aria-label="Dias de ofensiva" title="Dias seguidos com ao menos uma tarefa concluída">
             <span className="streak-label d-inline-flex align-items-center gap-1"><Flame size={16} aria-hidden="true" /> Dias de ofensiva</span>
             <strong className="streak-value">
               {diasOfensiva} {diasOfensiva === 1 ? "dia" : "dias"}

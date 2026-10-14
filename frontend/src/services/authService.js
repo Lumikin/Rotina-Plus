@@ -2,32 +2,37 @@ import { api_rotinaplus } from "./api";
 
 const TOKEN_KEY = "token";
 
-// Retorna o token JWT salvo (ou null)
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-// Verifica se há um token salvo
 export function isAuthenticated() {
   return Boolean(getToken());
 }
 
-// Remove o token (logout)
 export function logout() {
   localStorage.removeItem(TOKEN_KEY);
+}
+
+export function getUserId() {
+  try {
+    const token = getToken();
+    if (!token) return null;
+    return JSON.parse(atob(token.split(".")[1])).userId ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function toMessage(error, fallback) {
   return error.response?.data?.message || fallback;
 }
 
-// Faz login (POST /auth/login) e guarda o token JWT no localStorage
 export async function loginUser(email, senha) {
   try {
     const response = await api_rotinaplus.post("/auth/login", { email, senha });
     const data = response.data;
 
-    // O backend retorna { message, token }
     const token = data.token ?? data.accessToken ?? data.jwt;
 
     if (!token) {
@@ -47,8 +52,6 @@ export async function loginUser(email, senha) {
   }
 }
 
-// Cria a conta (POST /auth/register). O backend envia por e-mail o botão de
-// verificação da conta.
 export async function registerUser({ nome, email, senha, dataNascimento }) {
   try {
     const response = await api_rotinaplus.post("/auth/register", {
@@ -66,7 +69,6 @@ export async function registerUser({ nome, email, senha, dataNascimento }) {
   }
 }
 
-// Verifica a conta (POST /auth/verify) a partir do token do link do e-mail.
 export async function verifyEmailToken(token) {
   try {
     const response = await api_rotinaplus.post("/auth/verify", { token });
@@ -79,7 +81,6 @@ export async function verifyEmailToken(token) {
   }
 }
 
-// Envia o e-mail com o botão de redefinição (POST /auth/forgot-password)
 export async function forgotPassword(email) {
   try {
     const response = await api_rotinaplus.post("/auth/forgot-password", { email });
@@ -95,7 +96,6 @@ export async function forgotPassword(email) {
   }
 }
 
-// Troca a senha usando o token do link (POST /auth/reset-password)
 export async function resetPassword({ token, novaSenha, confirmarSenha }) {
   try {
     const response = await api_rotinaplus.post("/auth/reset-password", {

@@ -15,12 +15,10 @@ async function authMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Tokens de link ("Verificar conta" e "Redefinir senha") são assinados com a
-    // mesma chave, mas não são tokens de sessão: sem esta checagem eles
-    // funcionariam como Bearer token em rotas protegidas.
+    // Link tokens usam a mesma chave mas não valem como sessão.
     const claimsNaoSessao = ["verificacaoConta", "resetSenha"];
 
-    if (claimsNaoSessao.some(claim => decoded[claim] !== undefined)) {
+    if (claimsNaoSessao.some((claim) => decoded[claim] !== undefined)) {
       return res.status(401).json({
         message: "Token inválido",
       });
@@ -45,26 +43,6 @@ async function authMiddleware(req, res, next) {
       message: "Erro ao validar token",
     });
   }
-}
-
-export function authAdmin(req, res, next) {
-  if (req.user.role !== "admin") {
-    return res.status(404).json({
-      message: "Acesso negado",
-    });
-  }
-
-  next();
-}
-
-export function authUser(req, res, next) {
-  if (!["user", "admin"].includes(req.user.role) || !req.user.id) {
-    return res.status(403).json({
-      message: "Acesso negado",
-    });
-  }
-
-  next();
 }
 
 export default authMiddleware;

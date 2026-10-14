@@ -1,13 +1,13 @@
-import { loginUser } from "./authService";
+import { loginUser, getUserId } from "./authService";
 import { api_rotinaplus } from "./api";
 
-// Legado: mantido para compatibilidade. Prefira loginUser de authService.js,
-// que já salva o token JWT no localStorage.
+export { getUserId };
+
+// Delegação mantida para imports antigos.
 export async function ApiLogin(email, senha) {
   return loginUser(email, senha);
 }
 
-// Busca os dados do usuário (GET /api/users/:id)
 export async function buscarUsuario(id) {
   try {
     const res = await api_rotinaplus.get(`/api/users/${id}`);
@@ -21,7 +21,6 @@ export async function buscarUsuario(id) {
   }
 }
 
-// Atualiza nome, email e/ou senha (PUT /api/users/:id)
 export async function atualizarUsuario(id, dados) {
   try {
     const res = await api_rotinaplus.put(`/api/users/${id}`, dados);
@@ -34,7 +33,6 @@ export async function atualizarUsuario(id, dados) {
   }
 }
 
-// Exclui a conta (DELETE /api/users/:id)
 export async function deletarUsuario(id) {
   try {
     const res = await api_rotinaplus.delete(`/api/users/${id}`);
@@ -47,7 +45,6 @@ export async function deletarUsuario(id) {
   }
 }
 
-// Troca a senha logado (PUT /auth/alterar-senha)
 export async function alterarSenha({ senhaAtual, novaSenha, confirmarSenha }) {
   try {
     const res = await api_rotinaplus.put("/auth/alterar-senha", {
@@ -61,16 +58,5 @@ export async function alterarSenha({ senhaAtual, novaSenha, confirmarSenha }) {
       success: false,
       message: error.response?.data?.message || "Não foi possível alterar a senha.",
     };
-  }
-}
-
-// Extrai o userId do JWT salvo no localStorage
-export function getUserId() {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    return JSON.parse(atob(token.split(".")[1])).userId ?? null;
-  } catch {
-    return null;
   }
 }

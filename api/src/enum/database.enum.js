@@ -11,8 +11,8 @@ export const statusEnum = {
 };
 
 export const recorrenciaEnum = {
-  nenhuma: "nenhuma",
-  diaria: "diaria",
-  semanal: "semanal",
-  mensal: "mensal",
+  unica: "Unica",
+  diaria: "Diaria",
+  semanal: "Semanal",
+  mensal: "Mensal",
 };

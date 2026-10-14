@@ -2,33 +2,31 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, KeyRound, TriangleAlert, ArrowLeft } from "lucide-react";
 import Navbar from "../components/Navbar";
-import { logout } from "../services/authService";
+import { logout, getUserId } from "../services/authService";
 import {
   buscarUsuario,
   atualizarUsuario,
   deletarUsuario,
   alterarSenha,
-  getUserId,
 } from "../services/userService";
+import { toInputDate } from "../utils/date";
+import { useNomeUsuario } from "../hooks/useNomeUsuario";
 import "./Profile.css";
 
 export default function Profile() {
   const navigate = useNavigate();
   const [userId] = useState(getUserId);
-  const [nomeUsuario, setNomeUsuario] = useState("");
+  const [nomeUsuario, setNomeUsuario] = useNomeUsuario(userId);
   const [loading, setLoading] = useState(true);
 
-  // Edição de dados
   const [form, setForm] = useState({ nome: "", email: "", dataNascimento: "" });
   const [salvando, setSalvando] = useState(false);
   const [msgDados, setMsgDados] = useState({ tipo: "", texto: "" });
 
-  // Troca de senha
   const [senhaForm, setSenhaForm] = useState({ senhaAtual: "", novaSenha: "", confirmarSenha: "" });
   const [trocando, setTrocando] = useState(false);
   const [msgSenha, setMsgSenha] = useState({ tipo: "", texto: "" });
 
-  // Exclusão
   const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
   const [excluindo, setExcluindo] = useState(false);
   const [msgExclusao, setMsgExclusao] = useState({ tipo: "", texto: "" });
@@ -41,12 +39,11 @@ export default function Profile() {
       }
       const res = await buscarUsuario(userId);
       if (res.success && res.dados) {
-        const d = res.dados;
-        setNomeUsuario(d.nome ?? "");
+        const d = Array.isArray(res.dados) ? res.dados[0] : res.dados;
         setForm({
           nome: d.nome ?? "",
           email: d.email ?? "",
-          dataNascimento: d.dataNascimento ? String(d.dataNascimento).slice(0, 10) : "",
+          dataNascimento: toInputDate(d.dataNascimento),
         });
       } else {
         setMsgDados({ tipo: "erro", texto: res.message || "Não foi possível carregar os dados." });

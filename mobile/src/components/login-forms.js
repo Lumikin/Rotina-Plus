@@ -28,9 +28,6 @@ export default function LoginForm() {
     try {
       setLoading(true);
 
-      // TODO: integrar com o serviço de autenticação do backend
-      // const response = await login({ email, password });
-
       console.log('Login enviado:', { email, password });
     } catch (err) {
       console.error('Erro ao fazer login:', err);

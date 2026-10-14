@@ -1,40 +1,36 @@
 import { prioridadeEnum, recorrenciaEnum, statusEnum } from "../enum/database.enum.js";
 import Task from "../model/Tasks.js";
-import tasksRepositories from "../repositories/tasks.repositorie.js";
+import tasksRepositories from "../repositories/tasks.repository.js";
+
+function erro(res, error) {
+  console.error(error.message);
+  return res.status(500).json({ message: "Erro no servidor", error: error.message });
+}
+
+function recorrenciaValida(value) {
+  return Object.values(recorrenciaEnum).includes(value ?? recorrenciaEnum.unica);
+}
 
 const tasksController = {
-
   obterOfensiva: async (req, res) => {
     try {
       const { userId } = req.params;
-
-      if (!userId) {
-        return res.status(400).json({ message: "ID do usuário é obrigatório" });
-      }
-
+      if (!userId) return res.status(400).json({ message: "ID do usuário é obrigatório" });
       const totalDias = await tasksRepositories.obterOfensiva(userId);
-
       return res.status(200).json({ message: "Ofensiva obtida com sucesso", totalDias });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Erro no servidor", error: error.message });
+      return erro(res, error);
     }
   },
 
   obterPontos: async (req, res) => {
     try {
       const { userId } = req.params;
-
-      if (!userId) {
-        return res.status(400).json({ message: "ID do usuário é obrigatório" });
-      }
-
+      if (!userId) return res.status(400).json({ message: "ID do usuário é obrigatório" });
       const totalPontos = await tasksRepositories.obterPontosUsuario(userId);
-
       return res.status(200).json({ message: "Pontos obtidos com sucesso", totalPontos });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Erro no servidor", error: error.message });
+      return erro(res, error);
     }
   },
 
@@ -42,17 +38,12 @@ const tasksController = {
     try {
       await tasksRepositories.atualizarTarefasAtrasadas();
       const response = await tasksRepositories.listarTasks();
-
       if (response.length === 0) {
-        return res.status(404).json({message: "Nenhuma tarefa se encontra registrada."});
+        return res.status(404).json({ message: "Nenhuma tarefa se encontra registrada." });
       }
-
-      return res.status(200).json({message: "Tarefas Listadas:", result: response});
-
+      return res.status(200).json({ message: "Tarefas Listadas:", result: response });
     } catch (error) {
-      
-      console.error(error);
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return erro(res, error);
     }
   },
 
@@ -61,140 +52,94 @@ const tasksController = {
       const { userId } = req.params;
       await tasksRepositories.atualizarTarefasAtrasadas();
       const response = await tasksRepositories.listarUserTask(userId);
-
       if (response.length === 0) {
         return res.status(200).json({ message: "Não foi encontrada tarefas deste usuário" });
       }
       return res.status(200).json({ response });
-
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Erro ao buscar tarefas" });
+      return erro(res, error);
     }
   },
 
   criarTask: async (req, res) => {
     try {
       const { userId, nome, descricao, dataTarefa, prioridade, status, recorrencia } = req.body;
-
       if (!userId || !nome || !descricao || !dataTarefa || !prioridade || !status) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios" });
       }
-
-      if (status != statusEnum.pendente && status != statusEnum.emAndamento && status != statusEnum.concluida
-      ) {
+      if (!Object.values(statusEnum).includes(status)) {
         return res.status(400).json({ message: "status invalido" });
       }
-      if (
-        prioridade != prioridadeEnum.baixa &&
-        prioridade != prioridadeEnum.media &&
-        prioridade != prioridadeEnum.alta
-      ) {
-        return res.status(400).json({message: "Prioridade inválida"});
+      if (!Object.values(prioridadeEnum).includes(prioridade)) {
+        return res.status(400).json({ message: "Prioridade inválida" });
       }
-      const recorrenciaFinal = recorrencia ?? recorrenciaEnum.nenhuma;
-      if (!Object.values(recorrenciaEnum).includes(recorrenciaFinal)) {
-        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
+      if (!recorrenciaValida(recorrencia)) {
+        return res.status(400).json({ message: "Recorrência inválida. Use: Unica, Diaria, Semanal ou Mensal" });
       }
-      const task = Task.criar({userId, nome, descricao, dataTarefa, prioridade, status, recorrencia: recorrenciaFinal});
+      const task = Task.criar({ userId, nome, descricao, dataTarefa, prioridade, status, recorrencia: recorrencia ?? recorrenciaEnum.unica });
       const response = await tasksRepositories.criarTask(task);
-
-      return res.status(201).json({message: "Tarefa criada com sucesso", result: response});
-
+      return res.status(201).json({ message: "Tarefa criada com sucesso", result: response });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        message: "Erro no servidor", error: error.message});
+      return erro(res, error);
     }
   },
 
   atualizarTask: async (req, res) => {
     try {
       const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({message: "ID da tarefa é obrigatório"});
-      }
-      const validarTask = await tasksRepositories.listarTask(id);
-      if (validarTask.length === 0) {
-        return res.status(404).json({message: "Tarefa não encontrada"});
-      }
-      const dadosAtuais = validarTask[0];
-
+      if (!id) return res.status(400).json({ message: "ID da tarefa é obrigatório" });
+      const existente = await tasksRepositories.listarTask(id);
+      if (existente.length === 0) return res.status(404).json({ message: "Tarefa não encontrada" });
+      const atual = existente[0];
       const { nome, descricao, dataTarefa, prioridade, status, recorrencia } = req.body;
-
-      const nomeFinal = nome || dadosAtuais.nome;
-      const descricaoFinal = descricao || dadosAtuais.descricao;
-      const dataTarefaFinal = dataTarefa || dadosAtuais.dataTarefa;
-      const prioridadeFinal = prioridade || dadosAtuais.prioridade;
-      const statusFinal = status || dadosAtuais.status;
-      const recorrenciaFinal = recorrencia ?? dadosAtuais.recorrencia ?? recorrenciaEnum.nenhuma;
-      if (!Object.values(recorrenciaEnum).includes(recorrenciaFinal)) {
-        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
+      const dados = {
+        nome: nome || atual.nome,
+        descricao: descricao || atual.descricao,
+        dataTarefa: dataTarefa || atual.dataTarefa,
+        prioridade: prioridade || atual.prioridade,
+        status: status || atual.status,
+        recorrencia: recorrencia ?? atual.recorrencia ?? recorrenciaEnum.unica,
+      };
+      if (!recorrenciaValida(dados.recorrencia)) {
+        return res.status(400).json({ message: "Recorrência inválida. Use: Unica, Diaria, Semanal ou Mensal" });
       }
-
-      const task = Task.atualizar(
-        {
-          nome: nomeFinal,
-          descricao: descricaoFinal,
-          dataTarefa: dataTarefaFinal, // ano-mes-data
-          prioridade: prioridadeFinal, //
-          status: statusFinal,
-          recorrencia: recorrenciaFinal
-        },
-        id
-      );
-      const response = await tasksRepositories.atualizarTask(id, task);
-      return res.status(200).json({message: "Tarefa atualizada com sucesso", result: response});
-
+      const response = await tasksRepositories.atualizarTask(id, Task.atualizar(dados, id));
+      return res.status(200).json({ message: "Tarefa atualizada com sucesso", result: response });
     } catch (error) {
-
-      console.error(error);
-      if (error.message === "Tarefa não encontrada") {
-        return res.status(404).json({ message: error.message });
+      if (error.message === "Tarefa nao encontrada") {
+        return res.status(404).json({ message: "Tarefa não encontrada" });
       }
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return erro(res, error);
     }
   },
 
   concluirTask: async (req, res) => {
     try {
       const { UUID } = req.params;
-      if (!UUID) {
-        return res.status(400).json({ message: "ID da tarefa é obrigatório" });
-      }
-
+      if (!UUID) return res.status(400).json({ message: "ID da tarefa é obrigatório" });
       const concluir = await tasksRepositories.concluirTask(UUID);
-
       if (concluir?.proximaTarefa) {
-        return res.status(200).json({message: "Tarefa concluída com sucesso. Próxima ocorrência criada.", result: concluir, proximaTarefa: concluir.proximaTarefa});
+        return res.status(200).json({ message: "Tarefa concluída com sucesso. Próxima ocorrência criada.", result: concluir, proximaTarefa: concluir.proximaTarefa });
       }
-      return res.status(200).json({message: "Tarefa concluída com sucesso", result: concluir});
+      return res.status(200).json({ message: "Tarefa concluída com sucesso", result: concluir });
     } catch (error) {
-      console.error(error);
       if (error.message === "Tarefa nao encontrada") {
         return res.status(404).json({ message: "Tarefa não encontrada" });
       }
-
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return erro(res, error);
     }
   },
 
   deletarTask: async (req, res) => {
     try {
       const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({ message: "ID da tarefa e obrigatório" });
-      }
-      const validarTask = await tasksRepositories.listarTask(id);
-      if (validarTask.length === 0) {
-        return res.status(404).json({message: "Tarefa não encontrada"});
-      }
+      if (!id) return res.status(400).json({ message: "ID da tarefa e obrigatório" });
+      const existente = await tasksRepositories.listarTask(id);
+      if (existente.length === 0) return res.status(404).json({ message: "Tarefa não encontrada" });
       const response = await tasksRepositories.deletarTask(id);
-      return res.status(200).json({message: "Tarefa deletada com sucesso", result: response});
-
+      return res.status(200).json({ message: "Tarefa deletada com sucesso", result: response });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({message: "Erro no servidor", error: error.message});
+      return erro(res, error);
     }
   },
 
@@ -203,10 +148,9 @@ const tasksController = {
       const ranking = await tasksRepositories.listarRanking();
       return res.status(200).json({ message: "Ranking obtido com sucesso", result: ranking });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Erro no servidor", error: error.message });
+      return erro(res, error);
     }
-  }
+  },
 };
 
 export default tasksController;

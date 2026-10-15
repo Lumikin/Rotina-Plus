@@ -40,7 +40,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/ranking" element={<Ranking />} />
+        <Route
+          path="/ranking"
+          element={
+            <ProtectedRoute>
+              <Ranking />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/verificar-email" element={<VerifyEmail />} />
         <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/redefinir-senha" element={<ResetPassword />} />

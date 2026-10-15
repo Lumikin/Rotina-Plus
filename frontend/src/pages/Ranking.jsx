@@ -36,6 +36,7 @@ export default function Ranking() {
 
   useEffect(() => {
     carregar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function sair() {
@@ -56,7 +57,7 @@ export default function Ranking() {
                 <Trophy size={28} aria-hidden="true" /> Ranking global
               </h1>
               <p className="ranking-subtitle">
-                Pontos somados de todas as tarefas concluídas.
+                Pontos totais de todos os usuários somados das tarefas concluídas.
               </p>
             </div>
             <button

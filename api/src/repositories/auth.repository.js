@@ -10,7 +10,8 @@ const authRepository = {
 
   buscarCodigoValido: async userId => {
     const sql = `SELECT * FROM autenticacao WHERE userId = ? AND isvalid = 1 ORDER BY dataCad DESC LIMIT 1`;
-    const [rows] = await connection.execute(sql, [userId]);
+    const values = [userId];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
@@ -30,7 +31,8 @@ const authRepository = {
 
   alterarSenha: async (userId, novaSenha) => {
     const sql = `UPDATE usuarios SET password_hash = ? WHERE UUID = ?`;
-    const [result] = await connection.execute(sql, [novaSenha, userId]);
+    const values = [novaSenha, userId];
+    const [result] = await connection.execute(sql, values);
     return result;
   },
 };

@@ -14,6 +14,21 @@ export async function listarTasks() {
   return data?.result ?? [];
 }
 
+// Lista as tarefas atrasadas de um usuário (GET /tasks/atrasadas/:userId)
+export async function listarTarefasAtrasadas(userId) {
+  try {
+    const response = await api_rotinaplus.get(`/api/tasks/atrasadas/${userId}`);
+    return response.data?.result ?? [];
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return [];
+    }
+    console.error("Erro ao listar tarefas atrasadas:", error);
+    return [];
+  }
+}
+
+// Lista as tarefas de um usuário específico (GET /tasks/:userId)
 export async function listarTarefasUsuario(userId) {
   const data = await executar(api_rotinaplus.get(`/api/tasks/${userId}`), null);
   return data?.response ?? [];

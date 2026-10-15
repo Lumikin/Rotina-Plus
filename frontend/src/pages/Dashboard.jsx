@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import { Flame, Trophy } from "lucide-react";
 import {
   listarTarefasUsuario,
+  listarTarefasAtrasadas,
   criarTask,
   atualizarTask,
   concluirTask,
@@ -14,6 +15,7 @@ import {logout, getUserId} from "../services/authService";
 import {hojeKey, formatarDataBR, toInputDate} from "../utils/date";
 import {useNomeUsuario} from "../hooks/useNomeUsuario";
 import Navbar from "../components/Navbar";
+import AlertaTarefasAtrasadas from "../components/AlertaTarefasAtrasadas";
 import "./Dashboard.css";
 
 const PRIORIDADES = ["Baixa", "Media", "Alta"];
@@ -37,7 +39,9 @@ export default function Dashboard() {
   const [diasOfensiva, setDiasOfensiva] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
-  const [aba, setAba] = useState("atuais");
+  const [tarefasAtrasadas, setTarefasAtrasadas] = useState([]);
+  const [alertaAtrasadasAberto, setAlertaAtrasadasAberto] = useState(true);
+  const [aba, setAba] = useState("atuais"); // "atuais" | "futuras"
   const [criando, setCriando] = useState(false);
   const [salvandoId, setSalvandoId] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
@@ -69,12 +73,15 @@ export default function Dashboard() {
     try {
       const data = await listarTarefasUsuario(userId);
       setTasks(Array.isArray(data) ? data : []);
+      const atrasadas = await listarTarefasAtrasadas(userId);
+      setTarefasAtrasadas(Array.isArray(atrasadas) ? atrasadas : []);
       const pontos = await obterPontosUsuario(userId);
       setPontosTotais(Number(pontos) || 0);
       const ofensiva = await obterOfensivaUsuario(userId);
       setDiasOfensiva(Number(ofensiva) || 0);
     } catch {
       setTasks([]);
+      setTarefasAtrasadas([]);
       setErro("Não foi possível carregar as tarefas.");
     }
     setLoading(false);
@@ -309,6 +316,13 @@ export default function Dashboard() {
           </button>
         </header>
 
+        {userId && tarefasAtrasadas.length > 0 && alertaAtrasadasAberto && (
+          <AlertaTarefasAtrasadas
+            tarefas={tarefasAtrasadas}
+            onVerTarefas={() => setAba("atuais")}
+            onFechar={() => setAlertaAtrasadasAberto(false)}
+          />
+        )}
         <section className="stats-summary" aria-label="Resumo do usuário">
           <div className="points-summary" aria-label="Pontos totais">
             <span className="points-label d-inline-flex align-items-center gap-1"><Trophy size={16} aria-hidden="true" /> Pontos totais</span>

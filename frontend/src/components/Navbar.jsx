@@ -91,13 +91,6 @@ export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "
             ) : (
               <>
                 <Link
-                  to="/ranking"
-                  className="btn btn-rp-outline d-inline-flex align-items-center justify-content-center gap-1"
-                  onClick={fecharMenu}
-                >
-                  <Trophy size={16} aria-hidden="true" /> Ranking
-                </Link>
-                <Link
                   to="/login"
                   className="btn btn-rp-outline d-inline-flex align-items-center justify-content-center gap-1"
                   onClick={fecharMenu}

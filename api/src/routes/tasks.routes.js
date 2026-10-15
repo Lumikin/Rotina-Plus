@@ -6,6 +6,7 @@ const tasksRoutes = Router();
 tasksRoutes.get("/", tasksController.listarTasks);
 tasksRoutes.get("/pontos/:userId", tasksController.obterPontos);
 tasksRoutes.get("/ofensiva/:userId", tasksController.obterOfensiva);
+tasksRoutes.get("/atrasadas/:userId", tasksController.listarTarefasAtrasadas);
 tasksRoutes.get("/:userId", tasksController.listarUserTarefa);
 tasksRoutes.post("/", tasksController.criarTask);
 tasksRoutes.put("/:id", tasksController.atualizarTask);

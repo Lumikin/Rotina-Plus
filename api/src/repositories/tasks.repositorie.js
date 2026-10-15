@@ -62,6 +62,20 @@ const tasksRepositories = {
     return rows;
   },
 
+  // Lista as tarefas atrasadas de um usuário: prazo antes de hoje e não concluída.
+  listarUserTarefasAtrasadas: async (userId) => {
+    const sql = `
+      SELECT * FROM tarefas
+      WHERE userId = ?
+        AND DATE(dataTarefa) < CURDATE()
+        AND status != 'Concluida'
+      ORDER BY dataTarefa ASC;
+    `;
+    const values = [userId];
+    const [rows] = await connection.execute(sql, values);
+    return rows;
+  },
+
   listarTask: async tarefaUUID => {
     const sql = `SELECT * FROM tarefas WHERE UUID = ?;`;
     const values = [tarefaUUID];

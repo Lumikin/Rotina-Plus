@@ -1,0 +1,23 @@
+[
+  {
+    "userId": 1,
+    "nome": "Ana Souza",
+    "email": "ana.souza@email.com",
+    "dataNascimento": "2000-05-15",
+    "password_hash": "123456"
+  },
+  {
+    "userId": 2,
+    "nome": "Carlos Lima",
+    "email": "carlos.lima@email.com",
+    "dataNascimento": "1998-11-22",
+    "password_hash": "654321"
+  },
+  {
+    "userId": 3,
+    "nome": "Maria Oliveira",
+    "email": "maria.oliveira@email.com",
+    "dataNascimento": "2002-03-10",
+    "password_hash": "abcdef"
+  }
+]

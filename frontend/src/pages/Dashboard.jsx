@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {
   listarTarefasUsuario,
+  listarTarefasAtrasadas,
   criarTask,
   atualizarTask,
   concluirTask,
@@ -11,6 +12,7 @@ import {
 import {api_rotinaplus} from "../services/api";
 import {logout} from "../services/authService";
 import Navbar from "../components/Navbar";
+import AlertaTarefasAtrasadas from "../components/AlertaTarefasAtrasadas";
 import "./Dashboard.css";
 
 const PRIORIDADES = ["Baixa", "Media", "Alta"];
@@ -46,6 +48,8 @@ export default function Dashboard() {
   const [pontosTotais, setPontosTotais] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
+  const [tarefasAtrasadas, setTarefasAtrasadas] = useState([]);
+  const [alertaAtrasadasAberto, setAlertaAtrasadasAberto] = useState(true);
   const [aba, setAba] = useState("atuais"); // "atuais" | "futuras"
   const [criando, setCriando] = useState(false);
   const [salvandoId, setSalvandoId] = useState(null);
@@ -76,10 +80,13 @@ export default function Dashboard() {
     try {
       const data = await listarTarefasUsuario(userId);
       setTasks(Array.isArray(data) ? data : []);
+      const atrasadas = await listarTarefasAtrasadas(userId);
+      setTarefasAtrasadas(Array.isArray(atrasadas) ? atrasadas : []);
       const pontos = await obterPontosUsuario(userId);
       setPontosTotais(Number(pontos) || 0);
     } catch {
       setTasks([]);
+      setTarefasAtrasadas([]);
       setErro("Não foi possível carregar as tarefas.");
     }
     setLoading(false);
@@ -311,6 +318,13 @@ export default function Dashboard() {
           </button>
         </header>
 
+        {userId && tarefasAtrasadas.length > 0 && alertaAtrasadasAberto && (
+          <AlertaTarefasAtrasadas
+            tarefas={tarefasAtrasadas}
+            onVerTarefas={() => setAba("atuais")}
+            onFechar={() => setAlertaAtrasadasAberto(false)}
+          />
+        )}
         <section className="points-summary" aria-label="Pontos totais">
           <span className="points-label">Pontos totais</span>
           <strong className="points-value">{pontosTotais}</strong>

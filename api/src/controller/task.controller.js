@@ -61,6 +61,29 @@ const tasksController = {
     }
   },
 
+  listarTarefasAtrasadas: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: "ID do usuário é obrigatório" });
+      }
+
+      // Garante que o status de atraso esteja atualizado antes de listar.
+      await tasksRepositories.atualizarTarefasAtrasadas();
+      const atrasadas = await tasksRepositories.listarUserTarefasAtrasadas(userId);
+
+      return res.status(200).json({
+        message: "Tarefas atrasadas obtidas com sucesso",
+        result: atrasadas,
+        total: atrasadas.length,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Erro ao buscar tarefas atrasadas", error: error.message });
+    }
+  },
+
   criarTask: async (req, res) => {
     try {
       const { userId, nome, descricao, dataTarefa, prioridade, status, recorrencia } = req.body;

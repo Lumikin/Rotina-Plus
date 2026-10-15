@@ -85,6 +85,14 @@ const tasksRepositories = {
     return rows;
   },
 
+  listarUserTarefasAtrasadas: async (userId) => {
+    const [rows] = await connection.execute(
+      `SELECT * FROM tarefas WHERE userId = ? AND DATE(dataTarefa) < CURDATE() AND status != 'Concluida' ORDER BY dataTarefa ASC`,
+      [userId],
+    );
+    return rows;
+  },
+
   listarTask: async (id) => {
     const [rows] = await connection.execute(`SELECT * FROM tarefas WHERE UUID = ?`, [id]);
     return rows;

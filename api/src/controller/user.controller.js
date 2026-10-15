@@ -8,75 +8,75 @@ const usersController = {
   listarUsuarios: async (req, res) => {
     try {
       const result = await usersRepository.listarUsuarios();
+
       if (result.length === 0) {
-        return res.status(200).json({
-          message: "Nao existe usuarios cadastrados",
-        });
+        return res.status(200).json({message: "Não existe usuários cadastrados"});
       }
+      
       return res.status(200).json({ result });
+
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Ocorreu um erro no servidor",
-        error: error.message,
-      });
+      res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
     }
   },
+
   listarIDUsuarios: async (req, res) => {
     try {
       const idUsuario = req.params.id;
       const result = await usersRepository.listarIDUsuarios(idUsuario);
+
       if (!idUsuario || idUsuario.length === 0) {
-        return res.status(404).json({
-          message: "Id invalido",
-        });
+        return res.status(404).json({message: "Id invalido"});
       }
+
       if (result.length === 0) {
-        return res.status(404).json({
-          message: "Usuario nao encontrado",
-        });
+        return res.status(404).json({message: "Usuário não encontrado"});
       }
+
       return res.status(200).json({ result });
+
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Ocorreu um erro no servidor",
-        error: error.message,
-      });
+      res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
     }
   },
+
   alterarUsuario: async (req, res) => {
     try {
       const idUsuario = req.params.id;
 
-      let { nome, email, senha } = req.body;
+      let { nome, email, senha, dataNascimento } = req.body;
 
       if (!idUsuario || idUsuario.length === 0) {
         return res.status(400).json({ message: "Id invalido" });
       }
+
       const userAtual = await usersRepository.buscarUsuarioPorId(idUsuario);
+
       if (!userAtual || userAtual.length === 0) {
-        return res.status(404).json({ message: "Usuario nao encontrado" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
+
       if (senha && senha.length < 4) {
         return res.status(400).json({ message: "A senha deve ter no minimo 4 caracteres" });
       }
-      if (!nome && !email && !senha) {
-        return res.status(400).json({
-          message: "Pelo menos um campo e obrigatorio para atualizacao",
-        });
+
+      if (!nome && !email && !senha && !dataNascimento) {
+        return res.status(400).json({message: "Pelo menos um campo é obrigatorio para realizar a atualização"});
       }
 
       const dadosAtuais = userAtual[0];
 
       nome = nome || dadosAtuais.nome;
       email = email || dadosAtuais.email;
+      dataNascimento = dataNascimento || dadosAtuais.dataNascimento;
 
       let hashedPassword;
       if (senha) {
         const senhaDuplicada = await bcrypt.compare(
           senha,
-          dadosAtuais.password_hash,
+          dadosAtuais.password_hash
         );
         if (senhaDuplicada) {
           return res.status(400).json({ message: "A senha nao pode ser a mesma que a atual" });
@@ -87,38 +87,33 @@ const usersController = {
       }
 
       const user = Users.atualizar(
-        { nome, email, senha: hashedPassword },
+        { nome, email, senha: hashedPassword, dataNascimento},
         idUsuario,
       );
       const updated = await usersRepository.alterarUsuario(idUsuario, user);
       return res.status(200).json({ result: updated });
+
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Ocorreu um erro no servidor",
-        error: error.message,
-      });
+      res.status(500).json({message: "Ocorreu um erro no servidor", error: error.message});
     }
   },
+
   deletarUsuario: async (req, res) => {
     try {
       const { id } = req.params;
       const user = await usersRepository.listarIDUsuarios(id);
       if (!user || user.length === 0) {
-        return res.status(404).json({ message: "Usuario nao encontrado" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
       const result = await usersRepository.deletarUsuario(id);
-      return res.status(200).json({
-        message: "usuario deletado!",
-        result: result,
-      });
+      return res.status(200).json({message: "usuario deletado!", result: result});
+
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .json({ message: "Ocorreu um erro no servidor", error: error.message });
+      res.status(500).json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
-  },
+  }
 };
 
 export default usersController;

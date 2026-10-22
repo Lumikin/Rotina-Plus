@@ -628,6 +628,127 @@ select {
   background: #f5c6c6;
 }
 
+.add-task-button {
+  white-space: nowrap;
+}
+
+.task-modal-backdrop {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 760px);
+  margin: 18px auto 0;
+  padding: 0;
+  background: rgba(3, 13, 18, 0.35);
+  border-radius: 18px;
+}
+
+.task-modal {
+  width: min(680px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #111d23;
+  border: 1px solid #2b3c43;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(2, 10, 14, 0.5);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: transparent;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #e8f1f2;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 750;
+}
+
+.close-button {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  background: #1b2b31;
+  color: #dfeaf0;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.18s ease;
+}
+
+.close-button:hover {
+  background: #24353c;
+}
+
+.modal-content {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-label {
+  color: #a6bac0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.task-form-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  color: #e6eef0;
+  background: #0d171c;
+  border: 1px solid #33464e;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.task-form-input:focus {
+  border-color: #0c9a91;
+  box-shadow: 0 0 0 3px rgba(12, 154, 145, 0.12);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.cancel-button {
+  border: 1px solid #3d5a63;
+  border-radius: 10px;
+  padding: 11px 17px;
+  color: #dfeaf0;
+  background: #172328;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background: #1d2b31;
+}
+
 @media (max-width: 850px) {
   .progress-dashboard {
     grid-template-columns: 1fr 1fr;
@@ -648,6 +769,10 @@ select {
 
   .task-details {
     max-width: 380px;
+  }
+
+  .task-modal {
+    width: min(620px, 100%);
   }
 }
 
@@ -737,5 +862,30 @@ select {
   .alerta-acoes {
     width: 100%;
     justify-content: flex-end;
+  }
+
+  .task-modal-backdrop {
+    padding: 14px;
+  }
+
+  .task-modal {
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .modal-form {
+    padding: 16px;
+  }
+
+  .modal-content {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions button {
+    width: 100%;
   }
 }

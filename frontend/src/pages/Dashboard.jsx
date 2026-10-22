@@ -16,6 +16,7 @@ import { useNomeUsuario } from "../hooks/useNomeUsuario";
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import AlertaTarefasAtrasadas from "../components/AlertaTarefasAtrasadas";
+import TaskModal from "../components/TaskModal";
 import "./Dashboard.css";
 
 const PRIORIDADES = ["Baixa", "Media", "Alta"];
@@ -35,6 +36,19 @@ function normalizarRecorrencia(value) {
   return normalizada === "unica" ? "nenhuma" : normalizada;
 }
 
+const FORMULARIO_BASE = {
+  nome: "",
+  descricao: "",
+  dataTarefa: "",
+  prioridade: "Media",
+  recorrencia: "nenhuma",
+};
+
+const FORMULARIO_EDICAO_BASE = {
+  ...FORMULARIO_BASE,
+  status: "Pendente",
+};
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { temaEscuro, toggleTema } = useTheme();
@@ -51,22 +65,11 @@ export default function Dashboard() {
   const [criando, setCriando] = useState(false);
   const [salvandoId, setSalvandoId] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [modalModo, setModalModo] = useState("criar");
 
-  const [form, setForm] = useState({
-    nome: "",
-    descricao: "",
-    dataTarefa: "",
-    prioridade: "Media",
-    recorrencia: "nenhuma",
-  });
-  const [editForm, setEditForm] = useState({
-    nome: "",
-    descricao: "",
-    dataTarefa: "",
-    prioridade: "Media",
-    status: "Pendente",
-    recorrencia: "nenhuma",
-  });
+  const [form, setForm] = useState(FORMULARIO_BASE);
+  const [editForm, setEditForm] = useState(FORMULARIO_EDICAO_BASE);
 
   async function carregar() {
     setLoading(true);
@@ -113,8 +116,42 @@ export default function Dashboard() {
       setErro("Não foi possível criar a tarefa.");
       return;
     }
-    setForm({ nome: "", descricao: "", dataTarefa: "", prioridade: "Media", recorrencia: "nenhuma" });
+    setForm(FORMULARIO_BASE);
+    fecharModal();
     carregar();
+  }
+
+  function prepararFormularioEdicao(task) {
+    setEditForm({
+      nome: task.nome ?? "",
+      descricao: task.descricao ?? "",
+      dataTarefa: toInputDate(task.dataTarefa),
+      prioridade: task.prioridade ?? "Media",
+      status: task.status ?? "Pendente",
+      recorrencia: normalizarRecorrencia(task.recorrencia),
+    });
+  }
+
+  function abrirModalTarefa(task = null) {
+    setErro("");
+    if (task) {
+      setModalModo("editar");
+      setEditandoId(task.UUID);
+      prepararFormularioEdicao(task);
+    } else {
+      setModalModo("criar");
+      setEditandoId(null);
+      setForm(FORMULARIO_BASE);
+    }
+    setModalAberto(true);
+  }
+
+  function comecarEditar(task) {
+    abrirModalTarefa(task);
+  }
+
+  function abrirModalCriacao() {
+    abrirModalTarefa();
   }
 
   async function trocarStatus(id, novo, atual) {
@@ -134,19 +171,6 @@ export default function Dashboard() {
     carregar();
   }
 
-  function comecarEditar(task) {
-    setEditandoId(task.UUID);
-    setErro("");
-    setEditForm({
-      nome: task.nome ?? "",
-      descricao: task.descricao ?? "",
-      dataTarefa: toInputDate(task.dataTarefa),
-      prioridade: task.prioridade ?? "Media",
-      status: task.status ?? "Pendente",
-      recorrencia: normalizarRecorrencia(task.recorrencia),
-    });
-  }
-
   async function salvarEdicao(e, id) {
     e.preventDefault();
     setSalvandoId(id);
@@ -158,6 +182,7 @@ export default function Dashboard() {
       return;
     }
     setEditandoId(null);
+    fecharModal();
     carregar();
   }
 
@@ -171,6 +196,14 @@ export default function Dashboard() {
       return;
     }
     carregar();
+  }
+
+  function fecharModal() {
+    setModalAberto(false);
+    setEditandoId(null);
+    setForm(FORMULARIO_BASE);
+    setEditForm(FORMULARIO_EDICAO_BASE);
+    setErro("");
   }
 
   const chaveHoje = hoje();
@@ -227,74 +260,7 @@ export default function Dashboard() {
     const status = task.status ?? "Pendente";
     const concluida = status === "Concluida";
     const salvando = salvandoId === task.UUID;
-    const editando = editandoId === task.UUID;
     const recorrenciaChave = normalizarRecorrencia(task.recorrencia);
-
-    if (editando) {
-      return (
-        <article className={`task-item ${concluida ? "task-completed" : ""}`} key={task.UUID}>
-          <form className="task-edit-form" onSubmit={(e) => salvarEdicao(e, task.UUID)}>
-            <input
-              className="task-form-input"
-              value={editForm.nome}
-              onChange={(e) => setEditForm({ ...editForm, nome: e.target.value })}
-              minLength={3}
-              maxLength={64}
-              required
-            />
-            <input
-              className="task-form-input"
-              value={editForm.descricao}
-              onChange={(e) => setEditForm({ ...editForm, descricao: e.target.value })}
-              maxLength={255}
-            />
-            <input
-              className="task-form-input"
-              type="date"
-              value={editForm.dataTarefa}
-              onChange={(e) => setEditForm({ ...editForm, dataTarefa: e.target.value })}
-              required
-            />
-            <select
-              className="task-form-input"
-              value={editForm.prioridade}
-              onChange={(e) => setEditForm({ ...editForm, prioridade: e.target.value })}
-            >
-              {PRIORIDADES.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-            <select
-              className="task-form-input"
-              value={editForm.recorrencia}
-              onChange={(e) => setEditForm({ ...editForm, recorrencia: e.target.value })}
-              title="Recorrência: cria a próxima ocorrência ao concluir"
-            >
-              {RECORRENCIAS.map((r) => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
-            </select>
-            <select
-              className="task-form-input"
-              value={editForm.status}
-              onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-            >
-              {STATUS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <div className="task-actions">
-              <button className="refresh-button" type="submit" disabled={salvando}>
-                {salvando ? "Salvando..." : "Salvar"}
-              </button>
-              <button type="button" className="cancel-button" onClick={() => setEditandoId(null)}>
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </article>
-      );
-    }
 
     return (
       <article className={`task-item ${concluida ? "task-completed" : ""}`} key={task.UUID}>
@@ -343,24 +309,16 @@ export default function Dashboard() {
 
   return (
     <>
-      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} nomeUsuario={nomeUsuario} onSair={sair} />
+      <Navbar
+        temaEscuro={temaEscuro}
+        toggleTema={toggleTema}
+        nomeUsuario={nomeUsuario}
+        onSair={sair}
+        mostrarLogo={false}
+        streak={diasOfensiva}
+      />
       <main className="tasks-page">
         <section className="tasks-shell">
-          <header className="tasks-header">
-            <div>
-              <p className="tasks-kicker">ROTINA PLUS</p>
-              <h1>Minhas tarefas</h1>
-              <p className="tasks-subtitle">Organize seu dia e acompanhe sua evolução.</p>
-            </div>
-            <button
-              className="refresh-button"
-              type="button"
-              onClick={carregar}
-              disabled={loading}
-            >
-              {loading ? "Atualizando..." : "Atualizar"}
-            </button>
-          </header>
 
           {userId && tarefasAtrasadas.length > 0 && alertaAtrasadasAberto && (
             <AlertaTarefasAtrasadas
@@ -373,12 +331,10 @@ export default function Dashboard() {
           <section className="progress-dashboard" aria-label="Dashboard de progresso">
             <article className="progress-card progress-main">
               <div className="progress-card-heading">
-                <span className="progress-icon">✓</span>
-                <span className="points-label">Seu progresso</span>
               </div>
               <div className="progress-number-row">
                 <strong className="progress-number">{progresso}%</strong>
-                <span className="progress-caption">{concluidasProgresso} de {totalProgresso} tarefas de hoje e atrasadas concluídas</span>
+                <span className="progress-caption">{concluidasProgresso} de {totalProgresso} concluídas</span>
               </div>
               <div className="progress-track" role="progressbar" aria-valuenow={progresso} aria-valuemin="0" aria-valuemax="100" aria-label="Progresso das tarefas do dia e atrasadas">
                 <span style={{ width: `${progresso}%` }} />
@@ -395,57 +351,6 @@ export default function Dashboard() {
               <p className="metric-hint">Pontos conquistados ao concluir tarefas.</p>
             </article>
           </section>
-
-          {userId && (
-            <form className="task-form" onSubmit={criar}>
-              <div className="task-form-heading"><h2>Adicionar tarefa</h2><p>Inclua uma nova atividade na sua rotina.</p></div>
-              <input
-                className="task-form-input"
-                placeholder="Nome da tarefa"
-                value={form.nome}
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                minLength={3}
-                maxLength={64}
-                required
-              />
-              <input
-                className="task-form-input"
-                placeholder="Descrição"
-                value={form.descricao}
-                onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-                maxLength={255}
-              />
-              <input
-                className="task-form-input"
-                type="date"
-                value={form.dataTarefa}
-                onChange={(e) => setForm({ ...form, dataTarefa: e.target.value })}
-                required
-              />
-              <select
-                className="task-form-input"
-                value={form.prioridade}
-                onChange={(e) => setForm({ ...form, prioridade: e.target.value })}
-              >
-                {PRIORIDADES.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-              <select
-                className="task-form-input"
-                value={form.recorrencia}
-                onChange={(e) => setForm({ ...form, recorrencia: e.target.value })}
-                title="Recorrência: cria a próxima ocorrência ao concluir"
-              >
-                {RECORRENCIAS.map((r) => (
-                  <option key={r.value} value={r.value}>{r.label}</option>
-                ))}
-              </select>
-              <button className="refresh-button" type="submit" disabled={criando}>
-                {criando ? "Salvando..." : "Adicionar tarefa"}
-              </button>
-            </form>
-          )}
 
           <div className="tasks-toolbar">
             <div className="tasks-tabs">
@@ -471,9 +376,11 @@ export default function Dashboard() {
                 Concluídas ({totalConcluidas})
               </button>
             </div>
-            <span className="task-count">
-              {lista.length} {lista.length === 1 ? "tarefa" : "tarefas"}
-            </span>
+            {userId && (
+              <button type="button" className="refresh-button add-task-button" onClick={abrirModalCriacao}>
+                + Adicionar tarefa
+              </button>
+            )}
           </div>
 
           {!userId && !loading && (
@@ -514,6 +421,26 @@ export default function Dashboard() {
           )}
         </section>
       </main>
+
+      {modalAberto && (
+        <TaskModal
+          aberto={modalAberto}
+          modo={modalModo}
+          form={form}
+          editForm={editForm}
+          tarefaId={editandoId}
+          criando={criando}
+          salvandoId={salvandoId}
+          onClose={fecharModal}
+          onChangeCriacao={setForm}
+          onChangeEdicao={setEditForm}
+          onSubmit={criar}
+          onSubmitEdicao={salvarEdicao}
+          PRIORIDADES={PRIORIDADES}
+          RECORRENCIAS={RECORRENCIAS}
+          STATUS={STATUS}
+        />
+      )}
     </>
   );
 }

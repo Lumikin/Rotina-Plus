@@ -304,3 +304,39 @@ html[data-theme="dark"] body {
 [data-theme="dark"] .ranking-you {
   color: #2ec4b6;
 }
+
+[data-theme="dark"] .task-modal {
+  background: #111b20;
+  border-color: #2a3a42;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .modal-header h2,
+[data-theme="dark"] .task-label {
+  color: #e6eef0;
+}
+
+[data-theme="dark"] .close-button {
+  background: #1d2b31;
+  color: #dfeaf0;
+}
+
+[data-theme="dark"] .close-button:hover {
+  background: #24353c;
+}
+
+[data-theme="dark"] .task-form-input {
+  color: #e6eef0;
+  background: #0f1a1f;
+  border-color: #33464e;
+}
+
+[data-theme="dark"] .cancel-button {
+  color: #dfeaf0;
+  background: #172328;
+  border-color: #3d5a63;
+}
+
+[data-theme="dark"] .cancel-button:hover {
+  background: #1d2b31;
+}

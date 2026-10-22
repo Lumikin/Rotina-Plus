@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sun, Moon, ListTodo, User, Trophy, LogIn, UserPlus, LogOut } from "lucide-react";
+import { Sun, Moon, ListTodo, User, Trophy, LogIn, UserPlus, LogOut, Flame } from "lucide-react";
 import logo from "../assets/logo.png";
 
 function fecharMenu() {
@@ -7,7 +7,14 @@ function fecharMenu() {
   document.getElementById("navbarContent")?.classList.remove("show");
 }
 
-export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "", onSair }) {
+export default function Navbar({
+  temaEscuro = false,
+  toggleTema,
+  nomeUsuario = "",
+  onSair,
+  mostrarLogo = true,
+  streak = 0,
+}) {
   const logado = Boolean(nomeUsuario && onSair);
 
   return (
@@ -18,9 +25,21 @@ export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "
       style={{ transition: "all 0.3s ease" }}
     >
       <div className="container">
-        <Link to="/" className="navbar-brand d-flex align-items-center" onClick={fecharMenu}>
-          <img src={logo} alt="Rotina Plus" height="36" />
-        </Link>
+        {mostrarLogo ? (
+          <Link to="/" className="navbar-brand d-flex align-items-center" onClick={fecharMenu}>
+            <img src={logo} alt="Rotina Plus" height="36" />
+          </Link>
+        ) : (
+          <div className="navbar-brand d-flex align-items-center text-truncate" aria-label="Usuário logado">
+            <span className={`d-inline-flex align-items-center gap-2 rounded-pill px-2 py-1 ${temaEscuro ? "bg-dark-subtle text-light" : "bg-light text-dark"}`} style={{ border: "none" }}>
+              <span className="fw-semibold">{nomeUsuario}</span>
+              <span className="d-inline-flex align-items-center gap-1 fw-bold text-warning">
+                <Flame size={16} fill="currentColor" aria-hidden="true" />
+                <span>{streak}</span>
+              </span>
+            </span>
+          </div>
+        )}
 
         <button
           className="navbar-toggler"
@@ -76,9 +95,6 @@ export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "
                 >
                   <Trophy size={16} aria-hidden="true" /> Ranking
                 </Link>
-                <span className={temaEscuro ? "text-light" : "text-dark"}>
-                  Olá, {nomeUsuario}
-                </span>
                 <button
                   type="button"
                   className="btn btn-rp-outline d-inline-flex align-items-center justify-content-center gap-1"

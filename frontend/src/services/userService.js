@@ -8,6 +8,7 @@ export async function ApiLogin(email, senha) {
   return loginUser(email, senha);
 }
 
+// Busca os dados do usuário (GET /api/users/:id)
 export async function buscarUsuario(id) {
   try {
     const res = await api_rotinaplus.get(`/api/users/${id}`);
@@ -21,6 +22,7 @@ export async function buscarUsuario(id) {
   }
 }
 
+// Atualiza nome, email e/ou senha (PUT /api/users/:id)
 export async function atualizarUsuario(id, dados) {
   try {
     const res = await api_rotinaplus.put(`/api/users/${id}`, dados);

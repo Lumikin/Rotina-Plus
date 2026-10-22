@@ -7,9 +7,9 @@ function formatarData(data) {
 }
 
 export default function AlertaTarefasAtrasadas({ tarefas, onVerTarefas, onFechar }) {
-  if (!tarefas || tarefas.length === 0) return null;
-
   const navigate = useNavigate();
+
+  if (!tarefas || tarefas.length === 0) return null;
 
   return (
     <section className="alerta-atrasadas" role="alert" aria-label="Tarefas atrasadas">

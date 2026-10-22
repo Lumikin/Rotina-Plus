@@ -9,10 +9,10 @@ export const api_rotinaplus = axios.create({
 });
 
 // Lê o localStorage direto para evitar import circular com authService.
+// Anexa o token JWT em toda requisição, exceto nas rotas /auth/*.
 api_rotinaplus.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   const url = config.url ?? "";
-
   const isAuthRoute = url.includes("/auth/");
 
   if (token && !isAuthRoute) {

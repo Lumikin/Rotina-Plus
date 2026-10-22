@@ -1,0 +1,306 @@
+/* Tema escuro global. As regras claras continuam nos CSS de cada página. */
+
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+  background: #0d1519;
+  color: #e6eef0;
+}
+
+[data-theme="dark"] .bg-dark,
+[data-theme="dark"] .bg-light {
+  background-color: #0d1519 !important;
+}
+
+[data-theme="dark"] .navbar.bg-dark {
+  background-color: #111b20 !important;
+  border-bottom: 1px solid #24343b;
+}
+
+[data-theme="dark"] .card.bg-secondary {
+  background-color: #162227 !important;
+}
+
+[data-theme="dark"] .rp-card {
+  background: #162227;
+  border-color: #2a3a42;
+  color: #e6eef0;
+}
+
+[data-theme="dark"] .rp-card h3 {
+  color: #e6eef0;
+}
+
+/* ---------- Dashboard ---------- */
+[data-theme="dark"] .tasks-page {
+  background: #0d1519;
+}
+
+[data-theme="dark"] .tasks-header h1,
+[data-theme="dark"] .task-title-row h2,
+[data-theme="dark"] .task-form-heading h2,
+[data-theme="dark"] .metric-number,
+[data-theme="dark"] .progress-number {
+  color: #e8f1f2;
+}
+
+[data-theme="dark"] .tasks-subtitle,
+[data-theme="dark"] .progress-caption,
+[data-theme="dark"] .metric-hint,
+[data-theme="dark"] .task-main p,
+[data-theme="dark"] .task-details dt,
+[data-theme="dark"] .task-count,
+[data-theme="dark"] .task-form-heading p,
+[data-theme="dark"] .points-label {
+  color: #9fb0b7;
+}
+
+[data-theme="dark"] .task-details dd {
+  color: #d3e0e3;
+}
+
+[data-theme="dark"] .progress-card,
+[data-theme="dark"] .task-form,
+[data-theme="dark"] .task-item {
+  background: #162227;
+  border-color: #2a3a42;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .progress-main {
+  background: linear-gradient(135deg, #162227 0%, #13302e 100%);
+}
+
+[data-theme="dark"] .progress-track {
+  background: #2a3a42;
+}
+
+[data-theme="dark"] .progress-icon {
+  color: #7ee8dd;
+  background: #123a38;
+}
+
+[data-theme="dark"] .streak-icon {
+  color: #ffd27a;
+  background: #3a2e15;
+}
+
+[data-theme="dark"] .points-icon {
+  color: #b8bcff;
+  background: #26284a;
+}
+
+[data-theme="dark"] .tasks-tabs {
+  background: #1c2a30;
+}
+
+[data-theme="dark"] .task-tab {
+  color: #a9bbc1;
+}
+
+[data-theme="dark"] .task-tab.active {
+  color: #7ee8dd;
+  background: #24353c;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .task-form-input {
+  color: #e6eef0;
+  background: #0f1a1f;
+  border-color: #33464e;
+}
+
+[data-theme="dark"] .task-form-input::placeholder {
+  color: #7f9299;
+}
+
+[data-theme="dark"] .task-item:hover {
+  border-color: #3d5a63;
+}
+
+[data-theme="dark"] .task-completed {
+  background: #142026;
+}
+
+[data-theme="dark"] .status-badge {
+  color: #b8c8ce;
+  background: #24343b;
+}
+
+[data-theme="dark"] .status-badge.pendente {
+  color: #ffd97a;
+  background: #4a3a12;
+}
+
+[data-theme="dark"] .status-badge.em-andamento {
+  color: #8fe8ef;
+  background: #123a46;
+}
+
+[data-theme="dark"] .status-badge.concluida {
+  color: #8fe0b4;
+  background: #163a2a;
+}
+
+[data-theme="dark"] .voltar-button {
+  color: #ffd97a;
+  background: #3a311a;
+  border-color: #6b5a2c;
+}
+
+[data-theme="dark"] .edit-button {
+  color: #8fe8ef;
+  background: #123037;
+  border-color: #2c5a62;
+}
+
+[data-theme="dark"] .delete-button {
+  color: #ff9c9c;
+  background: #3a1d1f;
+  border-color: #6b2e31;
+}
+
+[data-theme="dark"] .tasks-state {
+  color: #a9bbc1;
+  background: #162227;
+  border-color: #33464e;
+}
+
+[data-theme="dark"] .tasks-error {
+  color: #ff9c9c;
+  background: #3a1d1f;
+  border-color: #6b2e31;
+}
+
+[data-theme="dark"] .tasks-notice {
+  color: #8fe8ef;
+  background: #133037;
+}
+
+[data-theme="dark"] .tasks-done {
+  border-color: #2a3a42;
+}
+
+[data-theme="dark"] .tasks-section-title {
+  color: #7fdcb0;
+}
+
+/* ---------- Alerta de atrasadas ---------- */
+[data-theme="dark"] .alerta-atrasadas {
+  background: #351d1f;
+  border-color: #6b2e31;
+  border-left-color: #e36b6b;
+}
+
+[data-theme="dark"] .alerta-titulo,
+[data-theme="dark"] .alerta-prazo,
+[data-theme="dark"] .alerta-mais {
+  color: #ff9c9c;
+}
+
+[data-theme="dark"] .alerta-mensagem {
+  color: #e0b8b8;
+}
+
+[data-theme="dark"] .alerta-item {
+  color: #f0dede;
+  background: #24181a;
+  border-color: #6b2e31;
+}
+
+[data-theme="dark"] .alerta-fechar:hover {
+  background: #6b2e31;
+}
+
+/* ---------- Perfil ---------- */
+[data-theme="dark"] .profile-page {
+  background: #0d1519;
+}
+
+[data-theme="dark"] .profile-header {
+  border-color: #2a3a42;
+}
+
+[data-theme="dark"] .profile-subtitle {
+  color: #9fb0b7;
+}
+
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .profile-state {
+  background: #162227;
+  border-color: #2a3a42;
+  color: #e6eef0;
+}
+
+[data-theme="dark"] .profile-form label {
+  color: #d3e0e3;
+}
+
+[data-theme="dark"] .profile-form input {
+  color: #e6eef0;
+  background: #0f1a1f;
+  border-color: #33464e;
+}
+
+[data-theme="dark"] .cancel-button {
+  color: #d3e0e3;
+  border-color: #5a6d75;
+}
+
+[data-theme="dark"] .profile-ok {
+  color: #8fe0b4;
+  background: #163a2a;
+}
+
+[data-theme="dark"] .profile-error {
+  color: #ff9c9c;
+  background: #3a1d1f;
+}
+
+[data-theme="dark"] .profile-back {
+  color: #2ec4b6;
+}
+
+/* ---------- Ranking ---------- */
+[data-theme="dark"] .ranking-page {
+  background: #0d1519;
+}
+
+[data-theme="dark"] .ranking-header {
+  border-color: #2a3a42;
+}
+
+[data-theme="dark"] .ranking-subtitle {
+  color: #9fb0b7;
+}
+
+[data-theme="dark"] .ranking-item,
+[data-theme="dark"] .ranking-state {
+  color: #e6eef0;
+  background: #162227;
+  border-color: #2a3a42;
+}
+
+[data-theme="dark"] .ranking-item.is-top {
+  background: #2e2718;
+  border-color: #6b5a2c;
+}
+
+[data-theme="dark"] .ranking-item.is-me {
+  border-color: #2ec4b6;
+}
+
+[data-theme="dark"] .ranking-mine {
+  color: #8fe8ef;
+  background: #133037;
+}
+
+[data-theme="dark"] .ranking-error {
+  color: #ff9c9c;
+  background: #3a1d1f;
+}
+
+[data-theme="dark"] .ranking-back,
+[data-theme="dark"] .ranking-points,
+[data-theme="dark"] .ranking-you {
+  color: #2ec4b6;
+}

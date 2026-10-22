@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { MailCheck } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useRegister } from "../hooks/useRegister";
+import { useTheme } from "../hooks/useTheme";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export default function Register() {
   const [dataN, setDataN] = useState("");
   const [etapa, setEtapa] = useState(1);
 
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
   const navigate = useNavigate();
 
   const {
@@ -47,7 +48,7 @@ export default function Register() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
       {/* Conteúdo Centralizado */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
@@ -7,7 +7,7 @@ import CallToAction from "../components/CallToAction";
 import Footer from "../components/Footer";
 
 export default function Home() {
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
 
   return (
     <div
@@ -15,7 +15,7 @@ export default function Home() {
       className={temaEscuro ? "bg-dark text-white" : "bg-white text-dark"}
       style={{ minHeight: "100vh", transition: "all 0.3s ease" }}
     >
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
       <Hero temaEscuro={temaEscuro} />
       <Features temaEscuro={temaEscuro} />
       <HowItWorks />

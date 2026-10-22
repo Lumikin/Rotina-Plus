@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const { login, loading, error, success } = useLogin();
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -28,7 +29,7 @@ export default function Login() {
       style={{ transition: "all 0.3s ease" }}
     >
       {/* Navbar com Logo e botões Entrar e Cadastrar */}
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
       {/* Conteúdo Centralizado */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">

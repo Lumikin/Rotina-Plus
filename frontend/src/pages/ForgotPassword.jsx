@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { forgotPassword } from "../services/authService";
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 
 export default function ForgotPassword() {
@@ -8,7 +9,7 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -36,7 +37,7 @@ export default function ForgotPassword() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
         <div

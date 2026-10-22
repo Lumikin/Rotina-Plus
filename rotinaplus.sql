@@ -68,8 +68,11 @@ CREATE TABLE `tarefas` (
   `dataTarefa` datetime NOT NULL,
   `prioridade` enum('Baixa','Media','Alta') NOT NULL,
   `status` enum('Pendente','Em andamento','Concluida') NOT NULL,
+<<<<<<< HEAD
   `recorrencia` enum('nenhuma','diaria','semanal','mensal') NOT NULL DEFAULT 'nenhuma',
   `dataConclusao` datetime DEFAULT NULL,
+=======
+>>>>>>> feat/novoFront
   `DataCad` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`UUID`,`userId`),
   KEY `user_UUID_idx` (`userId`),

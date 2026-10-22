@@ -11,8 +11,16 @@ const tasksController = {
     return res.status(500).json({ message: "Erro no servidor", error: error.message });
   },
 
+  normalizarRecorrencia: (value) => {
+    const normalizada = String(value ?? recorrenciaEnum.nenhuma).toLowerCase();
+    // Aceita o nome antigo ("unica") e converte para o valor do banco.
+    return normalizada === "unica" ? recorrenciaEnum.nenhuma : normalizada;
+  },
+
   recorrenciaValida: (value) => {
-    return Object.values(recorrenciaEnum).includes(value ?? recorrenciaEnum.unica);
+    return Object.values(recorrenciaEnum).includes(
+      tasksController.normalizarRecorrencia(value),
+    );
   },
 
   pontosDe: (prioridade) => {
@@ -48,7 +56,7 @@ const tasksController = {
 
   proximaData: (dataTarefa, recorrencia) => {
     const r = String(recorrencia ?? "").toLowerCase();
-    if (r === "unica") return null;
+    if (r === "unica" || r === "nenhuma") return null;
     const [ano, mes, dia] = tasksController.chaveData(dataTarefa).split("-").map(Number);
     if (!ano || !mes || !dia) return null;
     const base = new Date(ano, mes - 1, dia, 12);
@@ -77,8 +85,8 @@ const tasksController = {
   },
 
   criarProximaOcorrencia: async (tarefa) => {
-    const recorrencia = tarefa?.recorrencia ?? "Unica";
-    if (String(recorrencia).toLowerCase() === "unica") return null;
+    const recorrencia = tasksController.normalizarRecorrencia(tarefa?.recorrencia);
+    if (recorrencia === recorrenciaEnum.nenhuma) return null;
     const data = tasksController.proximaData(tarefa.dataTarefa, recorrencia);
     if (!data) return null;
     await tasksRepositories.inserirProximaOcorrencia(
@@ -99,6 +107,18 @@ const tasksController = {
       const linhas = await tasksRepositories.listarDiasConclusao(userId);
       const totalDias = tasksController.calcularOfensiva(linhas);
       return res.status(200).json({ message: "Ofensiva obtida com sucesso", totalDias });
+    } catch (error) {
+      return tasksController.erro(res, error);
+    }
+  },
+
+  obterSequencia: async (req, res) => {
+    try {
+      const { userId } = req.params;
+      if (!userId) return res.status(400).json({ message: "ID do usuário é obrigatório" });
+      const linhas = await tasksRepositories.listarDiasConclusao(userId);
+      const sequencia = tasksController.calcularOfensiva(linhas);
+      return res.status(200).json({ message: "Sequência obtida com sucesso", sequencia });
     } catch (error) {
       return tasksController.erro(res, error);
     }
@@ -179,12 +199,12 @@ const tasksController = {
         return res.status(400).json({ message: "Prioridade inválida" });
       }
       if (!tasksController.recorrenciaValida(recorrencia)) {
-        return res.status(400).json({ message: "Recorrência inválida. Use: Unica, Diaria, Semanal ou Mensal" });
+        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
       }
-      const task = Task.criar({ userId, nome, descricao, dataTarefa, prioridade, status, recorrencia: recorrencia ?? recorrenciaEnum.unica });
+      const recorrenciaFinal = tasksController.normalizarRecorrencia(recorrencia);
+      const task = Task.criar({ userId, nome, descricao, dataTarefa, prioridade, status, recorrencia: recorrenciaFinal });
       const id = randomUUID();
       const statusFinal = tasksController.comAtraso(task.dataTarefa, task.status);
-      const recorrenciaFinal = task.recorrencia ?? recorrenciaEnum.unica;
       const concluida = statusFinal === "Concluida";
       const dataConclusao = concluida ? new Date() : task.dataTarefa;
       await tasksRepositories.inserirTask(id, task.userId, task.nome, task.descricao, task.dataTarefa, dataConclusao, task.prioridade, statusFinal, recorrenciaFinal);
@@ -212,14 +232,16 @@ const tasksController = {
         dataTarefa: dataTarefa || atual.dataTarefa,
         prioridade: prioridade || atual.prioridade,
         status: status || atual.status,
-        recorrencia: recorrencia ?? atual.recorrencia ?? recorrenciaEnum.unica,
+        recorrencia: tasksController.normalizarRecorrencia(
+          recorrencia ?? atual.recorrencia,
+        ),
       };
       if (!tasksController.recorrenciaValida(dados.recorrencia)) {
-        return res.status(400).json({ message: "Recorrência inválida. Use: Unica, Diaria, Semanal ou Mensal" });
+        return res.status(400).json({ message: "Recorrência inválida. Use: nenhuma, diaria, semanal ou mensal" });
       }
       const tarefaAtualizada = Task.atualizar(dados, id);
       const statusFinal = tasksController.comAtraso(tarefaAtualizada.dataTarefa, tarefaAtualizada.status);
-      const recorrenciaFinal = tarefaAtualizada.recorrencia ?? atual.recorrencia ?? recorrenciaEnum.unica;
+      const recorrenciaFinal = tarefaAtualizada.recorrencia ?? atual.recorrencia ?? recorrenciaEnum.nenhuma;
       const virouConcluida = atual.status !== "Concluida" && statusFinal === "Concluida";
       if (virouConcluida) {
         await pontosRepository.adicionarPontos(id, tasksController.pontosDe(tarefaAtualizada.prioridade));

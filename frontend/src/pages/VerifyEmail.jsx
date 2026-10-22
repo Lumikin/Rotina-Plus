@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { CircleCheckBig, CircleX } from "lucide-react";
 import { verifyEmailToken } from "../services/authService";
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 
 export default function VerifyEmail() {
@@ -11,7 +12,7 @@ export default function VerifyEmail() {
   const [message, setMessage] = useState(() =>
     token ? "" : "Link de verificação inválido.",
   );
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
   const jaTentou = useRef(false);
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ export default function VerifyEmail() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
         <div

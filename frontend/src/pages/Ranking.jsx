@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { logout, getUserId } from "../services/authService";
 import { obterRanking } from "../services/taskService";
 import { useNomeUsuario } from "../hooks/useNomeUsuario";
+import { useTheme } from "../hooks/useTheme";
 import "./Ranking.css";
 
 function Posicao({ pos }) {
@@ -16,6 +17,7 @@ function Posicao({ pos }) {
 
 export default function Ranking() {
   const navigate = useNavigate();
+  const { temaEscuro, toggleTema } = useTheme();
   const [userId] = useState(getUserId);
   const [nomeUsuario] = useNomeUsuario(userId);
   const [ranking, setRanking] = useState([]);
@@ -48,7 +50,7 @@ export default function Ranking() {
 
   return (
     <>
-      <Navbar nomeUsuario={nomeUsuario} onSair={sair} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} nomeUsuario={nomeUsuario} onSair={sair} />
       <main className="ranking-page">
         <section className="ranking-shell">
           <header className="ranking-header">

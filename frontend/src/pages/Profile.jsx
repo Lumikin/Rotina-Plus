@@ -11,10 +11,12 @@ import {
 } from "../services/userService";
 import { toInputDate } from "../utils/date";
 import { useNomeUsuario } from "../hooks/useNomeUsuario";
+import { useTheme } from "../hooks/useTheme";
 import "./Profile.css";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { temaEscuro, toggleTema } = useTheme();
   const [userId] = useState(getUserId);
   const [nomeUsuario, setNomeUsuario] = useNomeUsuario(userId);
   const [loading, setLoading] = useState(true);
@@ -104,7 +106,7 @@ export default function Profile() {
 
   return (
     <>
-      <Navbar nomeUsuario={nomeUsuario} onSair={sair} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} nomeUsuario={nomeUsuario} onSair={sair} />
       <main className="profile-page">
         <section className="profile-shell">
           <header className="profile-header">

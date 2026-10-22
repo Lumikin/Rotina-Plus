@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { CircleX } from "lucide-react";
 import { resetPassword } from "../services/authService";
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 
 export default function ResetPassword() {
@@ -12,7 +13,7 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [temaEscuro, setTemaEscuro] = useState(false);
+  const { temaEscuro, toggleTema } = useTheme();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -57,7 +58,7 @@ export default function ResetPassword() {
           temaEscuro ? "bg-dark text-white" : "bg-light text-dark"
         }`}
       >
-        <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+        <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
         <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
           <div
@@ -94,7 +95,7 @@ export default function ResetPassword() {
       }`}
       style={{ transition: "all 0.3s ease" }}
     >
-      <Navbar temaEscuro={temaEscuro} toggleTema={() => setTemaEscuro(!temaEscuro)} />
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
         <div

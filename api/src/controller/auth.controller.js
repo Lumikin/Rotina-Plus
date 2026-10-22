@@ -252,7 +252,6 @@ const authController = {
         .json({ message: "Ocorreu um erro no servidor", error: error.message });
     }
   },
-
   resetarSenha: async (req, res) => {
     try {
       const { token, novaSenha, confirmarSenha } = req.body;

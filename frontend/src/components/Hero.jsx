@@ -171,5 +171,5 @@ export default function Hero({ temaEscuro }) {
         </div>
       </div>
     </header>
-  );   
+  );
 }

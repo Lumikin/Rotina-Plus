@@ -45,6 +45,8 @@ export default function Navbar({ temaEscuro = false, toggleTema, nomeUsuario = "
                   temaEscuro ? "btn-outline-light" : "btn-outline-dark"
                 }`}
                 onClick={toggleTema}
+                aria-label={temaEscuro ? "Ativar modo claro" : "Ativar modo escuro"}
+                aria-pressed={temaEscuro}
               >
                 {temaEscuro ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}
                 {temaEscuro ? "Claro" : "Escuro"}

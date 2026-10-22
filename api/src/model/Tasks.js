@@ -1,5 +1,5 @@
 export class Task {
-  constructor({ userId, nome, descricao, dataTarefa, prioridade, status, UUID = null, recorrencia = "Unica" }) {
+  constructor({ userId, nome, descricao, dataTarefa, prioridade, status, UUID = null, recorrencia = "nenhuma" }) {
     this.userId = userId;
     this.nome = nome;
     this.descricao = descricao;
@@ -7,7 +7,7 @@ export class Task {
     this.prioridade = prioridade;
     this.status = status;
     this.UUID = UUID;
-    this.recorrencia = recorrencia ?? "Unica";
+    this.recorrencia = recorrencia ?? "nenhuma";
   }
 
   static criar(data) {

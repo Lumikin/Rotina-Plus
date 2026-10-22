@@ -1,6 +1,6 @@
-import { connection } from "../config/Databse.js";
+import { connection } from "../config/Database.js";
 
-const authRepositorie = {
+const authRepository = {
   criarCodigo: async (userId, hashCode, expirationDate) => {
     const sql = `INSERT INTO autenticacao (UUID, userId, hashCode, isvalid, expirationDate) VALUES (UUID(), ?, ?, 1, ?)`;
     const values = [userId, hashCode, expirationDate];
@@ -10,12 +10,13 @@ const authRepositorie = {
 
   buscarCodigoValido: async userId => {
     const sql = `SELECT * FROM autenticacao WHERE userId = ? AND isvalid = 1 ORDER BY dataCad DESC LIMIT 1`;
-    const [rows] = await connection.execute(sql, [userId]);
+    const values = [userId];
+    const [rows] = await connection.execute(sql, values);
     return rows;
   },
 
   validarCodigo: async hashCode => {
-    const sql = `UPDATE autenticacao SET isvalid = 0 WHERE hashCode = ?`;
+    const sql = `UPDATE autenticacao SET isvalid = 0 WHERE hashCode = ? AND isvalid = 1 AND expirationDate > NOW()`;
     const values = [hashCode];
     const [rows] = await connection.execute(sql, values);
     return rows;
@@ -30,9 +31,10 @@ const authRepositorie = {
 
   alterarSenha: async (userId, novaSenha) => {
     const sql = `UPDATE usuarios SET password_hash = ? WHERE UUID = ?`;
-    const [result] = await connection.execute(sql, [novaSenha, userId]);
+    const values = [novaSenha, userId];
+    const [result] = await connection.execute(sql, values);
     return result;
   },
 };
 
-export default authRepositorie;
+export default authRepository;

@@ -91,7 +91,8 @@ CREATE TABLE
     `dataTarefa` datetime NOT NULL,
     `prioridade` enum ('Baixa', 'Media', 'Alta') NOT NULL,
     `status` enum ('Pendente', 'Em andamento', 'Concluida') NOT NULL,
-    `DataCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    < < < < < < < HEAD `recorrencia` enum ('nenhuma', 'diaria', 'semanal', 'mensal') NOT NULL DEFAULT 'nenhuma',
+    = = = = = = = > > > > > > > feat / novoFront `DataCad` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`UUID`, `userId`),
     KEY `user_UUID_idx` (`userId`),
     CONSTRAINT `user_UUID_tarefas` FOREIGN KEY (`userId`) REFERENCES `usuarios` (`UUID`)

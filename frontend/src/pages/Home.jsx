@@ -1,3 +1,4 @@
+import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
@@ -6,14 +7,20 @@ import CallToAction from "../components/CallToAction";
 import Footer from "../components/Footer";
 
 export default function Home() {
-  return (        
-    <div>
-      <Navbar />
-      <Hero />
-      <Features />
+  const { temaEscuro, toggleTema } = useTheme();
+
+  return (
+    <div
+      data-bs-theme={temaEscuro ? "dark" : "light"}
+      className={temaEscuro ? "bg-dark text-white" : "bg-white text-dark"}
+      style={{ minHeight: "100vh", transition: "all 0.3s ease" }}
+    >
+      <Navbar temaEscuro={temaEscuro} toggleTema={toggleTema} />
+      <Hero temaEscuro={temaEscuro} />
+      <Features temaEscuro={temaEscuro} />
       <HowItWorks />
-      <CallToAction />
-      <Footer />   
+      <CallToAction temaEscuro={temaEscuro} />
+      <Footer temaEscuro={temaEscuro} />
     </div>
   );
-};
+}

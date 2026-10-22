@@ -3,12 +3,13 @@ import router from "./routes/router.js";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT ?? 8080;
+const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:5173";
 
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vite
+    origin: FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );

@@ -1,0 +1,430 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Rotina Plus
+meta:
+  id: wrk_87dd53927b84417d85d26bd56c9a24b2
+  created: 1779714934840
+  modified: 1790803379897
+  description: ""
+collection:
+  - name: Users
+    meta:
+      id: fld_a24140372509437084546306bd27d402
+      created: 1790803429798
+      modified: 1790803429798
+      sortKey: -1790803429798
+      description: ""
+    children:
+      - url: "{{server}}:{{port}}/api/users"
+        name: Listar usuarios
+        meta:
+          id: req_3dec848e6fe74adaba4914bedb4f8fd6
+          created: 1790803445961
+          modified: 1790803709532
+          isPrivate: false
+          description: ""
+          sortKey: -1790803445961
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/users/1d2e493e-b9df-11f1-80ae-ea62850be395"
+        name: Listar usuario
+        meta:
+          id: req_7e014ac94d824f1b99c1a7092e52bad3
+          created: 1790803714796
+          modified: 1790803735122
+          isPrivate: false
+          description: ""
+          sortKey: -1790803307694
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/users/1d2e493e-b9df-11f1-80ae-ea62850be395"
+        name: Deletar usuario
+        meta:
+          id: req_1ed204c336e540e8b573f7997c56b562
+          created: 1790803743433
+          modified: 1790803854330
+          isPrivate: false
+          description: ""
+          sortKey: -1790803238560.5
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/users/1d2e493e-b9df-11f1-80ae-ea62850be395"
+        name: Modificar usuario
+        meta:
+          id: req_8315ad8f5efb4b36a2ea5573b1c3b61c
+          created: 1790803760228
+          modified: 1790803854329
+          isPrivate: false
+          description: ""
+          sortKey: -1790803273127.25
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Joao Silva",
+              "email": "joao.silva@example.com",
+              "senha": "12345"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Tasks
+    meta:
+      id: fld_14f92b2793b84ccfa56ed644f5d1d263
+      created: 1790803437356
+      modified: 1790803437356
+      sortKey: -1790803437356
+      description: ""
+    children:
+      - url: "{{server}}:{{port}}/api/tasks"
+        name: Listar tarefas
+        meta:
+          id: req_5f1a2b3c4d5e4f6a7b8c9d0e1f2a3b4c5
+          created: 1790803860001
+          modified: 1790803860001
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860001
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks/1d2e493e-b9df-11f1-80ae-ea62850be395"
+        name: Listar tarefas do usuario
+        meta:
+          id: req_6a2b3c4d5e6f4a7b8c9d0e1f2a3b4c5d6
+          created: 1790803860002
+          modified: 1790803860002
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860002
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks/ofensiva/1d2e493e-b9df-11f1-80ae-ea62850be395"
+        name: Obter ofensiva
+        meta:
+          id: req_7b3c4d5e6f7a4b7c8d9e0f1a2b3c4d5e7
+          created: 1790803860003
+          modified: 1790803860003
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860003
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks"
+        name: Criar tarefa
+        meta:
+          id: req_8c4d5e6f7a8b4c7d8e9f0a1b2c3d4e5f8
+          created: 1790803860004
+          modified: 1790803860004
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860004
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "userId": "1d2e493e-b9df-11f1-80ae-ea62850be395",
+              "nome": "Estudar Node.js",
+              "descricao": "Revisar middlewares e rotas do Express",
+              "dataTarefa": "2026-10-05 10:00:00",
+              "prioridade": "Alta",
+              "status": "Pendente"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks/2e3f5a1b-c4d6-4e8f-9a0b-1c2d3e4f5a6b"
+        name: Atualizar tarefa
+        meta:
+          id: req_9d5e6f7a8b9c4d7e8f9a0b1c2d3e4f5a9
+          created: 1790803860005
+          modified: 1790803860005
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860005
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Estudar Node.js - atualizado",
+              "descricao": "Revisar middlewares, rotas e controllers",
+              "dataTarefa": "2026-10-06 10:00:00",
+              "prioridade": "Media",
+              "status": "Em andamento"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks/2e3f5a1b-c4d6-4e8f-9a0b-1c2d3e4f5a6b/concluir"
+        name: Concluir tarefa
+        meta:
+          id: req_ae6f7a8b9c0d4e7f8a9b0c1d2e3f4a5b0
+          created: 1790803860006
+          modified: 1790803860006
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860006
+        method: PUT
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/api/tasks/2e3f5a1b-c4d6-4e8f-9a0b-1c2d3e4f5a6b"
+        name: Deletar tarefa
+        meta:
+          id: req_bf7a8b9c0d1e4f7a8b9c0d1e2f3a4b5c1
+          created: 1790803860007
+          modified: 1790803860007
+          isPrivate: false
+          description: ""
+          sortKey: -1790803860007
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Auth
+    meta:
+      id: fld_0e583f406b5140e9bf40d7d75e1bacb1
+      created: 1790803442083
+      modified: 1790803442083
+      sortKey: -1790803442083
+      description: ""
+    children:
+      - url: "{{server}}:{{port}}/auth/register"
+        name: Registrar usuario
+        meta:
+          id: req_c08b9c0d1e2f4a7b8c9d0e1f2a3b4c5d2
+          created: 1790803870001
+          modified: 1790803870001
+          isPrivate: false
+          description: ""
+          sortKey: -1790803870001
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Joao Silva",
+              "email": "joao.silva@example.com",
+              "senha": "12345",
+              "dataNascimento": "2000-05-15"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/auth/login"
+        name: Login
+        meta:
+          id: req_d19c0d1e2f3a4b7c8d9e0f1a2b3c4d5e3
+          created: 1790803870002
+          modified: 1790803870002
+          isPrivate: false
+          description: ""
+          sortKey: -1790803870002
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "joao.silva@example.com",
+              "senha": "12345"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/auth/verify"
+        name: Verificar codigo
+        meta:
+          id: req_e2a0d1e2f3a4b5c8d9e0f1a2b3c4d5e4
+          created: 1790803870003
+          modified: 1790803870003
+          isPrivate: false
+          description: ""
+          sortKey: -1790803870003
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "joao.silva@example.com",
+              "code": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/auth/resend-email"
+        name: Reenviar email
+        meta:
+          id: req_f3b1e2f3a4b5c6d9e0f1a2b3c4d5e4f5
+          created: 1790803870004
+          modified: 1790803870004
+          isPrivate: false
+          description: ""
+          sortKey: -1790803870004
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "joao.silva@example.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{server}}:{{port}}/auth/alterar-senha"
+        name: Alterar senha
+        meta:
+          id: req_a4c2f3a4b5c6d7e0f1a2b3c4d5e4f5a6
+          created: 1790803870005
+          modified: 1790803870005
+          isPrivate: false
+          description: ""
+          sortKey: -1790803870005
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "senhaAtual": "12345",
+              "novaSenha": "54321",
+              "confirmarSenha": "54321"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: Authorization
+            value: Bearer {{token}}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_8530cdd04fca3320222f9e16abfb03f54a25022e
+    created: 1790803380068
+    modified: 1790803380068
+environments:
+  name: Base Environment
+  meta:
+    id: env_8530cdd04fca3320222f9e16abfb03f54a25022e
+    created: 1779714934854
+    modified: 1790803463409
+    isPrivate: false
+  data:
+    server: localhost
+    port: "8080"
+    token: ""

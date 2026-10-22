@@ -1,8 +1,9 @@
 import mysql from "mysql2/promise";
 import "dotenv/config";
 
-// Padrão de projeto ultilizado na classe de conexão com banco de dados: SINGLETON
-class Databse {
+const POOL_LIMIT = 100;
+
+class Database {
   static #instance = null;
   #pool = null;
 
@@ -14,16 +15,16 @@ class Databse {
       database: process.env.DB_DATABASE,
       port: process.env.DB_PORT,
       waitForConnections: true,
-      connectionLimit: 100,
+      connectionLimit: POOL_LIMIT,
       queueLimit: 0,
     });
   }
   static getInstance() {
-    if (!Databse.#instance) {
-      Databse.#instance = new Databse();
-      Databse.#instance.#createPool();
+    if (!Database.#instance) {
+      Database.#instance = new Database();
+      Database.#instance.#createPool();
     }
-    return Databse.#instance;
+    return Database.#instance;
   }
 
   getPool() {
@@ -31,4 +32,4 @@ class Databse {
   }
 }
 
-export const connection = Databse.getInstance().getPool();
+export const connection = Database.getInstance().getPool();

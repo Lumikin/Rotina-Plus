@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
-import usersRepository from "../repositories/user.repositorie.js";
+import usersRepository from "../repositories/user.repository.js";
 import { Users } from "../model/Users.js";
-
-const saltRounds = 10;
+import { SALT_ROUNDS, MIN_SENHA } from "../config/auth.config.js";
 
 const usersController = {
   listarUsuarios: async (req, res) => {
@@ -25,12 +24,12 @@ const usersController = {
   listarIDUsuarios: async (req, res) => {
     try {
       const idUsuario = req.params.id;
-      const result = await usersRepository.listarIDUsuarios(idUsuario);
-      if (!idUsuario || idUsuario.length === 0) {
-        return res.status(404).json({
+      if (!idUsuario) {
+        return res.status(400).json({
           message: "Id invalido",
         });
       }
+      const result = await usersRepository.listarIDUsuarios(idUsuario);
       if (result.length === 0) {
         return res.status(404).json({
           message: "Usuario nao encontrado",
@@ -58,7 +57,7 @@ const usersController = {
       if (!userAtual || userAtual.length === 0) {
         return res.status(404).json({ message: "Usuario nao encontrado" });
       }
-      if (senha && senha.length < 4) {
+      if (senha && senha.length < MIN_SENHA) {
         return res.status(400).json({ message: "A senha deve ter no minimo 4 caracteres" });
       }
       if (!nome && !email && !senha) {
@@ -81,7 +80,7 @@ const usersController = {
         if (senhaDuplicada) {
           return res.status(400).json({ message: "A senha nao pode ser a mesma que a atual" });
         }
-        hashedPassword = await bcrypt.hash(senha, saltRounds);
+        hashedPassword = await bcrypt.hash(senha, SALT_ROUNDS);
       } else {
         hashedPassword = dadosAtuais.password_hash;
       }

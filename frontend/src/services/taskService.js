@@ -1,80 +1,74 @@
 import { api_rotinaplus } from "./api";
 
-// Lista todas as tarefas (GET /tasks)
-export async function listarTasks() {
+async function executar(promise, fallback) {
   try {
-    const response = await api_rotinaplus.get("/api/tasks");
-    return response.data.result;
+    const response = await promise;
+    return response.data;
+  } catch {
+    return fallback;
+  }
+}
+
+export async function listarTasks() {
+  const data = await executar(api_rotinaplus.get("/api/tasks"), null);
+  return data?.result ?? [];
+}
+
+// Lista as tarefas atrasadas de um usuário (GET /tasks/atrasadas/:userId)
+export async function listarTarefasAtrasadas(userId) {
+  try {
+    const response = await api_rotinaplus.get(`/api/tasks/atrasadas/${userId}`);
+    return response.data?.result ?? [];
   } catch (error) {
     if (error.response?.status === 404) {
       return [];
     }
-
-    console.error("Erro ao listar tarefas:", error);
+    console.error("Erro ao listar tarefas atrasadas:", error);
     return [];
   }
 }
 
 // Lista as tarefas de um usuário específico (GET /tasks/:userId)
 export async function listarTarefasUsuario(userId) {
-  try {
-    const response = await api_rotinaplus.get(`/api/tasks/${userId}`);
-    return response.data.response ?? [];
-  } catch (error) {
-    if (error.response?.status === 404) {
-      return [];
-    }
-
-    console.error("Erro ao listar tarefas do usuário:", error);
-    return [];
-  }
+  const data = await executar(api_rotinaplus.get(`/api/tasks/${userId}`), null);
+  return data?.response ?? [];
 }
 
-// Cria uma nova tarefa (POST /tasks)
 export async function criarTask(taskData) {
-  try {
-    const response = await api_rotinaplus.post("/api/tasks", taskData);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao criar tarefa:", error);
-    return null;
-  }
+  const data = await executar(api_rotinaplus.post("/api/tasks", taskData), null);
+  return data ?? null;
 }
 
-// Atualiza uma tarefa existente (PUT /tasks/:id)
 export async function atualizarTask(id, taskData) {
-  try {
-    const response = await api_rotinaplus.put(
-      `/api/tasks/${id}`,
-      taskData
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar tarefa:", error);
-    return null;
-  }
+  const data = await executar(api_rotinaplus.put(`/api/tasks/${id}`, taskData), null);
+  return data ?? null;
 }
 
-// Conclui uma tarefa (PUT /tasks/:UUID/concluir)
 export async function concluirTask(id) {
-  try {
-    const response = await api_rotinaplus.put(`/api/tasks/${id}/concluir`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao concluir tarefa:", error);
-    return null;
-  }
+  const data = await executar(api_rotinaplus.put(`/api/tasks/${id}/concluir`), null);
+  return data ?? null;
 }
 
-// Exclui uma tarefa (DELETE /tasks/:id)
 export async function deletarTask(id) {
-  try {
-    const response = await api_rotinaplus.delete(`/api/tasks/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao excluir tarefa:", error);
-    return null;
-  }
+  const data = await executar(api_rotinaplus.delete(`/api/tasks/${id}`), null);
+  return data ?? null;
 }
 
+export async function obterPontosUsuario(userId) {
+  const data = await executar(api_rotinaplus.get(`/api/tasks/pontos/${userId}`), null);
+  return data?.totalPontos ?? 0;
+}
+
+export async function obterOfensivaUsuario(userId) {
+  const data = await executar(api_rotinaplus.get(`/api/tasks/ofensiva/${userId}`), null);
+  return data?.totalDias ?? 0;
+}
+
+export async function obterRanking() {
+  const data = await executar(api_rotinaplus.get("/api/tasks/ranking"), null);
+  return data?.result ?? [];
+}
+
+// Usado pelo Dashboard antigo, manter por compatibilidade.
+export const getAllTasks = listarTasks;
+export const getTasksByUser = listarTarefasUsuario;
